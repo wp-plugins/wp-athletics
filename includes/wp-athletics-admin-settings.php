@@ -27,7 +27,7 @@ if(!class_exists('WP_Athletics_Admin')) {
 		 */
 		function admin_menu() {
 			if( $this->has_permission_to_manage( false ) ) {
-				add_menu_page('WP Athletics Settings', 'WP Athletics', 'manage_wp_athletics', 'wp-athletics-settings', array( $this, 'wpa_settings' ) );
+				add_menu_page('WP Athletics Settings', 'WP Athletics', 'manage_wp_athletics', 'wp-athletics-settings', array( $this, 'wpa_settings' ), WPA_PLUGIN_URL . '/resources/images/wp-athletics-icon.png' );
 				add_submenu_page( 'wp-athletics-settings', 'WP Athletics Add Results', 'Add Results', 'manage_wp_athletics', 'wp-athletics-add-results', array( $this, 'wpa_add_results') );
 				add_submenu_page( 'wp-athletics-settings', 'WP Athletics Results Mangager', 'Manage Results', 'manage_wp_athletics', 'wp-athletics-manage-results', array( $this, 'wpa_manage_results') );
 				add_submenu_page( 'wp-athletics-settings', 'WP Athletics Events Mangager', 'Manage Events', 'manage_wp_athletics', 'wp-athletics-manage-events', array( $this, 'wpa_manage_events') );
