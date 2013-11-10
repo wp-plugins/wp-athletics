@@ -2,8 +2,8 @@
 Contributors: conormccauley
 Donate link: http://www.conormccauley.com/wordpress-athletics
 Tags: athletics, results, running club, athlete, statistics, races, racing, events, athletic, jogging, club, charts, records, personal bests, pb, pr, personal records
-Requires at least: 3.0.1
-Tested up to: 3.5
+Requires at least: 3.5
+Tested up to: 3.7.1
 Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
