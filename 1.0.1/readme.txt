@@ -2,8 +2,8 @@
 Contributors: conormccauley
 Donate link: http://www.conormccauley.com/wordpress-athletics
 Tags: athletics, results, running club, athlete, statistics, races, racing, events, athletic, jogging, club, charts, records, personal bests, pb, pr, personal records
-Requires at least: 3.0.1
-Tested up to: 3.5
+Requires at least: 3.5
+Tested up to: 3.7.1
 Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -15,22 +15,26 @@ Allow registered users to log, compare and analyse their athletic results. A clu
 Wordpress Athletics is a powerful collection of features for your athletics club website aiming to allow your athletes to log and analyze their results, track their PB's and view statistics and charts. The plugin, designed with simplicity in mind is ready to use out of the box. There are also a variety of UI themes included for your convenience.
 
 Some of the major features for your registered users are:
-* Enter race results and create new events if they do not yet exist
-* View their race history and personal bests</li>
-* Search for other athletes and events using the power search tool
-* View individual or club-wide statistics including visual charts
-* View overall club records
-* View recent results
+<ul>
+<li>Enter race results and create new events if they do not yet exist</li>
+<li>View their race history and personal bests</li>
+<li>Search for other athletes and events using the power search tool</li>
+<li>View individual or club-wide statistics including visual charts</li>
+<li>View overall club records</li>
+<li>View recent results</li>
+</ul>
 
 On top of this, there are a selection of administrator tools making your job easier to manage and control the data:
-* Easily manage the event categories, age categories, results and events
-* Manually enter a list of results for a race (and easily add new athletes to the system if they are not registered)
-* Embed an interactive table of results into a new post using a simple shortcode, e.g. [wpa-event id=505]
-* Generate a customised printable rankings list for your dressing room (e.g top 5k female runners in 2012)
-* View a log of plugin activity
-* All the pages (manage results, recent result and records) are automatically generated and ready to use out of the box
-* A recent results widget to display the last 5 (customisable) results based on event date
-* Event merger (say a user has created an event that already exists while logging a new result, you can easily merge the two events using this tool)
+<ul>
+<li>Easily manage the event categories, age categories, results and events</li>
+<li>Manually enter a list of results for a race (and easily add new athletes to the system if they are not registered)</li>
+<li>Embed an interactive table of results into a new post using a simple shortcode, e.g. [wpa-event id=505]</li>
+<li>Generate a customised printable rankings list for your dressing room (e.g top 5k female runners in 2012)</li>
+<li>View a log of plugin activity</li>
+<li>All the pages (manage results, recent result and records) are automatically generated and ready to use out of the box</li>
+<li>A recent results widget to display the last 5 (customisable) results based on event date</li>
+<li>Event merger (say a user has created an event that already exists while logging a new result, you can easily merge the two events using this tool)</li>
+</ul>
 
 Note: Athlete registration and participation is not entirely necessary for this plugin to work effectively (i.e bypassing the "Manage Results" screen).
 It is perfectly ok for an administrator to handle manual entry of all athletic results without users having to register or enter results, the administrator 
@@ -114,22 +118,25 @@ page has been delete. You need to ensure the new generated pages are using a ful
 1. The "Manage Results" screen from which users can view their race history, personal records, enter new results and view statistics.
 2. The interactive personal bests tab, users can click on the ranking to view athletes around them.
 3. The statistics feature, users can switch between individual or club-wide statistics. 
-4. Users can view individual event statistics and visually see how they have been performing.
+4. Athletes can add new results in a few clicks.
 5. Click on an event and see who else ran and how they did.
 6. The interactive club records page complete with powerful filters.
-7. On the records page, click on the chart button for a particular event (e.g 5k) and see the full rankings.
+7. Users can view individual event statistics and visually see how they have been performing.
 8. The automatically generated recent results page shows a facebook-like news feed of recent athlete activity.
 9. The recent results widget is a useful sidebar widget showing recent athlete activity (number of results displayed is customisable).
-10. Athletes can add new results in a few clicks.
-11. There are many admin tools available to customise the age categories, event categories, manage results and events and print rankings.
-12. The power search tool available on all pages, searched both athletes and event results and when clicked opens in a friendly pop-up dialog. 
 
 == Upgrade Notice ==
 
 = 1.0.0 =
 First version of WP Athletics.
 
+= 1.0.1 =
+Minor bug fixes
+
 == Changelog ==
 
 = 1.0.0 =
-* First version of WP Athletics.
+First version of WP Athletics.
+
+= 1.0.1 =
+Minor bug fixes, release documentation
