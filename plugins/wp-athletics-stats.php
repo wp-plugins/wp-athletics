@@ -313,11 +313,13 @@ if( !class_exists('WP_Athletics_Stats') ) {
 					  	</div>
 					  </div>
 
-					  <!-- RUNNER STATS -->
+					  <!-- RUNNER STATS (still in dev) -->
+					  <!-- 
 					  <h3 wpa-stat-require-event-selection="true" wpa-stat-type="runner"><?php echo $this->get_property('stats_heading_runner'); ?></h3>
 					  <div id="wpa-stats-runner<?php echo $suffix?>">
 
 					  </div>
+					  -->
 
 					</div>
 				</div>

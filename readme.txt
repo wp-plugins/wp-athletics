@@ -3,8 +3,8 @@ Contributors: conormccauley
 Donate link: http://www.conormccauley.com/wordpress-athletics
 Tags: athletics, results, running club, athlete, statistics, races, racing, events, athletic, jogging, club, charts, records, personal bests, pb, pr, personal records
 Requires at least: 3.0.1
-Tested up to: 3.7.1
-Stable tag: 1.0.0
+Tested up to: 3.5
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,17 +12,15 @@ Allow registered users to log, compare and analyse their athletic results. A clu
 
 == Description ==
 
-Wordpress Athletics is a powerful collection of features for your athletics club aiming to allow your athletes to log and analyze their results, track their PB's and view statistics and charts. The plugin, designed with simplicity in mind is ready to use out of the box. There are also a variety of UI themes included for your convenience.
+Wordpress Athletics is a powerful collection of features for your athletics club website aiming to allow your athletes to log and analyze their results, track their PB's and view statistics and charts. The plugin, designed with simplicity in mind is ready to use out of the box. There are also a variety of UI themes included for your convenience.
 
 Some of the major features for your registered users are:
-<ul>
-	<li>Enter race results and create new events if they do not yet exist</li>
-	<li>View their race history and personal bests</li>
-	<li>Search for other athletes and events using the power search tool</li>
-	<li>View individual or club-wide statistics including visual charts</li>
-	<li>View overall club records</li>
-	<li>View recent results</li>
-</ul>
+* Enter race results and create new events if they do not yet exist
+* View their race history and personal bests</li>
+* Search for other athletes and events using the power search tool
+* View individual or club-wide statistics including visual charts
+* View overall club records
+* View recent results
 
 On top of this, there are a selection of administrator tools making your job easier to manage and control the data:
 * Easily manage the event categories, age categories, results and events
