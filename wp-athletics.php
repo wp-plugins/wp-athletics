@@ -2,7 +2,7 @@
 /*
 Plugin Name: WP Athletics
 Plugin URI: http://www.conormccauley.me/wp-athletics
-Description: This plugin allow your users to log and analyse their athletic results, includes features for viewing overall club records and statistics.
+Description: Allow registered users to log, compare and analyse their athletic results. A club records page will then summarise athletes data for all to see.
 Author: Conor McCauley
 Version: 1.0.0
 Author URI: http://www.conormccauley.me
