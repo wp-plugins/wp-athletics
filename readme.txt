@@ -114,22 +114,25 @@ page has been delete. You need to ensure the new generated pages are using a ful
 1. The "Manage Results" screen from which users can view their race history, personal records, enter new results and view statistics.
 2. The interactive personal bests tab, users can click on the ranking to view athletes around them.
 3. The statistics feature, users can switch between individual or club-wide statistics. 
-4. Users can view individual event statistics and visually see how they have been performing.
+4. Athletes can add new results in a few clicks.
 5. Click on an event and see who else ran and how they did.
 6. The interactive club records page complete with powerful filters.
-7. On the records page, click on the chart button for a particular event (e.g 5k) and see the full rankings.
+7. Users can view individual event statistics and visually see how they have been performing.
 8. The automatically generated recent results page shows a facebook-like news feed of recent athlete activity.
 9. The recent results widget is a useful sidebar widget showing recent athlete activity (number of results displayed is customisable).
-10. Athletes can add new results in a few clicks.
-11. There are many admin tools available to customise the age categories, event categories, manage results and events and print rankings.
-12. The power search tool available on all pages, searched both athletes and event results and when clicked opens in a friendly pop-up dialog. 
 
 == Upgrade Notice ==
 
 = 1.0.0 =
 First version of WP Athletics.
 
+= 1.0.1 =
+Minor bug fixes
+
 == Changelog ==
 
 = 1.0.0 =
-* First version of WP Athletics.
+First version of WP Athletics.
+
+= 1.0.1 =
+Minor bug fixes, release documentation
