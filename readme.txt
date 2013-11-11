@@ -14,6 +14,8 @@ Allow registered users to log, compare and analyse their athletic results. A clu
 
 Wordpress Athletics is a powerful collection of features for your athletics club website aiming to allow your athletes to log and analyze their results, track their PB's and view statistics and charts. The plugin, designed with simplicity in mind is ready to use out of the box. There are also a variety of UI themes included for your convenience.
 
+See a working demo of the plugin on my own running club's website: http://www.donoreharriers.com
+
 Some of the major features for your registered users are:
 <ul>
 <li>Enter race results and create new events if they do not yet exist</li>
