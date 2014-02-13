@@ -12,6 +12,7 @@ WPA.Admin = {
 		
 		var data = {
 			language: jQuery('#setting-language').val(),
+			disableSqlView: jQuery('#setting-disable-sql-view').attr('checked') ? 'yes' : 'no',
 			theme: jQuery('#setting-theme').val(),
 			recordsMode: jQuery('#setting-records-mode').val(),
 			clubName: jQuery('#club-name').val(),

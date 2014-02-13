@@ -2290,6 +2290,11 @@ var WPA = {
 		return WPA.renderDeleteEditColumn(data, full['user_id'], WPA.getProperty('edit_result_text'), WPA.getProperty('delete_result_text'), 'WPA.editResult', 'WPA.MyResults.deleteResult');
 	},
 	
+	renderAdminDeleteEditAthleteColumn: function (data, type, full) {
+		return '<div class="datatable-icon delete" onclick="WPA.Admin.deleteAthlete(' + data + ')" title="' + WPA.getProperty('delete_athlete_tooltip') + '"></div>' +
+		'&nbsp;<div class="datatable-icon edit" onclick="WPA.Admin.editAthlete(' + data + ')" title="' + WPA.getProperty('edit_athlete_tooltip') + '"></div>';
+	},
+	
 	renderAdminDeleteEditResultColumn: function (data, type, full) {
 		return '<div class="datatable-checkbox"><input record-id="' + data + '" type="checkbox"/></div>' +
 		'<div class="datatable-icon delete" onclick="WPA.Admin.deleteResult(' + data + ',' + full['result_count'] + ')" title="' + WPA.getProperty('delete_result_text') + '"></div>' +
@@ -2405,5 +2410,12 @@ var WPA = {
 			return data
 		}
 		return '-';
+	},
+	
+	renderAthletePhoto: function(data, full, type) {
+		if(!data || data == 'null') {
+			data = WPA.globals.pluginUrl + '/resources/images/profile-blank.jpg';
+		}
+		return '<img class="datatable-image" src="' + data + '" width="50" height="50"/>';
 	}
 };

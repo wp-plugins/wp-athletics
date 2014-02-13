@@ -214,20 +214,25 @@ if( !class_exists('WP_Athletics_Stats') ) {
 						  		<span id="wpa-stats-total-time<?php echo $suffix?>"></span>
 						  	</div>
 
-						  	<div class="wpa-stats-item">
-						  		<label><?php echo $this->get_property('stats_label_total_wins'); ?>:</label>
-						  		<span id="wpa-stats-total-wins<?php echo $suffix?>"></span>
-						  	</div>
-
-						  	<div class="wpa-stats-item">
-						  		<label><?php echo $this->get_property('stats_label_total_runner_up'); ?>:</label>
-						  		<span id="wpa-stats-total-runner-up<?php echo $suffix?>"></span>
-						  	</div>
-
-						  	<div class="wpa-stats-item">
-						  		<label><?php echo $this->get_property('stats_label_total_top_10'); ?>:</label>
-						  		<span id="wpa-stats-total-top-10<?php echo $suffix?>"></span>
-						  	</div>
+						  	<?php 
+						  	if( defined('WPA_DB_DISABLE_SQL_VIEW') && WPA_DB_DISABLE_SQL_VIEW == false )  {?>
+							  	<div class="wpa-stats-item">
+							  		<label><?php echo $this->get_property('stats_label_total_wins'); ?>:</label>
+							  		<span id="wpa-stats-total-wins<?php echo $suffix?>"></span>
+							  	</div>
+							
+							  	<div class="wpa-stats-item">
+							  		<label><?php echo $this->get_property('stats_label_total_runner_up'); ?>:</label>
+							  		<span id="wpa-stats-total-runner-up<?php echo $suffix?>"></span>
+							  	</div>
+	
+							  	<div class="wpa-stats-item">
+							  		<label><?php echo $this->get_property('stats_label_total_top_10'); ?>:</label>
+							  		<span id="wpa-stats-total-top-10<?php echo $suffix?>"></span>
+							  	</div>
+						  	<?php 
+							}
+							?>
 
 						  	<div class="wpa-stats-item wpa-stats-club-only">
 						  		<label><?php echo $this->get_property('stats_label_total_athletes'); ?>:</label>

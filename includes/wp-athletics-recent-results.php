@@ -77,7 +77,7 @@ if(!class_exists('WP_Athletics_Recent_Results')) {
 						jQuery.datepicker.setDefaults( jQuery.datepicker.regional[ '<?php echo strtolower(get_option( 'wp-athletics_language', 'en') ); ?>' ] );
 
 						var date = new Date();
-						WPA.RecentResults.filterMonth = date.getMonth()+1;
+						WPA.RecentResults.filterMonth = 'all';
 						WPA.RecentResults.filterYear = date.getFullYear();
 
 						// setup combobox filters

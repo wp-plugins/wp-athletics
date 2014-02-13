@@ -12,6 +12,11 @@ WPA.Ajax = {
 			// create custom widgets
 			initWpaCustom();
 			
+			// set jQuery ajax defaults
+			jQuery.ajaxSetup({
+				//contentType: "application/x-www-form-urlencoded;charset=ISO 8859-16"
+			});
+			
 			WPA.globals.pluginUrl = pluginUrl;
 			WPA.userId = userId;
 			this.url = url;

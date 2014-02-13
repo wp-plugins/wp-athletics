@@ -1,14 +1,14 @@
 === Plugin Name ===
 Contributors: conormccauley
-Donate link: http://www.conormccauley.com/wordpress-athletics
-Tags: athletics, results, running club, athlete, statistics, races, racing, events, athletic, jogging, club, charts, records, personal bests, pb, pr, personal records
+Donate link: http://www.conormccauley.me/wordpress-athletics
+Tags: athletics, results, sports, track, running club, athlete, statistics, races, racing, events, athletic, jogging, club, charts, records, personal bests, pb, pr, personal records
 Requires at least: 3.5
-Tested up to: 3.7.1
-Stable tag: 1.0.2
+Tested up to: 3.8.1
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Allow registered users to log, compare and analyse their athletic results. A club records page will then summarise athletes data for all to see.
+Allow your users to log, compare and analyse their athletic results. Generates a club records page to summarise athlete data for all to see.
 
 == Description ==
 
@@ -18,7 +18,7 @@ See a working demo of the plugin on my own running club's website: http://www.do
 
 Some of the major features for your registered users are:
 <ul>
-<li>Enter race results and create new events if they do not yet exist</li>
+<li>Enter race results and create new events</li>
 <li>View their race history and personal bests</li>
 <li>Search for other athletes and events using the power search tool</li>
 <li>View individual or club-wide statistics including visual charts</li>
@@ -38,7 +38,7 @@ On top of this, there are a selection of administrator tools making your job eas
 <li>Event merger (say a user has created an event that already exists while logging a new result, you can easily merge the two events using this tool)</li>
 </ul>
 
-Note: Athlete registration and participation is not entirely necessary for this plugin to work effectively (i.e bypassing the "Manage Results" screen).
+Note: Athlete registration and participation is not necessary for this plugin to work effectively (i.e bypassing the "Manage Results" screen).
 It is perfectly ok for an administrator to handle manual entry of all athletic results without users having to register or enter results, the administrator 
 can also create new athlete profiles when necessary. 
 
@@ -138,6 +138,9 @@ Minor bug fixes
 = 1.0.2 =
 If you're having an issue with profile photos not displaying, why not upgrade! it's fixed :)
 
+= 1.0.3 =
+Minor enhancements, Italian language now supported and a fix for users having trouble creating SQL views.
+
 == Changelog ==
 
 = 1.0.0 =
@@ -148,3 +151,6 @@ Minor bug fixes, release documentation
 
 = 1.0.2 =
 Bug fix with profile photos not displaying correctly
+
+= 1.0.3 =
+Minor enhancements, Italian now supported and a fix for users having trouble creating SQL views.

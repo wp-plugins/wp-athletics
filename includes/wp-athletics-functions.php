@@ -136,8 +136,6 @@ if( !class_exists( 'WPA_Base' ) ) {
 
 			if( !isset( $global_data_loaded ) && $global_data_loaded == false  ) {
 
-				wpa_log('loading global data');
-
 				$age_cats = $this->wpa_db->get_age_categories();
 				$sub_types = $this->wpa_db->get_event_sub_types();
 				$event_cats = $this->wpa_db->get_event_categories();

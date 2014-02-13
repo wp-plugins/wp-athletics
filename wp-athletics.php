@@ -2,9 +2,9 @@
 /*
 Plugin Name: WP Athletics
 Plugin URI: http://www.conormccauley.me/wordpress-athletics/
-Description: Allow your athletes to log, compare and analyse their athletic results. Generates a club records page to summarise athlete data for all to see.
+Description: Allow your users to log, compare and analyse their athletic results. Generates a club records page to summarise athlete data for all to see.
 Author: Conor McCauley
-Version: 1.0.2
+Version: 1.0.3
 Author URI: http://www.conormccauley.me
 */
 
@@ -59,8 +59,7 @@ if(!class_exists('WP_Athletics')) {
 			global $wpa_settings;
 
 			// retrieve language properties
-			$lang = strtolower( get_option( 'wp-athletics_language', 'en') );
-			$wpa_lang = require 'includes/lang/wp-athletics-' . $lang . '.php';
+			$this->setup_language();
 
 			// load settings file
 			$wpa_settings = require 'includes/wp-athletics-settings.php';
@@ -88,6 +87,57 @@ if(!class_exists('WP_Athletics')) {
 
 			add_action( 'init', array( $this , 'register_assets') );
 			add_action( 'widgets_init', array( $this, 'register_widgets' ) );
+		}
+		
+		/**
+		 * Determines the language and loads the properties files
+		 */
+		function setup_language() {
+			global $wpa_lang;
+			
+			// get language from options
+			$lang = strtolower( get_option( 'wp-athletics_language', 'en') );
+			
+			// load standard lang
+			$standard_lang = require 'includes/lang/wp-athletics-en.php';
+			$standard_common_lang = $standard_lang['common'];
+			$standard_admin_lang = $standard_lang['admin'];
+			
+			// if using a custom language, merge with the standard lang (ensures a fallback if some properties are not translated)
+			if( $lang != 'en' ) {
+				$custom_lang = require 'includes/lang/wp-athletics-' . $lang . '.php';
+				
+				// now loop and replace into standard lang any translated properties we find
+				$custom_common_lang = $custom_lang['common'];
+				$custom_admin_lang = $custom_lang['admin'];
+				
+				// get the keys for common
+				$common_keys = array_keys( $standard_common_lang );
+				
+				// loops the common keys and if the property is found in the custom file, replace it
+				foreach ( $common_keys as $common_key ) {
+					
+					if( array_key_exists( $common_key, $custom_common_lang ) ) {
+						$standard_common_lang[ $common_key ] = $custom_common_lang[ $common_key ];
+					}
+					else {
+						wpa_log( $common_key . ' does not exist in the ' . $lang . ' language');
+					}
+				}
+				
+				// if admin mode, get the keys for admin 
+				if( is_admin() ) {
+					$admin_keys = array_keys( $standard_admin_lang );
+				}
+			}
+			
+			// if in admin mode, return the additional admin language properties
+			if( !is_admin() ) {
+				$wpa_lang = $standard_common_lang;
+			}
+			else {
+				$wpa_lang = array_merge( $standard_common_lang, $standard_admin_lang );
+			}
 		}
 
 		/**
@@ -228,10 +278,13 @@ if(!class_exists('WP_Athletics')) {
 				define('WPA_DATE_FORMAT', '%d %b %Y');
 
 			if (!defined('WPA_VERSION_NUM') )
-				define('WPA_VERSION_NUM', '1.0.2');
+				define('WPA_VERSION_NUM', '1.0.3');
 
 			if (!defined('WPA_DB_VERSION') )
 				define('WPA_DB_VERSION', '1.0');
+			
+			if (!defined('WPA_DB_DISABLE_SQL_VIEW') )
+				define('WPA_DB_DISABLE_SQL_VIEW', get_option( 'wp-athletics-disable-sql-view', 'no' ) == 'yes');
 
 			// store plugin version number
 			add_option('wp-athletics_version', WPA_VERSION_NUM );

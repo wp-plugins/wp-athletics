@@ -240,13 +240,13 @@ if(!class_exists('WP_Athletics_DB')) {
 			// age cat
 			if( isset( $age_category ) && $age_category != '' && $age_category != 'all' ) {
 				$where = $where . ($where == '' ? '' : ' AND ');
-				$where = $where . "age_category = '" . $age_category . "'";
+				$where = $where . "r.age_category = '" . $age_category . "'";
 			}
 
 			// gender
 			if( isset( $gender ) && $gender != '' && $gender != 'B' ) {
 				$where = $where . ($where == '' ? '' : ' AND ');
-				$where = $where . "gender = '" . $gender . "'";
+				$where = $where . "r.gender = '" . $gender . "'";
 			}
 
 			// event sub type
@@ -264,29 +264,44 @@ if(!class_exists('WP_Athletics_DB')) {
 			// position
 			if( isset( $show_wins ) && $show_wins == 'true' ) {
 				$where = $where . ($where == '' ? '' : ' AND ');
-				$where = $where . 'position = 1';
+				$where = $where . 'r.position = 1';
 			}
 			else if( isset( $show_runner_up ) && $show_runner_up == 'true' ) {
 				$where = $where . ($where == '' ? '' : ' AND ');
-				$where = $where . 'position = 2';
+				$where = $where . 'r.position = 2';
 			}
 			else if( isset( $show_top_10 ) && $show_top_10 == 'true' ) {
 				$where = $where . ($where == '' ? '' : ' AND ');
-				$where = $where . 'position <= 10 AND position > 0';
+				$where = $where . 'r.position <= 10 AND r.position > 0';
 			}
 
 			if( $where != '' ) {
 				$where = 'WHERE ' . $where;
 			}
 
-			$results = $wpdb->get_results(
-				"
-				SELECT r.id, user_id, u.display_name as athlete_name, time, age_category, gender, garmin_id, position, event_id,
-				event_name, event_location, event_sub_type_id, date_format(date,'" . WPA_DATE_FORMAT . "') as event_date, category, distance_meters, time_format, event_cat_id AS event_cat
-				FROM $this->RESULT_VIEW r LEFT JOIN wp_users u ON user_id = u.id
-				$where ORDER BY date ASC
-				"
-			);
+			if( !WPA_DB_DISABLE_SQL_VIEW ) {
+				$results = $wpdb->get_results(
+					"
+					SELECT r.id, user_id, u.display_name as athlete_name, time, age_category, gender, garmin_id, position, event_id,
+					event_name, event_location, event_sub_type_id, date_format(date,'" . WPA_DATE_FORMAT . "') as event_date, category, distance_meters, time_format, event_cat_id AS event_cat
+					FROM $this->RESULT_VIEW r LEFT JOIN wp_users u ON user_id = u.id
+					$where ORDER BY date ASC
+					"
+				);
+			}
+			else {
+				$results = $wpdb->get_results(
+					"
+					SELECT r.id, user_id, u.display_name AS athlete_name, r.time, r.age_category, r.gender, r.garmin_id, r.position, r.event_id,
+					e.name as event_name, e.location AS event_location, e.sub_type_id AS event_sub_type_id, date_format(e.date,'" . WPA_DATE_FORMAT . "') AS event_date, ec.name AS category, ec.distance_meters, ec.time_format, ec.id AS event_cat
+					FROM $this->RESULT_TABLE r
+					LEFT JOIN $this->EVENT_TABLE e ON r.event_id = e.id
+					LEFT JOIN $this->EVENT_CAT_TABLE ec ON e.event_cat_id = ec.id
+					LEFT JOIN wp_users u ON r.user_id = u.id
+					$where ORDER BY date ASC
+					"
+				);
+			}
 
 			return $results;
 		}
@@ -306,6 +321,65 @@ if(!class_exists('WP_Athletics_DB')) {
 			);
 
 			return $year;
+		}
+		
+		/**
+		 * Returns a list of events for the provided criteria
+		 */
+		public function search_athletes( $request ) {
+			global $wpdb;
+
+			$where = '';
+			$sEcho =  (int) $request['sEcho'];
+			$limit =  (int) $request['iDisplayLength'];
+			$offset = (int) $request['iDisplayStart'];
+			$num_columns = (int) $request['iColumns'];
+		
+			$sortCol = $this->convert_event_column( $request['mDataProp_' . $request['iSortCol_0']] );
+			$sortDir = $request['sSortDir_0'];
+		
+			$search_name;
+		
+			// loops columns and set and process any filters that have been set
+			for($i = 0; $i < $num_columns; $i++) {
+				$param = $request['sSearch_' . $i];
+				if($param && $param != '') {
+					$dataProp = $request['mDataProp_' . $i];
+					if( $dataProp == 'athlete_name' ) {
+						$search_name = $param;
+					}
+				}
+			}
+		
+			// filters		
+			if(isset( $search_name ) && $search_name != '') {
+				$where = $where . ( $where == '' ? 'WHERE ' : ' AND ' );
+				$where .= "lower(u.display_name) like '%" . strtolower( $search_name ) . "%'";
+			}
+		
+			// get the result count for the datatable
+			$result_display_count = $wpdb->get_var(
+				"SELECT count(u.id) FROM wp_users u $where"
+			);
+		
+			// ge the actual results
+			$results = $wpdb->get_results(
+					"
+					SELECT u.id, u.display_name as athlete_name, u.user_login, u.user_email, date_format(u.user_registered,'" . WPA_DATE_FORMAT . "') as user_registered,
+					(SELECT meta_value FROM wp_usermeta um WHERE um.user_id = u.id AND um.meta_key = 'wp-athletics_profile_photo') as athlete_photo,
+					(SELECT meta_value FROM wp_usermeta um WHERE um.user_id = u.id AND um.meta_key = 'wp-athletics_dob') as athlete_dob,
+					(SELECT meta_value FROM wp_usermeta um WHERE um.user_id = u.id AND um.meta_key = 'wp-athletics_gender') as athlete_gender
+					FROM wp_users u $where ORDER BY $sortCol $sortDir LIMIT $offset,$limit
+					"
+			);
+		
+			// return the results as an object
+			return array(
+				'sEcho' => $sEcho,
+				'iTotalRecords' => $this->get_event_count(),
+				'iTotalDisplayRecords' => $result_display_count,
+				'aaData' => $results
+			);
 		}
 
 		/**
@@ -381,7 +455,7 @@ if(!class_exists('WP_Athletics_DB')) {
 				"
 			);
 
-			// ge the actual results
+			// get the actual results
 			$results = $wpdb->get_results(
 				"
 				SELECT e.id as event_id, e.name AS event_name, e.location AS event_location, e.sub_type_id AS event_sub_type_id,
@@ -465,7 +539,12 @@ if(!class_exists('WP_Athletics_DB')) {
 			}
 
 			if(isset( $search_sub_type ) && $search_sub_type != 'all') {
-				$extra_where .= " AND event_sub_type_id = '" . $search_sub_type . "'";
+				if( WPA_DB_DISABLE_SQL_VIEW ) {
+					$extra_where .= " AND e.sub_type_id = '" . $search_sub_type . "'";
+				}
+				else {
+					$extra_where .= " AND event_sub_type_id = '" . $search_sub_type . "'";
+				}
 			}
 
 			if(isset( $search_age_cat ) && $search_age_cat != 'all') {
@@ -480,37 +559,66 @@ if(!class_exists('WP_Athletics_DB')) {
 			}
 
 			if(isset( $search_event ) && $search_event != '') {
-				$extra_where .= " AND lower(event_name) like '%" . strtolower( $search_event ) . "%'";
+				$name = WPA_DB_DISABLE_SQL_VIEW ? 'e.name' : 'event_name';
+				$extra_where .= " AND lower(" . $name . ") like '%" . strtolower( $search_event ) . "%'";
 			}
 
 			if(isset( $search_athlete ) && $search_athlete != '') {
 				$extra_where .= " AND lower(display_name) like '%" . strtolower( $search_athlete ) . "%'";
 			}
-
-			$result_display_count = $wpdb->get_var(
-				"
-				SELECT COUNT(id) FROM $this->RESULT_VIEW
-				$where $extra_where
-				"
-			);
-
-			$results = $wpdb->get_results(
-				"
-				SELECT r.id, user_id, u.display_name as athlete_name, time, age_category, gender, date_created as result_date, garmin_id, position, event_id,
-				event_name, event_location, event_sub_type_id, date_format(date,'" . WPA_DATE_FORMAT . "') as event_date, category, distance_meters, time_format, event_cat_id AS event_cat
-				FROM $this->RESULT_VIEW r LEFT JOIN wp_users u ON user_id = u.id
-				$where $extra_where ORDER BY $sortCol $sortDir LIMIT $offset, $limit
-				"
-			);
-
-			// loop each result and find the overall club rank for the age cat and event
-			/*
-			if( false == $skip_rank ) {
-				foreach ( $results as $result ) {
-					$result->club_rank = $this->get_result_club_ranking( $result->id, $result->age_category, $result->gender, $result->event_cat);
-				}
+			
+			// using SQL results view
+			if( !WPA_DB_DISABLE_SQL_VIEW ) {
+				$result_display_count = $wpdb->get_var(
+					"
+					SELECT COUNT(id) FROM $this->RESULT_VIEW
+					$where $extra_where
+					"
+				);
+	
+				$results = $wpdb->get_results(
+					"
+					SELECT r.id, user_id, u.display_name as athlete_name, time, age_category, gender, date_created as result_date, garmin_id, position, event_id,
+					event_name, event_location, event_sub_type_id, date_format(date,'" . WPA_DATE_FORMAT . "') as event_date, category, distance_meters, time_format, event_cat_id AS event_cat
+					FROM $this->RESULT_VIEW r LEFT JOIN wp_users u ON user_id = u.id
+					$where $extra_where ORDER BY $sortCol $sortDir LIMIT $offset, $limit
+					"
+				);
+				
 			}
-			*/
+			else {
+				// NOT using SQL results view
+				$result_display_count = $wpdb->get_var(
+					"
+					SELECT count(r.id) FROM $this->RESULT_TABLE r
+					LEFT JOIN $this->EVENT_TABLE e ON r.event_id = e.id
+					LEFT JOIN $this->EVENT_CAT_TABLE ec ON e.event_cat_id = ec.id
+					LEFT JOIN wp_users u ON r.user_id = u.id
+					$where $extra_where
+					"
+				);
+				
+				$results = $wpdb->get_results(
+					"
+					SELECT r.id, r.user_id, u.display_name as athlete_name, r.time, r.age_category, r.gender, r.date_created as result_date, r.garmin_id, r.position, e.id as event_id, e.name as event_name, e.location as event_location, e.sub_type_id AS event_sub_type_id,
+					date_format(e.date,'" . WPA_DATE_FORMAT . "') as event_date, ec.name as category, ec.distance_meters, ec.time_format, e.event_cat_id as event_cat
+					FROM $this->RESULT_TABLE r
+					LEFT JOIN $this->EVENT_TABLE e ON r.event_id = e.id
+					LEFT JOIN $this->EVENT_CAT_TABLE ec ON e.event_cat_id = ec.id
+					LEFT JOIN wp_users u ON r.user_id = u.id
+					$where $extra_where ORDER BY $sortCol $sortDir LIMIT $offset,$limit
+					"
+				);
+			}
+			
+			// LOGGING 
+			/*
+			$tmp = "SELECT r.id, user_id, u.display_name as athlete_name, time, age_category, gender, date_created as result_date, garmin_id, position, event_id,
+			event_name, event_location, event_sub_type_id, date_format(date,'" . WPA_DATE_FORMAT . "') as event_date, category, distance_meters, time_format, event_cat_id AS event_cat 
+			FROM " . $this->RESULT_VIEW . " r LEFT JOIN wp_users u ON user_id = u.id " . $where . " " . $extra_where . " ORDER BY " . $sortCol . " " .  $sortDir . " LIMIT " . $offset . ", " . $limit;
+
+			$this->write_to_log( 'SQL', $tmp, 0, 0 );
+			 */
 
 			return array(
 				'sEcho' => $sEcho,
@@ -1340,7 +1448,7 @@ if(!class_exists('WP_Athletics_DB')) {
 				}
 
 				if( isset( $date ) && $date != 'all' && $date != '' ) {
-					$date_where = $this->convert_date( $date, 'r.date' );
+					$date_where = $this->convert_date( $date, (WPA_DB_DISABLE_SQL_VIEW ? 'e.date' : 'r.date') );
 					if( $date_where != '' ) {
 						$where = $where . ($where == '' ? '' : ' AND ');
 						$where = $where . $date_where;
@@ -1354,12 +1462,22 @@ if(!class_exists('WP_Athletics_DB')) {
 
 				if( isset( $event_sub_type_id ) && $event_sub_type_id != 'all' && $event_sub_type_id != '' ) {
 					$where = $where . ($where == '' ? '' : ' AND ');
-					$where = $where . "r.event_sub_type_id = '" . $event_sub_type_id . "'";
+					if( WPA_DB_DISABLE_SQL_VIEW ) {
+						$where = $where . "e.sub_type_id = '" . $event_sub_type_id . "'";
+					}
+					else {
+						$where = $where . "r.event_sub_type_id = '" . $event_sub_type_id . "'";
+					}
 				}
 
 				if( ( $stat == 'events' || $stat == 'runner' ) && ( isset( $event_cat_id ) && $event_cat_id != 'all' && $event_cat_id != ''  ) ) {
 					$where = $where . ($where == '' ? '' : ' AND ');
-					$where = $where . 'r.event_cat_id = ' . $event_cat_id;
+					if( WPA_DB_DISABLE_SQL_VIEW ) {
+						$where = $where . 'e.event_cat_id = ' . $event_cat_id;
+					}
+					else {
+						$where = $where . 'r.event_cat_id = ' . $event_cat_id;
+					}
 				}
 
 				// perform query
@@ -1378,30 +1496,59 @@ if(!class_exists('WP_Athletics_DB')) {
 
 			if( $type == 'summary' ) {
 
-				// OVERALL STATS
-				$sql = 'SELECT SUM(distance_meters) AS total_distance, SUM(time) AS total_time, COUNT(id) AS count,
-				(select COUNT(id) FROM ' . $this->RESULT_VIEW  . ' r WHERE r.position=1 AND ' . $where . ') AS wins,
-				(select COUNT(id) FROM ' . $this->RESULT_VIEW . ' r WHERE (r.position=2 OR r.position=3) AND ' . $where . ') AS runner_up,
-				(select COUNT(id) FROM ' . $this->RESULT_VIEW . ' r WHERE (r.position > 0 AND r.position < 11) AND ' . $where . ') AS top_tens,
-				(select COUNT(id) FROM wp_users) as athletes
-				FROM ' . $this->RESULT_VIEW . ' r WHERE ' . $where;
-
-				$overall = $wpdb->get_results( $sql );
-
-				// EVENT CATEGORY DISTRIBUTION STATS
-				$sql = 'SELECT ec.id, ec.name, (SELECT COUNT(r.id) FROM ' . $this->RESULT_VIEW . ' r JOIN ' .
-				$this->EVENT_TABLE . ' e ON e.id = r.event_id WHERE ' . $where . ' AND e.event_cat_id = ec.id) AS count
-				FROM ' . $this->EVENT_CAT_TABLE . ' ec';
-
-				wpa_log($sql);
-
-				$events = $wpdb->get_results( $sql );
-
-				// EVENT TYPE DISTRIBUTION STATS
-				$sql = 'SELECT event_sub_type_id AS type, COUNT(id) AS count FROM ' . $this->RESULT_VIEW .
-				' r WHERE ' . $where . ' GROUP BY event_sub_type_id';
-
-				$types = $wpdb->get_results( $sql );
+				if( WPA_DB_DISABLE_SQL_VIEW ) {
+					// OVERALL STATS
+					$sql = 'SELECT SUM(ec.distance_meters) AS total_distance, SUM(r.time) AS total_time, COUNT(r.id) AS count,
+					(select COUNT(id) FROM wp_users) as athletes
+					FROM ' . $this->RESULT_TABLE . ' r 
+					LEFT JOIN ' . $this->EVENT_TABLE . ' e ON r.event_id = e.id 
+					LEFT JOIN ' . $this->EVENT_CAT_TABLE . ' ec ON e.event_cat_id = ec.id WHERE ' . $where;
+	
+					$overall = $wpdb->get_results( $sql );
+	
+					// EVENT CATEGORY DISTRIBUTION STATS
+					$sql = 'SELECT ec.id, ec.name, (SELECT COUNT(r.id) FROM ' . $this->RESULT_TABLE . ' r
+					LEFT JOIN ' .$this->EVENT_TABLE . ' e ON r.event_id = e.id 
+					LEFT JOIN ' . $this->EVENT_CAT_TABLE . ' ec2 ON e.event_cat_id = ec2.id 
+					WHERE ' . $where . ' AND e.event_cat_id = ec.id) AS count
+					FROM ' . $this->EVENT_CAT_TABLE . ' ec';
+	
+					//wpa_log($sql);
+	
+					$events = $wpdb->get_results( $sql );
+	
+					// EVENT TYPE DISTRIBUTION STATS
+					$sql = 'SELECT e.sub_type_id AS type, COUNT(r.id) AS count FROM ' . $this->RESULT_TABLE . ' r
+					LEFT JOIN ' . $this->EVENT_TABLE . ' e ON r.event_id = e.id
+					LEFT JOIN ' . $this->EVENT_CAT_TABLE . ' ec ON e.event_cat_id = ec.id 
+					WHERE ' . $where . ' GROUP BY e.sub_type_id';
+	
+					$types = $wpdb->get_results( $sql );
+				}
+				else {
+					// OVERALL STATS
+					$sql = 'SELECT SUM(distance_meters) AS total_distance, SUM(time) AS total_time, COUNT(id) AS count,
+					(select COUNT(id) FROM ' . $this->RESULT_VIEW  . ' r WHERE r.position=1 AND ' . $where . ') AS wins,
+					(select COUNT(id) FROM ' . $this->RESULT_VIEW . ' r WHERE (r.position=2 OR r.position=3) AND ' . $where . ') AS runner_up,
+					(select COUNT(id) FROM ' . $this->RESULT_VIEW . ' r WHERE (r.position > 0 AND r.position < 11) AND ' . $where . ') AS top_tens,
+					(select COUNT(id) FROM wp_users) as athletes
+					FROM ' . $this->RESULT_VIEW . ' r WHERE ' . $where;
+					
+					$overall = $wpdb->get_results( $sql );
+					
+					// EVENT CATEGORY DISTRIBUTION STATS
+					$sql = 'SELECT ec.id, ec.name, (SELECT COUNT(r.id) FROM ' . $this->RESULT_VIEW . ' r JOIN ' .
+							$this->EVENT_TABLE . ' e ON e.id = r.event_id WHERE ' . $where . ' AND e.event_cat_id = ec.id) AS count
+							FROM ' . $this->EVENT_CAT_TABLE . ' ec';
+					
+					$events = $wpdb->get_results( $sql );
+					
+					// EVENT TYPE DISTRIBUTION STATS
+					$sql = 'SELECT event_sub_type_id AS type, COUNT(id) AS count FROM ' . $this->RESULT_VIEW .
+					' r WHERE ' . $where . ' GROUP BY event_sub_type_id';
+					
+					$types = $wpdb->get_results( $sql );
+				}
 
 				return array(
 					'summary' => $overall,
@@ -1410,9 +1557,17 @@ if(!class_exists('WP_Athletics_DB')) {
 				);
 			}
 			else if( $type == 'events' ) {
-				$sql = "SELECT event_id, distance_meters, position, event_sub_type_id, event_name, event_cat_id, time, event_location, date_format(date,'" . WPA_DATE_FORMAT . "') AS event_date,
-				date_format(date,'%M %d, %Y %k:%i:%s') AS date_js FROM " . $this->RESULT_VIEW . " r WHERE " . $where . " ORDER BY date ASC";
-
+				if( WPA_DB_DISABLE_SQL_VIEW ) {
+					$sql = "SELECT e.id as event_id, ec.distance_meters, r.position, e.sub_type_id as event_sub_type_id, e.name as event_name, e.event_cat_id, r.time, e.location as event_location, date_format(e.date,'" . WPA_DATE_FORMAT . "') AS event_date,
+					date_format(e.date,'%M %d, %Y %k:%i:%s') AS date_js FROM " . $this->RESULT_TABLE . " r 
+					LEFT JOIN " . $this->EVENT_TABLE . " e ON r.event_id = e.id 
+					LEFT JOIN " . $this->EVENT_CAT_TABLE . " ec ON e.event_cat_id = ec.id 
+					LEFT JOIN wp_users u ON r.user_id = u.id WHERE " . $where . " ORDER BY e.date ASC";
+				}
+				else {
+					$sql = "SELECT event_id, distance_meters, position, event_sub_type_id, event_name, event_cat_id, time, event_location, date_format(date,'" . WPA_DATE_FORMAT . "') AS event_date,
+					date_format(date,'%M %d, %Y %k:%i:%s') AS date_js FROM " . $this->RESULT_VIEW . " r WHERE " . $where . " ORDER BY date ASC";
+				}
 				wpa_log( $sql );
 
 				$results = $wpdb->get_results( $sql );
@@ -1420,8 +1575,17 @@ if(!class_exists('WP_Athletics_DB')) {
 				return $results;
 			}
 			else if( $type == 'runner' ) {
-				$sql = "SELECT u.id, display_name AS name, COUNT(r.id) count FROM wp_users u LEFT JOIN " . $this->RESULT_VIEW . " r ON u.id = r.user_id WHERE " . $where .
-				" GROUP BY display_name ORDER BY count DESC LIMIT 10;";
+				if( WPA_DB_DISABLE_SQL_VIEW ) {
+					$sql = "SELECT u.id, display_name AS name, COUNT(r.id) count FROM " . $this->RESULT_TABLE . " r 
+					LEFT JOIN " . $this->EVENT_TABLE . " e ON r.event_id = e.id 
+					LEFT JOIN " . $this->EVENT_CAT_TABLE . " ec ON e.event_cat_id = ec.id
+					LEFT JOIN wp_users u ON r.user_id = u.id WHERE " . $where .
+					" GROUP BY u.display_name ORDER BY count DESC LIMIT 10;";
+				}
+				else {
+					$sql = "SELECT u.id, display_name AS name, COUNT(r.id) count FROM wp_users u LEFT JOIN " . $this->RESULT_VIEW . " r ON u.id = r.user_id WHERE " . $where .
+					" GROUP BY display_name ORDER BY count DESC LIMIT 10;";
+				}
 
 				wpa_log( $sql );
 

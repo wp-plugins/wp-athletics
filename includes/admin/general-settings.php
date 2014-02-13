@@ -13,6 +13,7 @@ if ( $this->has_permission_to_manage() ) {
 				jQuery('#setting-language').val('<?php echo strtolower(get_option( 'wp-athletics_language', 'en') ); ?>');
 				jQuery('#setting-theme').val('<?php echo strtolower(get_option( 'wp-athletics_theme', 'default') ); ?>');
 				jQuery('#setting-records-mode').val('<?php echo strtolower(get_option( 'wp-athletics_records_mode', 'combined') ); ?>');
+				jQuery('#setting-disable-sql-view').attr('checked', '<?php echo strtolower(get_option( 'wp-athletics-disable-sql-view', 'no') ); ?>' == 'yes');
 
 				// save settings button
 				jQuery('#wpa-save-settings').button().click(function() {
@@ -20,7 +21,7 @@ if ( $this->has_permission_to_manage() ) {
 					WPA.Admin.saveSettings(function(result) {
 						if(result.success) {
 							jQuery('#wpa-save-settings').button('option', 'label', 'Saved!');
-							setTimeout("jQuery('#wpa-save-settings').button('option', 'label', 'Save Settings').button('option', 'disabled', false);", 2000);
+							setTimeout("jQuery('#wpa-save-settings').button('option', 'label', 'Save Settings').button('option', 'disabled', false);", 1000);
 						}
 					});
 				});
@@ -55,8 +56,8 @@ if ( $this->has_permission_to_manage() ) {
 				<label>Language:</label>
 				<select id="setting-language">
 					<option value="en">English</option>
+					<option value="it">Italian</option>
 					<!--
-					<option value="sw">Swedish</option>
 					<option value="fr">French</option>
 					<option value="es">Spanish</option>
 					<option value="de">German</option>
@@ -64,7 +65,7 @@ if ( $this->has_permission_to_manage() ) {
 					-->
 				</select>
 			</div>
-			<div style="float:left;" class="wpa-admin-setting">
+			<div class="wpa-admin-setting">
 				<label>Theme:</label>
 				<select id="setting-theme">
 					<option value="default">Gray</option>
@@ -73,7 +74,12 @@ if ( $this->has_permission_to_manage() ) {
 					<option value="yellow">Yellow</option>
 				</select>
 			</div>
-			<div style="float:right;text-align:right" class="wpa-admin-setting">
+			<div class="wpa-admin-setting">
+				<label>Disable SQL View:</label>
+				<input type="checkbox" id="setting-disable-sql-view"/>
+				<span class="wpa-help" title="Choose this option if your hosting provider does not allow the creation of SQL VIEW's."></span>
+			</div>
+			<div class="wpa-admin-setting">
 				<label></label>
 				<button id="wpa-save-settings" style="margin-top: 3px; font-size:11px">Save Settings</button>
 			</div>
@@ -81,10 +87,16 @@ if ( $this->has_permission_to_manage() ) {
 		</div>
 		<h2>About</h2>
 		<p>
-		Thanks for downloading WP Athletics, a complete solution for tracking results, personal records and generating rankings for your athletic club.
-		Please rate if you find this plugin useful and visit <a href="http://www.conormccauley.me/wordpress-athletics">http://www.conormccauley.me/wordpress-athletics</a>
-		for more information and FAQ.
+			Thanks for downloading <b>WP Athletics</b>, a complete solution for tracking race results, viewing personal records and generating rankings for your athletics club.
+			I wanted to make this using this plugin as simple as possible for you, that's why the two feature pages have already been created, the "Manage Results" and "Club Records" pages, meaning the plugin is pretty much ready to use straight away.
 		</p>
+		<p>
+			Please <a target="new" href="http://wordpress.org/support/view/plugin-reviews/wp-athletics"><b>rate</b></a> or <a target="new" href="http://www.conormccauley.me/wordpress-athletics"><b>donate</b></a> if you find this plugin useful.</a>
+		</p>
+		<p>
+			<a href="http://wordpress.org/support/plugin/wp-athletics" target="new"><b>Contact me</b></a> via the support forum if you have any issues and I'll do my best to help.
+		</p>
+		<br/>
 		<div>
 			<b>User features:</b>
 			<ul>
@@ -102,10 +114,6 @@ if ( $this->has_permission_to_manage() ) {
 				<li>Print a custom rankings list for pinning up in your locker rooms (e.g 5k male rankings for 2013)</li>
 			</ul>
 		</div>
-		<p>
-		I wanted to make this using this plugin as simple as possible for you, that's why the two feature pages have already been created, the "Manage Results" and "Club Records" pages, meaning the plugin is ready to use straight away
-		 (Note: you should modify the template for these pages to use a full-width page template). The club records by default are split into two pages, one representing the male and the other representing the female records. You may modify the setting below so both genders are displayed in one page with a gender filter.
-		</p>
 		<div class="ui-state-highlight ui-corner-all" style="margin-top: 20px; padding: 0 .7em;">
 			<p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
 			<strong>Important! </strong>Please ensure that all of the WP Athletics pages are modified to use a full width page template in order to display the data correctly</p>
@@ -131,6 +139,12 @@ if ( $this->has_permission_to_manage() ) {
 		in which case you would need to remove the duplicates by merging the duplicated events. You may also <a href="<?php echo get_bloginfo('wpurl')?>/wp-admin/admin.php?page=wp-athletics-add-results">manually add results</a> for unregistered users or historic races of runners
 		no longer with the club or no longer run. Manage club results using the <a href="<?php echo get_bloginfo('wpurl')?>/wp-admin/admin.php?page=wp-athletics-manage-results">result manager</a>
 		and manage events using the <a href="<?php echo get_bloginfo('wpurl')?>/wp-admin/admin.php?page=wp-athletics-manage-events">event manager</a>.
+		</p>
+		<h3>Thanks to...</h3>
+		<p>
+			<ul>
+				<li>Roberto Luceri for translating the plugin into Italian.
+			</ul>
 		</p>
 	</div>
 <?php

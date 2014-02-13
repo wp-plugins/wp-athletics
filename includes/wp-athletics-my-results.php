@@ -193,7 +193,7 @@ if(!class_exists('WP_Athletics_My_Results')) {
 								},
 								create: function( event, ui ) {
 									WPA.MyResults.currentTab = 'results';
-									WPA.MyResults.reloadResults();
+									//WPA.MyResults.reloadResults();
 								}
 							});
 

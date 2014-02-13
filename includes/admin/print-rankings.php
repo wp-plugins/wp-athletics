@@ -21,7 +21,7 @@ if ( $this->has_permission_to_manage() ) {
 			jQuery(document).ready(function() {
 				WPA.isAdminScreen = true;
 
-				jQuery('#adminmenuwrap,#adminmenuback,#wpfooter,#wpadminbar').hide();
+				jQuery('#adminmenuwrap,#adminmenuback,#wpfooter,#wpadminbar,.update-nag').hide();
 				jQuery('#wpcontent').css('marginLeft', '0px');
 				jQuery('.wp-toolbar').css('paddingTop', '0px');
 

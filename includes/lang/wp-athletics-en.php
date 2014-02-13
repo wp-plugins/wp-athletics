@@ -9,6 +9,9 @@ $common_lang = array(
 	'column_event_type' => 'Terrain',
 	'column_event_name' => 'Event',
 	'column_athlete_name' => 'Athlete',
+	'column_athlete_username' => 'Username',
+	'column_athlete_email' => 'Email',
+	'column_athlete_registered' => 'Registered',
 	'column_event_location' => 'Location',
 	'column_category' => 'Distance',
 	'column_time' => 'Time',
@@ -58,7 +61,7 @@ $common_lang = array(
 	// generic results dialog
 	'generic_results_dialog_title' => 'Results Viewer',
 
-	// rankings dialog
+	// rankings dialog - ** DO NOT TRANSLATE THE PROPERTIES IN [brackets] AS THESE ARE TOKENS THAT WILL BE REPLACED WHEN RENDERED **
 	'rankings_dialog_title' => '[age] [gender] [category] Rankings ([period], [type])',
 	'rankings_display_best_athlete_result' => 'Show only best result for each athlete',
 	'rankings_display_all_athlete_results' => 'Show all results for each athlete',
@@ -213,6 +216,7 @@ $common_lang = array(
 	'filter_log_type_option_update_result' => 'Result Edited',
 	'filter_log_type_option_new_event' => 'Events Created',
 	'filter_log_type_option_profile_update' => 'Profile Update',
+	'filter_log_type_option_SQL' => 'SQL',
 
 	// date & time
 	'month_1' => 'January',
@@ -265,8 +269,15 @@ $admin_lang = array(
 	'admin_edit_event_cat_title' => 'Event Category Settings',
 	'admin_edit_age_cat_title' => 'Age Category Settings',
 	'admin_manage_results_title' => 'Manage Results',
+	'admin_manage_athletes_title' => 'Manage Athletes',
 	'admin_manage_events_title' => 'Manage Events',
 	'admin_print_rankings_title' => 'Print Rankings',
+		
+	// athlete manager
+	'admin_athlete_create_button' => 'Create Athlete',
+	'delete_athlete_text' => 'Are you sure you wish to remove this athlete and all associated records?',
+	'delete_athlete_tooltip' => 'Delete this athlete (cannot be undone)',
+	'edit_athlete_tooltip' => 'Edit this athlete',
 
 	// event manager
 	'edit_event_text' => 'Edit Event',
@@ -337,11 +348,9 @@ $admin_lang = array(
 	'log_admin_column_log' => 'Log'
 );
 
-if( !is_admin() ) {
-	return $common_lang;
-}
-else {
-	return array_merge( $common_lang, $admin_lang );
-}
+return array(
+	'common' => $common_lang,
+	'admin' => $admin_lang
+)
 
 ?>

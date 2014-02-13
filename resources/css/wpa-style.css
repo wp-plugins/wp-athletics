@@ -309,6 +309,10 @@
 	background-color: rgb(241, 234, 148) !important;
 }
 
+.records-highlight-my-result .sorting_1 {
+	background-color: rgb(235, 220, 40) !important;
+}
+
 .wpa-rank {
     background-position: 0 0;
     background-repeat: no-repeat;
@@ -453,6 +457,10 @@
 }
 
 /** DATATABLE STYLES **/
+
+.datatable-image {
+	border: 1px solid #c0c0c0;
+}
 
 .datatable-bold-right-gray {
 	font-weight:bold; 
@@ -689,7 +697,7 @@ input.ui-state-default {
 }
 
 .wpa-stats-item label {
-	width: 125px;
+	width: 115px;
 	text-align: right !important;
 	margin-right: 4px !important;
 	font-weight: bold;
@@ -697,7 +705,7 @@ input.ui-state-default {
 }
 
 .wpa-summary-left {
-	width: 270px;
+	width: 280px;
 	float: left;
 }
 

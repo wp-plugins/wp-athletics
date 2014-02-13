@@ -17,6 +17,7 @@ if(!class_exists('WP_Athletics_Admin')) {
 			add_action( 'wp_ajax_wpa_admin_delete_age_category', array ( $this, 'delete_age_category') );
 			add_action( 'wp_ajax_wpa_admin_save_age_category', array ( $this, 'save_age_category') );
 			add_action( 'wp_ajax_wpa_get_all_events', array( $this, 'get_events' ) );
+			add_action( 'wp_ajax_wpa_get_athletes', array( $this, 'get_athletes' ) );
 			add_action( 'wp_ajax_wpa_delete_events', array( $this, 'delete_events' ) );
 			add_action( 'wp_ajax_wpa_merge_events', array( $this, 'merge_events' ) );
 			add_action( 'wp_ajax_wpa_create_user', array( $this, 'create_user' ) );
@@ -31,6 +32,7 @@ if(!class_exists('WP_Athletics_Admin')) {
 				add_submenu_page( 'wp-athletics-settings', 'WP Athletics Add Results', 'Add Results', 'manage_wp_athletics', 'wp-athletics-add-results', array( $this, 'wpa_add_results') );
 				add_submenu_page( 'wp-athletics-settings', 'WP Athletics Results Mangager', 'Manage Results', 'manage_wp_athletics', 'wp-athletics-manage-results', array( $this, 'wpa_manage_results') );
 				add_submenu_page( 'wp-athletics-settings', 'WP Athletics Events Mangager', 'Manage Events', 'manage_wp_athletics', 'wp-athletics-manage-events', array( $this, 'wpa_manage_events') );
+				//add_submenu_page( 'wp-athletics-settings', 'WP Athletics Athlete Mangager', 'Manage Athletes', 'manage_wp_athletics', 'wp-athletics-manage-athletes', array( $this, 'wpa_manage_athletes') );
 				add_submenu_page( 'wp-athletics-settings', 'WP Athletics Event Categories', 'Event Categories', 'manage_wp_athletics', 'wp-athletics-event-categories', array( $this, 'wpa_event_category_settings' ) );
 				add_submenu_page( 'wp-athletics-settings', 'WP Athletics Age Categories', 'Age Categories', 'manage_wp_athletics', 'wp-athletics-age-categories', array( $this, 'wpa_age_category_settings') );
 				add_submenu_page( 'wp-athletics-settings', 'WP Athletics Print Rankings', 'Print Rankings', 'manage_wp_athletics', 'wp-athletics-print-rankings', array( $this, 'wpa_print_rankings') );
@@ -45,6 +47,23 @@ if(!class_exists('WP_Athletics_Admin')) {
 			// perform the query
 			$result = $this->wpa_db->search_events( $_POST );
 
+			// return as json
+			wp_send_json( $result );
+			die();
+		}
+		
+		/**
+		 * [AJAX] Performs request for athletes
+		 */
+		function get_athletes() {
+			
+			
+			wpa_log('HERE');
+			
+			
+			// perform the query
+			$result = $this->wpa_db->search_athletes( $_POST );
+		
 			// return as json
 			wp_send_json( $result );
 			die();
@@ -144,6 +163,9 @@ if(!class_exists('WP_Athletics_Admin')) {
 			if( isset( $_POST['theme'] ) ) {
 				update_option('wp-athletics_theme', $_POST['theme'] );
 			}
+			if( isset( $_POST['disableSqlView'] ) ) {
+				update_option('wp-athletics-disable-sql-view', $_POST['disableSqlView'] );
+			}
 			if( isset( $_POST['recordsMode'] ) ) {
 				$wpa_records = new WP_Athletics_Records( $this->wpa_db );
 				$wpa_records->recreate_records_pages( $_POST['recordsMode'] );
@@ -208,10 +230,17 @@ if(!class_exists('WP_Athletics_Admin')) {
 		}
 
 		/**
-		 * Generates a page for result management
+		 * Generates a page for event management
 		 */
 		function wpa_manage_events() {
 			require 'admin/manage-events.php';
+		}
+		
+		/**
+		 * Generates a page for athlete management
+		 */
+		function wpa_manage_athletes() {
+			require 'admin/manage-athletes.php';
 		}
 
 		/**

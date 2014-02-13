@@ -23,13 +23,17 @@
 }
 
 .wpa-admin-setting {
-	margin-bottom: 3px;
+	margin: 4px 0px 4px 0px;
 	width: 400px;
+}
+
+.wpa-admin-setting input[type=checkbox] {
+	margin-top: 0px;
 }
 
 .wpa-admin-setting label {
 	text-align: right;
-	width: 100px;
+	width: 160px;
 	display: inline-block;
 }
 
@@ -83,7 +87,7 @@
 	background: yellow !important;
 }
 
-#wpa-admin-manage-results, #wpa-admin-manage-events {
+#wpa-admin-manage-results, #wpa-admin-manage-events, #wpa-admin-manage-athletes {
 	margin: 0px 20px 0px 0px;
 }
 
