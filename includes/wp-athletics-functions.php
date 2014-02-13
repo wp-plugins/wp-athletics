@@ -598,16 +598,10 @@ if( !class_exists( 'WPA_Base' ) ) {
 		public function process_photo_to_150px( $filename ) {
 
 			if( isset($filename) && $filename != '' ) {
-
-				# Split the filename into a base and extension[s]
-				$parts = explode('.', $filename);
-
-				# Process multiple extensions
-				$filename = array_shift($parts);
-				$extension = array_pop($parts);
-
-				// return the 150 x 150px version of photo
-				return $filename . '-150x150.' . $extension;
+				
+				$path_info = pathinfo( $filename );
+				
+				return $path_info['dirname'] . '/' . $path_info['filename'] . '-150x150.' . $path_info['extension'];
 			}
 			return '';
 		}
