@@ -135,6 +135,9 @@ First version of WP Athletics.
 = 1.0.1 =
 Minor bug fixes
 
+= 1.0.2 =
+If you're having an issue with profile photos not displaying, why not upgrade! it's fixed :)
+
 == Changelog ==
 
 = 1.0.0 =
@@ -142,3 +145,6 @@ First version of WP Athletics.
 
 = 1.0.1 =
 Minor bug fixes, release documentation
+
+= 1.0.2 =
+Bug fix with profile photos not displaying correctly
