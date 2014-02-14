@@ -3,6 +3,10 @@
 	font-size: 12px;
 }
 
+.wpa input {
+	height: 25px !important;
+}
+
 .wpa-admin-intro {
 	padding: 10px;
 	font-size: 14px;
@@ -18,10 +22,6 @@
 	text-decoration: underline;
 }
 
-#wpa-admin-settings-container {
-	border-bottom: 1px solid #eeeeee;
-}
-
 .wpa-admin-setting {
 	margin: 4px 0px 4px 0px;
 	width: 400px;
@@ -31,9 +31,22 @@
 	margin-top: 0px;
 }
 
+#wpa-save-settings {
+	float: right;
+	font-size: 12px;
+}
+
+#wpa-admin-settings-container {
+	width: 500px;
+}
+
+#wpa-admin-settings-tab .ui-tabs-panel {
+	padding: 10px 0px !important;
+}
+
 .wpa-admin-setting label {
 	text-align: right;
-	width: 160px;
+	width: 120px;
 	display: inline-block;
 }
 
@@ -43,11 +56,11 @@
 }
 
 #event-cat-table-container {
-	width: 620px;
+	width: 630px;
 }
 
 #age-cat-table-container {
-	width: 420px;
+	width: 430px;
 }
 
 .wpa-admin-editable-disabled {

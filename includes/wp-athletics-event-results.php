@@ -32,7 +32,11 @@ if( !class_exists( 'WP_Athletics_Event_Results' ) ) {
 				global $wpa_settings;
 
 				$id = $atts['id'];
+				
+				wpa_log('enqueing');
 
+				// enqueue scripts
+				wp_enqueue_script( 'jquery' );
 				$this->enqueue_scripts_and_styles();
 				$nonce = wp_create_nonce( $this->nonce );
 
@@ -61,15 +65,20 @@ if( !class_exists( 'WP_Athletics_Event_Results' ) ) {
 				<div class="wpa">
 
 					<!-- RESULTS TABLE -->
+					<div id="wpa-embedded-results-top">
+						<div id="wpa-event-results-info-<?php echo $id; ?>" class="wpa-event-results-info">
+							<strong><span id="eventInfoName<?php echo $id; ?>"></span></strong>
+							<div>
+								<span class="wpa-event-results-info-right" style="font-weight:bold" id="eventInfoDate<?php echo $id; ?>"></span>
+								<span class="wpa-event-results-info-right" id="eventInfoDetail<?php echo $id; ?>"></span>
+							</div>
+						</div>
+					</div>
 					<?php echo $this->create_event_results_table('event-results-table-' . $id); ?>
 					<div id="wpa-embedded-results-bottom">
-
-						<div id="wpa-event-results-info-<?php echo $id; ?>" class="wpa-event-results-info">
-							<span id="eventInfoName<?php echo $id; ?>"></span> -
-							<span id="eventInfoDate<?php echo $id; ?>"></span> -
-							<span id="eventInfoDetail<?php echo $id; ?>"></span>
+						<div id="wpa-embedded-results-actions">
+							<span onclick="WPA.launchAddResultDialog(<?php echo $id ?>, true)"><?php echo $this->get_property('embedded_event_results_add_result_link')?></span>
 						</div>
-
 						<div id="wpa-embedded-results-options">
 							<?php
 							if(get_option('wp-athletics_records_mode') == 'combined') {
@@ -89,7 +98,6 @@ if( !class_exists( 'WP_Athletics_Event_Results' ) ) {
 							<?php
 							}
 							?>
-							<span onclick="WPA.launchAddResultDialog(<?php echo $id ?>, true)"><?php echo $this->get_property('embedded_event_results_add_result_link')?></span>
 						</div>
 						<br style="clear:both;"/>
 					</div>

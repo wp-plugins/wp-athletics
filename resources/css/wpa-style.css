@@ -198,6 +198,11 @@
 	cursor: pointer;
 }
 
+.wpa input[type=checkbox] {
+	height: 15px !important;
+	width: 15px !important;
+}
+
 .wpa input {
 	height: 19px;
 	padding: 2px 2px 2px 4px;
@@ -347,8 +352,8 @@
 }
 
 .wpa-help {
-	height: 20px;
-	width: 20px;
+	height: 15px;
+	width: 15px;
 	display: inline-block;
 	position: relative;
 	cursor: pointer;
@@ -362,7 +367,7 @@
 	display: inline-block;
 	position: relative;
 	cursor: pointer;
-	top: 5px;
+	top: 4px;
 	background: url("../images/question.png") no-repeat scroll 2px 0 transparent;
 }
 
@@ -618,28 +623,44 @@ input.ui-state-default {
 #wpa-embedded-results-bottom {
 	height: 20px;
 	font-size: 11px;
-	color: #a0a0a0 !important;
+	color: #000 !important;
+}
+
+#wpa-embedded-results-top .wpa-event-results-info div {
+	float: right;
+	font-size: 12px;
 }
 
 #wpa-embedded-results-options {
 	float: right;
 }
 
-#wpa-embedded-results-options span:hover {
-	color: black;
+#wpa-embedded-results-bottom div span:hover {
+	color: gray;
+}
+
+#wpa-embedded-results-bottom span {
+	display: inline-block;
+	cursor: pointer;
+	text-decoration: underline;
+	font-weight: normal;
 }
 
 #wpa-embedded-results-options span {
-	display: inline-block;
-	margin-right: 3px;
-	cursor: pointer;
-	text-decoration: underline;
 	float: right;
-	font-weight: normal !important;
 }
 
-.wpa-event-results-info {
+#wpa-embedded-results-actions span {
 	float: left;
+}
+
+.wpa-event-results-info span {
+	float: left;
+}
+
+span.wpa-event-results-info-right {
+	float: right;
+	margin-left: 5px;
 }
 
 .tip {

@@ -149,6 +149,7 @@ if( !class_exists( 'WPA_Base' ) ) {
 					'userDOB' => get_user_meta( $current_user->ID, 'wp-athletics_dob', true ),
 					'userHideDOB' => (get_user_meta( $current_user->ID, 'wp-athletics_hide_dob', true ) == 'yes'),
 					'userGender' => get_user_meta( $current_user->ID, 'wp-athletics_gender', true ),
+					'defaultUnit' => get_option( 'wp-athletics_default-unit', 'm' ),
 					'isLoggedIn' => is_user_logged_in(),
 					'isAdmin' => is_admin()
 				));
@@ -599,9 +600,33 @@ if( !class_exists( 'WPA_Base' ) ) {
 				
 				$path_info = pathinfo( $filename );
 				
-				return $path_info['dirname'] . '/' . $path_info['filename'] . '-150x150.' . $path_info['extension'];
+				$new_file = $path_info['dirname'] . '/' . $path_info['filename'] . '-150x150.' . $path_info['extension'];
+				
+				if( $this->check_photo_exists( $new_file ) ) {
+					return $new_file;
+				}
+				else {
+					return $path_info['dirname'] . '/' . $path_info['filename'] . '.' . $path_info['extension'];
+				}
 			}
 			return '';
+		}
+		
+		/**
+		 * Checks if a given image URL exists
+		 */
+		public function check_photo_exists( $url ) {
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL,$url);
+			curl_setopt($ch, CURLOPT_NOBODY, 1);
+			curl_setopt($ch, CURLOPT_FAILONERROR, 1);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			if(curl_exec($ch)!==FALSE) {
+				return true;
+			}
+			else {
+				return false;
+			}
 		}
 
 		/**

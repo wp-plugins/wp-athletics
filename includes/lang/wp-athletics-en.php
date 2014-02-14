@@ -244,6 +244,24 @@ $admin_lang = array(
 	'admin_column_age_cat_name' => 'Name',
 	'admin_column_age_cat_from' => 'From (years)',
 	'admin_column_age_cat_to' => 'To (years)',
+		
+	// settings
+	'admin_settings_label_button_save' => 'Save Settings',
+	'admin_settings_label_button_saving' => 'Saving...',
+	'admin_settings_label_button_saved' => 'Saved!',
+	'admin_settings_tab_label_general' => 'General',
+	'admin_settings_tab_label_advanced' => 'Advanced',
+	'admin_settings_label_theme' => 'Theme',
+	'admin_settings_label_club_name' => 'Club Name',
+	'admin_settings_label_language' => 'Language',
+	'admin_settings_label_unit' => 'Default Unit',
+	'admin_settings_label_disable_sql_view' => 'Disable SQL View',
+	'admin_settings_label_records_mode' => 'Records Mode',
+	'admin_settings_record_label_separate' => 'Separate',
+	'admin_settings_record_label_combined' => 'Combined',
+	'admin_settings_help_disable_sql_view' => 'Choose this option if your hosting provider does not allow the creation of an SQL VIEW.',
+	'admin_settings_help_records_mode' => 'Choose \'Separate\' if you wish to use two separate pages for club records (male and female) or choose \'Combined\' if you would rather a single page with a dropdown menu allowing users to filter by gender',
+	
 
 	// column help
 	'admin_edit_event_cat_column_unit' => 'Valid units are \'m\' (meters), \'km\' (kilometers) and \'mile\' (miles)',

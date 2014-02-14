@@ -4,7 +4,7 @@ Plugin Name: WP Athletics
 Plugin URI: http://www.conormccauley.me/wordpress-athletics/
 Description: Allow your users to log, compare and analyse their athletic results. Generates a club records page to summarise athlete data for all to see.
 Author: Conor McCauley
-Version: 1.0.3
+Version: 1.0.4
 Author URI: http://www.conormccauley.me
 */
 
@@ -107,27 +107,16 @@ if(!class_exists('WP_Athletics')) {
 			if( $lang != 'en' ) {
 				$custom_lang = require 'includes/lang/wp-athletics-' . $lang . '.php';
 				
-				// now loop and replace into standard lang any translated properties we find
+				// now replace into standard lang any translated properties we find
 				$custom_common_lang = $custom_lang['common'];
 				$custom_admin_lang = $custom_lang['admin'];
-				
-				// get the keys for common
-				$common_keys = array_keys( $standard_common_lang );
-				
+
 				// loops the common keys and if the property is found in the custom file, replace it
-				foreach ( $common_keys as $common_key ) {
-					
-					if( array_key_exists( $common_key, $custom_common_lang ) ) {
-						$standard_common_lang[ $common_key ] = $custom_common_lang[ $common_key ];
-					}
-					else {
-						wpa_log( $common_key . ' does not exist in the ' . $lang . ' language');
-					}
-				}
+				$standard_common_lang = $this->process_language_properties( $standard_common_lang, $custom_common_lang);
 				
 				// if admin mode, get the keys for admin 
 				if( is_admin() ) {
-					$admin_keys = array_keys( $standard_admin_lang );
+					$standard_admin_lang = $this->process_language_properties( $standard_admin_lang, $custom_admin_lang);
 				}
 			}
 			
@@ -138,6 +127,22 @@ if(!class_exists('WP_Athletics')) {
 			else {
 				$wpa_lang = array_merge( $standard_common_lang, $standard_admin_lang );
 			}
+		}
+		
+		/**
+		 * Replaces any properties that exist within one language file, into the other language file
+		 */
+		function process_language_properties( $standard_lang, $custom_lang ) {
+			$keys = array_keys( $standard_lang );
+				
+			// loops the keys and if the property is found in the custom file, replace it
+			foreach ( $keys as $key ) {
+				if( array_key_exists( $key, $custom_lang ) ) {
+					$standard_lang[ $key ] = $custom_lang[ $key ];
+				}
+			}
+			
+			return $standard_lang;
 		}
 
 		/**
@@ -210,9 +215,10 @@ if(!class_exists('WP_Athletics')) {
 		 * Ensure the correct (bundled) jquery build is included to avoid conflicts
 		 */
 		public function enqueue_scripts() {
-
+			
 			// ensure the bundled wordpress jQuery/UI is always used
-			if( !is_home() ) {
+			//if( !is_home() ) {
+
 				if( wp_script_is( 'jquery' ) ) {
 					wp_deregister_script('jquery');
 				}
@@ -223,7 +229,7 @@ if(!class_exists('WP_Athletics')) {
 				if( wp_script_is( 'jquery-ui' ) ) {
 					wp_dequeue_script('jquery-ui');
 				}
-			}
+			//}
 		}
 
 		/**
@@ -278,7 +284,7 @@ if(!class_exists('WP_Athletics')) {
 				define('WPA_DATE_FORMAT', '%d %b %Y');
 
 			if (!defined('WPA_VERSION_NUM') )
-				define('WPA_VERSION_NUM', '1.0.3');
+				define('WPA_VERSION_NUM', '1.0.4');
 
 			if (!defined('WPA_DB_VERSION') )
 				define('WPA_DB_VERSION', '1.0');

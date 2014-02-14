@@ -11,17 +11,22 @@ if ( $this->has_permission_to_manage() ) {
 
 				// set setting fields
 				jQuery('#setting-language').val('<?php echo strtolower(get_option( 'wp-athletics_language', 'en') ); ?>');
+				jQuery('#setting-default-unit').val('<?php echo strtolower(get_option( 'wp-athletics_default-unit', 'm') ); ?>');
 				jQuery('#setting-theme').val('<?php echo strtolower(get_option( 'wp-athletics_theme', 'default') ); ?>');
 				jQuery('#setting-records-mode').val('<?php echo strtolower(get_option( 'wp-athletics_records_mode', 'combined') ); ?>');
 				jQuery('#setting-disable-sql-view').attr('checked', '<?php echo strtolower(get_option( 'wp-athletics-disable-sql-view', 'no') ); ?>' == 'yes');
 
 				// save settings button
-				jQuery('#wpa-save-settings').button().click(function() {
-					jQuery('#wpa-save-settings').button('option', 'label', 'Saving...').button('option', 'disabled', true);
+				jQuery('#wpa-save-settings button').button({
+					icons: {
+				        primary: "ui-icon-check"
+					}
+				}).click(function() {
+					jQuery('#wpa-save-settings button').button('option', 'label', '<?php echo $this->get_property('admin_settings_label_button_saving') ?>').button('option', 'disabled', true);
 					WPA.Admin.saveSettings(function(result) {
 						if(result.success) {
-							jQuery('#wpa-save-settings').button('option', 'label', 'Saved!');
-							setTimeout("jQuery('#wpa-save-settings').button('option', 'label', 'Save Settings').button('option', 'disabled', false);", 1000);
+							jQuery('#wpa-save-settings button').button('option', 'label', '<?php echo $this->get_property('admin_settings_label_button_saved') ?>');
+							setTimeout("jQuery('#wpa-save-settings button').button('option', 'label', '<?php echo $this->get_property('admin_settings_label_button_save') ?>').button('option', 'disabled', false);", 1000);
 						}
 					});
 				});
@@ -30,6 +35,8 @@ if ( $this->has_permission_to_manage() ) {
 				jQuery(document).tooltip({
 					track: true
 				});
+
+				jQuery('#wpa-admin-settings-tab').tabs();
 
 			}, true);
 
@@ -40,50 +47,71 @@ if ( $this->has_permission_to_manage() ) {
 	<div class="wpa-admin-intro">
 		<h2>WP Athletics Settings</h2>
 		<div id="wpa-admin-settings-container">
-			<div class="wpa-admin-setting">
-				<label>Club Name:</label>
-				<input type="text" size="15" id="club-name" value="<?php echo get_option( 'wp-athletics_club_name', 'Your club name' ); ?>">
+			<div id="wpa-admin-settings-tab">
+				<ul>
+					<li><a href="#wpa-admin-settings-general"><?php echo $this->get_property('admin_settings_tab_label_general') ?></a></li>
+					<li><a href="#wpa-admin-settings-advanced"><?php echo $this->get_property('admin_settings_tab_label_advanced') ?></a></li>
+				</ul>
+				
+				<!-- GENERAL SETTINGS TAB -->
+				<div id="wpa-admin-settings-general">
+					<div class="wpa-admin-setting">
+						<label><?php echo $this->get_property('admin_settings_label_club_name') ?>:</label>
+						<input type="text" size="25" id="club-name" value="<?php echo get_option( 'wp-athletics_club_name', 'Your club name' ); ?>">
+					</div>
+					<div class="wpa-admin-setting">
+						<label><?php echo $this->get_property('admin_settings_label_records_mode') ?>:</label>
+						<select id="setting-records-mode">
+							<option value="separate"><?php echo $this->get_property('admin_settings_record_label_separate') ?></option>
+							<option value="combined"><?php echo $this->get_property('admin_settings_record_label_combined') ?></option>
+						</select>
+						<span class="wpa-help" title="<?php echo $this->get_property('admin_settings_help_records_mode') ?>"></span>
+					</div>
+					<div class="wpa-admin-setting">
+						<label><?php echo $this->get_property('admin_settings_label_language') ?>:</label>
+						<select id="setting-language">
+							<option value="en">English</option>
+							<option value="it">Italian</option>
+							<!--
+							<option value="fr">French</option>
+							<option value="es">Spanish</option>
+							<option value="de">German</option>
+							<option value="sw">Swedish</option>
+							-->
+						</select>
+					</div>
+					<div class="wpa-admin-setting">
+						<label><?php echo $this->get_property('admin_settings_label_unit') ?>:</label>
+						<select id="setting-default-unit">
+							<option value="m"><?php echo $this->get_property('mile') ?></option>
+							<option value="km"><?php echo $this->get_property('km') ?></option>
+						</select>
+					</div>
+					<div class="wpa-admin-setting">
+						<label><?php echo $this->get_property('admin_settings_label_theme') ?>:</label>
+						<select id="setting-theme">
+							<option value="default">Gray</option>
+							<option value="red">Red</option>
+							<option value="blue">Blue</option>
+							<option value="yellow">Yellow</option>
+						</select>
+					</div>
+					<br style="clear:both"/>
+				</div>
+				
+				<!-- ADVANCED SETTINGS TAB -->
+				<div id="wpa-admin-settings-advanced">
+					<div class="wpa-admin-setting">
+						<label><?php echo $this->get_property('admin_settings_label_disable_sql_view') ?>:</label>
+						<input type="checkbox" id="setting-disable-sql-view"/>
+						<span class="wpa-help" title="<?php echo $this->get_property('admin_settings_help_disable_sql_view') ?>"></span>
+					</div>
+				</div>
 			</div>
-			<div class="wpa-admin-setting">
-				<label>Records Mode:</label>
-				<select id="setting-records-mode">
-					<option value="separate">Separate</option>
-					<option value="combined">Combined</option>
-				</select>
-				<span class="wpa-help" title="Choose 'Separate' if you wish to use two separate pages for club records (male and female) or choose 'Combined' if you would rather a single page with a dropdown menu allowing users to filter by gender"></span>
+			<div id="wpa-save-settings">
+				<button><?php echo $this->get_property('admin_settings_label_button_save') ?></button>
 			</div>
-			<div class="wpa-admin-setting">
-				<label>Language:</label>
-				<select id="setting-language">
-					<option value="en">English</option>
-					<option value="it">Italian</option>
-					<!--
-					<option value="fr">French</option>
-					<option value="es">Spanish</option>
-					<option value="de">German</option>
-					<option value="sw">Swedish</option>
-					-->
-				</select>
-			</div>
-			<div class="wpa-admin-setting">
-				<label>Theme:</label>
-				<select id="setting-theme">
-					<option value="default">Gray</option>
-					<option value="red">Red</option>
-					<option value="blue">Blue</option>
-					<option value="yellow">Yellow</option>
-				</select>
-			</div>
-			<div class="wpa-admin-setting">
-				<label>Disable SQL View:</label>
-				<input type="checkbox" id="setting-disable-sql-view"/>
-				<span class="wpa-help" title="Choose this option if your hosting provider does not allow the creation of SQL VIEW's."></span>
-			</div>
-			<div class="wpa-admin-setting">
-				<label></label>
-				<button id="wpa-save-settings" style="margin-top: 3px; font-size:11px">Save Settings</button>
-			</div>
-			<br style="clear:both"/>
+			<br style="clear:both;"/>
 		</div>
 		<h2>About</h2>
 		<p>

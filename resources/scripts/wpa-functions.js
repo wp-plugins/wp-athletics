@@ -379,7 +379,7 @@ var WPA = {
 				WPA.alertError(WPA.getProperty('error_add_result_no_gender_dob'));
 			}
 		}
-		else {
+		else if(WPA) {
 			WPA.alertError(WPA.getProperty('error_not_logged_in'));
 		}
 		return false;
@@ -483,7 +483,7 @@ var WPA = {
 		WPA.Ajax.getEventInfo(id, function(result) {
 			jQuery('#eventInfoName' + id).html(result.name + ', ' + result.location);
 			jQuery('#eventInfoDate' + id).html(result.date);
-			jQuery('#eventInfoDetail' + id).html(WPA.getEventCategoryDescription(result.event_cat_id) + ' - ' + WPA.getEventSubTypeDescription(result.sub_type_id));
+			jQuery('#eventInfoDetail' + id).html(WPA.getEventCategoryDescription(result.event_cat_id) + ' (' + WPA.getEventSubTypeDescription(result.sub_type_id) + ')');
 			jQuery('#wpa-event-results-info-' + id).show();
 		}, true)
 		
@@ -2211,7 +2211,15 @@ var WPA = {
 			miles = miles.toFixed(miles > 1000 ? 0 : 2);
 		}
 		
-		return WPA.commaSeparateNumber(kms) + ' ' + WPA.getProperty('km') + ' / ' + WPA.commaSeparateNumber(miles) + ' ' + WPA.getProperty('mile');
+		var mileText = WPA.commaSeparateNumber(miles) + ' ' + WPA.getProperty('mile');
+		var kmText = WPA.commaSeparateNumber(kms) + ' ' + WPA.getProperty('km');
+		
+		if(WPA.defaultUnit == 'm') {
+			return '<span title="' + kmText + '">' + mileText + '</span>';
+		}
+		else {
+			return '<span title="' + mileText + '">' + kmText + '</span>';
+		}
 	},
 	
 	/**
@@ -2270,8 +2278,13 @@ var WPA = {
 	},
 	
 	renderPaceMilesColumn: function(data, type, full) {
+		console.log('default unit is ' + WPA.defaultUnit);
 		if(parseInt(data) > 0) {
-			return '<div title="' + WPA.timeToPace(data, full['distance_meters'], 'km', true) + '">' + WPA.timeToPace(data, full['distance_meters'], 'm', true) + '</div>';
+			
+			var title = WPA.timeToPace(data, full['distance_meters'], (WPA.defaultUnit == 'km' ? 'm' : 'km'), true);
+			var content = WPA.timeToPace(data, full['distance_meters'], WPA.defaultUnit, true);
+			
+			return '<div title="' + title + '">' + content + '</div>';
 		}
 		else {
 			return WPA.getProperty('time_no_value_text');

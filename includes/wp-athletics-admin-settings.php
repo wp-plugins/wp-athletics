@@ -56,11 +56,7 @@ if(!class_exists('WP_Athletics_Admin')) {
 		 * [AJAX] Performs request for athletes
 		 */
 		function get_athletes() {
-			
-			
-			wpa_log('HERE');
-			
-			
+
 			// perform the query
 			$result = $this->wpa_db->search_athletes( $_POST );
 		
@@ -172,6 +168,9 @@ if(!class_exists('WP_Athletics_Admin')) {
 			}
 			if( isset( $_POST['clubName'] ) ) {
 				update_option('wp-athletics_club_name', $_POST['clubName'] );
+			}
+			if( isset( $_POST['defaultUnit'] ) ) {
+				update_option('wp-athletics_default-unit', $_POST['defaultUnit'] );
 			}
 
 			$result = array('success'=>true);

@@ -16,6 +16,7 @@ WPA.Admin = {
 			theme: jQuery('#setting-theme').val(),
 			recordsMode: jQuery('#setting-records-mode').val(),
 			clubName: jQuery('#club-name').val(),
+			defaultUnit: jQuery('#setting-default-unit').val(),
 			action: 'wpa_admin_save_settings'
 		}
 		

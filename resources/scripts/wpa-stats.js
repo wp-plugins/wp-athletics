@@ -201,7 +201,8 @@ WPA.Stats = {
 	            	pointSize: 5,
 	            	height: 250,
 	            	width: 600,
-	            	title: WPA.getProperty('stats_event_chart_title')
+	            	title: WPA.getProperty('stats_event_chart_title'),
+	            	backgroundColor: {fill: 'transparent'}
 	            };
 	
 	            jQuery('#wpa-stats-event-results-chart' + suffix).show();
@@ -238,10 +239,8 @@ WPA.Stats = {
 		        	theme: 'maximized',
 		        	height: 300,
 		        	width: 700,
-		        	title: WPA.getProperty('stats_runners_chart_title')
-		        	
-		        	//height: 400,
-		        	//width: 600
+		        	title: WPA.getProperty('stats_runners_chart_title'),
+		        	backgroundColor: {fill: 'transparent'}
 		        };		     
 		        
 		        WPA.Stats.runnerChart = new google.visualization.BarChart(document.getElementById('wpa-stats-runner' + suffix));
@@ -290,7 +289,8 @@ WPA.Stats = {
 		        	chartArea: {left:20,right:20,top:0,width:"100%",height:"100%"},
 		        	pieSliceText: 'label',
 		        	height: 180,
-		        	width: 165
+		        	width: 165,
+		        	backgroundColor: {fill: 'transparent'}
 		        };		     
 		        
 		        // Instantiate and draw our chart, passing in some options
@@ -321,7 +321,8 @@ WPA.Stats = {
 		        	chartArea: {left:20,right:20,top:0,width:"100%",height:"100%"},
 		        	pieSliceText: 'label',
 		        	height: 180,
-		        	width: 250
+		        	width: 250,
+		        	backgroundColor: {fill: 'transparent'}
 		        };
 
 		        // Instantiate and draw our chart, passing in some options
