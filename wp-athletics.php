@@ -10,7 +10,7 @@ Author URI: http://www.conormccauley.me
 
 include_once 'includes/wp-athletics-functions.php';
 include_once 'includes/wp-athletics-db.php';
-include_once 'includes/wp-athletics-my-results.php';
+include_once 'includes/wp-athletics-manage-results.php';
 include_once 'includes/wp-athletics-recent-results.php';
 include_once 'includes/wp-athletics-event-results.php';
 include_once 'includes/wp-athletics-records.php';
@@ -27,7 +27,7 @@ if(!class_exists('WP_Athletics')) {
 
 		public $wpa_admin;
 		public $wpa_records;
-		public $wpa_my_results;
+		public $wpa_manage_results;
 		public $wpa_recent_results;
 		public $wpa_db;
 		public $wpa_common;
@@ -67,7 +67,7 @@ if(!class_exists('WP_Athletics')) {
 			// create objects
 			$this->wpa_common = new WPA_Base( $this->wpa_db );
 			$this->wpa_records = new WP_Athletics_Records( $this->wpa_db );
-			$this->wpa_my_results = new WP_Athletics_My_Results( $this->wpa_db );
+			$this->wpa_manage_results = new WP_Athletics_Manage_Results( $this->wpa_db );
 			$this->wpa_recent_results = new WP_Athletics_Recent_Results( $this->wpa_db );
 			$this->wpa_event_results = new WP_Athletics_Event_Results( $this->wpa_db );
 
@@ -157,7 +157,7 @@ if(!class_exists('WP_Athletics')) {
 			if( isset( $post->ID ) ) {
 				// my results
 				if( $post->ID == get_option('wp-athletics_my_results_page_id') ) {
-					$filter = array( $this->wpa_my_results, 'my_results_content_filter' );
+					$filter = array( $this->wpa_manage_results, 'my_results_content_filter' );
 				}
 
 				// recent results
@@ -315,7 +315,7 @@ if(!class_exists('WP_Athletics')) {
 		 * Shortcode action for the my results page
 		 */
 		public function do_my_results( $atts) {
-			$this->wpa_my_results->my_results( $atts );
+			$this->wpa_manage_results->my_results( $atts );
 		}
 
 		/**
@@ -345,7 +345,7 @@ if(!class_exists('WP_Athletics')) {
 				wpa_log('its a fresh install, creating pages...');
 
 				// create a "my results" page
-				$this->wpa_my_results->create_page();
+				$this->wpa_manage_results->create_page();
 
 				// create a "recent results" page
 				$this->wpa_recent_results->create_page();

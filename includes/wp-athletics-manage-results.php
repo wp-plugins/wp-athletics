@@ -1,41 +1,21 @@
 <?php
 
 /**
- * Class for mananaging a users result history
+ * Class for mananaging an athletes result history and viewing stats
  */
 
-if(!class_exists('WP_Athletics_My_Results')) {
+if(!class_exists('WP_Athletics_Manage_Results')) {
 
-	class WP_Athletics_My_Results extends WPA_Base {
+	class WP_Athletics_Manage_Results extends WPA_Base {
 
 		/**
 		 * default constructor
 		 */
 		public function __construct( $db ) {
 			parent::__construct( $db );
-			add_action( 'wp_ajax_wpa_save_profile_photo', array ( $this, 'save_profile_photo') );
 			add_action( 'wp_ajax_wpa_add_edit_priv', array ( $this, 'add_edit_post_priv') );
 			add_action( 'wp_ajax_wpa_remove_edit_priv', array ( $this, 'remove_edit_post_priv') );
 			add_filter( 'posts_where', array( $this, 'custom_query_attachments' ) );
-		}
-
-		/**
-		 * [AJAX] Saves new user profile photo in user metadata table
-		 */
-		public function save_profile_photo() {
-			if( $this->is_valid_ajax() ) {
-				global $current_user;
-
-				$filename = $this->process_photo_to_150px( $_POST['url'] );
-
-				update_user_meta( $current_user->ID, 'wp-athletics_profile_photo', $filename );
-
-				$result = array('success'=>true);
-
-				// return as json
-				wp_send_json($result);
-			}
-			die();
 		}
 
 		/**
@@ -99,7 +79,7 @@ if(!class_exists('WP_Athletics_My_Results')) {
 					array_push( $pages_created, $the_page_id );
 					update_option( 'wp-athletics_pages_created', $pages_created);
 
-					wpa_log('My Results page created!');
+					wpa_log('Manage Results page created!');
 			   }
 		   }
 		}
@@ -264,8 +244,11 @@ if(!class_exists('WP_Athletics_My_Results')) {
 								}
 							}).combobox('setValue', WPA.userGender);
 
-							// set profile photo
-							WPA.MyResults.loadProfilePhoto();
+							WPA.MyResults.profilePhoto = '<?php echo get_user_meta( $current_user->ID, 'wp-athletics_profile_photo', true );?>';
+
+							if(WPA.MyResults.profilePhoto != '') {
+								jQuery('#wpaProfilePhoto').removeClass('wpa-profile-photo-default').css('background-image', 'url(' + WPA.MyResults.profilePhoto + ')');
+							}
 
 							WPA.customUploader = null;
 
@@ -311,8 +294,9 @@ if(!class_exists('WP_Athletics_My_Results')) {
 							        // when a photo is selected, grab the URL and set it as the text field's value, then save to user metadata
 							        WPA.customUploader.on('select', function() {
 							            attachment = WPA.customUploader.state().get('selection').first().toJSON();
-							            jQuery('#user-image').val(attachment.url);
-							            WPA.Ajax.saveProfilePhoto(attachment.url);
+							            WPA.Ajax.saveProfilePhoto(attachment.url, WPA.userId, function(filename) {
+								            jQuery('#wpaProfilePhoto').removeClass('wpa-profile-photo-default').css('background-image', 'url(' + filename + ')');
+							            });
 							            WPA.customUploader.close();
 							        });
 
@@ -330,7 +314,7 @@ if(!class_exists('WP_Athletics_My_Results')) {
 					<div class="wpa-my-profile">
 
 						<!-- ATHLETE PHOTO -->
-						<input id="user-image" type="hidden" value="<?php echo get_user_meta( $current_user->ID, 'wp-athletics_profile_photo', true );?>" />
+						<input id="user-image" type="hidden" value="" />
 						<div class="wpa-profile-photo wpa-profile-photo-default" title="<?php echo $this->get_property('my_profile_image_upload_text'); ?>" id="wpaProfilePhoto"></div>
 
 						<!-- ATHLETE INFO -->

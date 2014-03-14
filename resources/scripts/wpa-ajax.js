@@ -111,19 +111,25 @@ WPA.Ajax = {
 	},
 	
 	/**
-	 * Saves profile photo as a meta option
+	 * Saves profile photo as a meta option. If user ID is not suppled, defaults to current user ID. 
 	 */
-	saveProfilePhoto: function(url) {
+	saveProfilePhoto: function(url, userId, callbackFn) {
+		if(!userId) {
+			userId = WPA.userId;
+		}
 		jQuery.ajax({
 			type: "post",
 			url: WPA.Ajax.url,
 			data: {
 				action: 'wpa_save_profile_photo',
 				url: url,
+				userId: userId,
 				security: WPA.Ajax.nonce
 			},
-			success: function(result){
-				WPA.MyResults.loadProfilePhoto();
+			success: function(result) {
+				if(result && result.filename && callbackFn) {
+					callbackFn(result.filename);
+				}
 			}
 		});
 	},
@@ -155,6 +161,34 @@ WPA.Ajax = {
 				}
 			}
 		});
+	},
+	
+	/**
+	 * Creates a new athlete from the new athlete dialog
+	 */
+	createAthlete: function(callbackFn) {
+		var name = jQuery('#createAthleteName').val();
+		if(name != '') {
+			WPA.toggleLoading(true);
+			jQuery.ajax({
+				type: "post",
+				url: WPA.Ajax.url,
+				data: {
+					action: 'wpa_create_user',
+					name: name,
+					gender: jQuery('#createAthleteGender').val(),
+					dob: jQuery('#createAthleteDob').val()
+				},
+				success: function(result) {
+					if(callbackFn) {
+						callbackFn(result);
+					}
+				}
+			});
+		}
+		else {
+			jQuery('#createAthleteName').addClass('ui-state-error');
+		}
 	},
 	
 	/**

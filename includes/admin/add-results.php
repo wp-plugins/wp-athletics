@@ -242,85 +242,41 @@ if ( $this->has_permission_to_manage() ) {
 			});
 		}
 
-		WPA.Admin.showCreateUserDialog = function() {
-			// reset fields
-			jQuery('#createUserName,#createUserDob').val();
-
-			jQuery('#create-user-dialog').dialog({
-				title: WPA.getProperty('add_result_create_user_dialog_title'),
-				autoOpen: true,
-				resizable: false,
-				modal: true,
-				height: 'auto',
-				width: 'auto',
-				buttons: [{
-			    	text: WPA.getProperty('cancel'),
-			    	click: function() {
-			    		jQuery('#create-user-dialog').dialog('close');
-				    }
-				},{
-			    	text: WPA.getProperty('submit'),
-			    	click: function() {
-			    		WPA.Ajax.createUser();
-				    }
-			    }]
-			});
-		}
-
-		WPA.Ajax.createUser = function() {
-			var name = jQuery('#createUserName').val();
-			if(name != '') {
-				WPA.toggleLoading(true);
-				jQuery.ajax({
-					type: "post",
-					url: WPA.Ajax.url,
-					data: {
-						action: 'wpa_create_user',
-						name: name,
-						gender: jQuery('#createUserGender').val(),
-						dob: jQuery('#createUserDob').val()
-					},
-					success: function(result){
-						WPA.toggleLoading(false);
-						if(parseInt(result.id) > 0) {
-							jQuery('#create-user-dialog').dialog('close');
-
-							// set athlete info
-							jQuery('#athleteName').val(jQuery('#createUserName').val()).removeClass('wpa-search-disabled');
-							WPA.Admin.selectedAthleteId = result.id;
-							WPA.Admin.getAthleteInfo();
-
-							// show dialog with athlete info
-							jQuery('#create-user-success-dialog span').html(result.username + ' / ' + result.username);
-							jQuery('#create-user-success-dialog').dialog({
-								title: WPA.getProperty('add_result_create_user_success_dialog_title'),
-								autoOpen: true,
-								resizable: false,
-								modal: true,
-								height: 'auto',
-								width: 300,
-								buttons: [{
-							    	text: WPA.getProperty('ok'),
-							    	click: function() {
-							    		jQuery('#create-user-success-dialog').dialog('close');
-								    }
-							    }]
-							});
-
-						}
-					}
-				});
-			}
-			else {
-				jQuery('#createUserName').addClass('ui-state-error');
-			}
-		}
-
 		// set up ajax
 		WPA.Ajax.setup('<?php echo admin_url( 'admin-ajax.php' ); ?>', '<?php echo $nonce; ?>', '<?php echo WPA_PLUGIN_URL; ?>', '<?php echo $current_user->ID; ?>',  function() {
 
 			// common setup function
 			WPA.setupCommon();
+
+			// set up new athlete dialog
+			WPA.setupNewAthleteDialog(function(result) {
+				WPA.toggleLoading(false);
+				if(parseInt(result.id) > 0) {
+					jQuery('#create-user-dialog').dialog('close');
+
+					// set athlete info
+					jQuery('#athleteName').val(jQuery('#createAthleteName').val()).removeClass('wpa-search-disabled');
+					WPA.Admin.selectedAthleteId = result.id;
+					WPA.Admin.getAthleteInfo();
+
+					// show dialog with athlete info
+					jQuery('#create-user-success-dialog span').html(result.username + ' / ' + result.username);
+					jQuery('#create-user-success-dialog').dialog({
+						title: WPA.getProperty('add_result_create_user_success_dialog_title'),
+						autoOpen: true,
+						resizable: false,
+						modal: true,
+						height: 'auto',
+						width: 300,
+						buttons: [{
+					    	text: WPA.getProperty('ok'),
+					    	click: function() {
+					    		jQuery('#create-user-success-dialog').dialog('close');
+						    }
+					    }]
+					});
+				}
+			});
 
 			// setup the edit event screen
 			WPA.setupEditEventDialog(function(createId) {
@@ -353,7 +309,7 @@ if ( $this->has_permission_to_manage() ) {
 		        }
 			}).click(function(e) {
 				e.preventDefault();
-				WPA.Admin.showCreateUserDialog();
+				WPA.displayNewAthleteDialog();
 			});
 
 			jQuery('#add-event-cancel').click(function() {
@@ -425,11 +381,6 @@ if ( $this->has_permission_to_manage() ) {
 				});
 			});
 
-			// keyup on create user name field
-			jQuery('#createUserName').keyup(function() {
-				jQuery(this).removeClass('ui-state-error');
-			});
-
 			// gender select
 			jQuery("#setGender").change(function() {
 				WPA.Admin.athleteGender = jQuery(this).val();
@@ -445,7 +396,7 @@ if ( $this->has_permission_to_manage() ) {
 			});
 
 			// date picker
-			jQuery('#setDob,#createUserDob').datepicker({
+			jQuery('#setDob').datepicker({
 		      showOn: "both",
 		      buttonImage: "<?php echo WPA_PLUGIN_URL ?>/resources/images/date_picker.png",
 		      buttonImageOnly: true,
@@ -566,27 +517,7 @@ if ( $this->has_permission_to_manage() ) {
 			</div>
 
 		</div>
-
-		<!-- CREATE USER DIALOG -->
-		<div id="create-user-dialog" style="display:none">
-			<div class="wpa-add-result-field add-result-no-bg">
-				<label class="required"><?php echo $this->get_property('add_result_name'); ?>:</label>
-				<input class="ui-widget ui-widget-content ui-state-default ui-corner-all add-result-required" size="30" maxlength=100 type="text" id="createUserName" />
-			</div>
-			<div class="wpa-add-result-field add-result-no-bg">
-				<label class="required"><?php echo $this->get_property('my_profile_gender'); ?>:</label>
-				<select id="createUserGender">
-					<option value="M"><?php echo $this->get_property('gender_M'); ?></option>
-					<option value="F"><?php echo $this->get_property('gender_F'); ?></option>
-				</select>
-			</div>
-			<div class="wpa-add-result-field add-result-no-bg">
-				<label><?php echo $this->get_property('my_profile_dob'); ?>:</label>
-				<input readonly="readonly" class="ui-widget ui-widget-content ui-state-default ui-corner-all" size="20" type="text" id="createUserDob"/>
-				<span class="wpa-help" title="<?php echo $this->get_property('add_result_create_user_dob_help'); ?>"></span>
-			</div>
-		</div>
-
+		
 		<!-- CREATE USER SUCCESS DIALOG -->
 		<div id="create-user-success-dialog" style="display:none">
 			<p><?php echo $this->get_property('add_result_create_user_success_text'); ?></p>
@@ -611,6 +542,9 @@ if ( $this->has_permission_to_manage() ) {
 				<input readonly="readonly" class="ui-widget ui-widget-content ui-state-default ui-corner-all" size="20" type="text" id="setDob"/>
 			</div>
 		</div>
+		
+		<!-- ADD ATHLETE DIALOG -->
+		<?php $this->create_new_athlete_dialog(); ?>
 
 		<!-- ADD/EDIT EVENT DIALOG -->
 		<?php $this->create_edit_event_dialog(); ?>

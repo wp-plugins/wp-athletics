@@ -67,6 +67,7 @@ if( !class_exists( 'WPA_Base' ) ) {
 			add_action( 'wp_ajax_wpa_get_logs', array( $this, 'get_logs' ) );
 			add_action( 'wp_ajax_wpa_get_recent_results', array( $this, 'get_recent_results' ) );
 			add_action( 'wp_ajax_wpa_get_generic_results', array( $this, 'get_generic_results' ) );
+			add_action( 'wp_ajax_wpa_save_profile_photo', array ( $this, 'save_profile_photo') );
 
 			// no priv actions (for users not logged in)
 			add_action( 'wp_ajax_nopriv_wpa_get_personal_bests', array ( $this, 'get_personal_bests') );
@@ -83,6 +84,25 @@ if( !class_exists( 'WPA_Base' ) ) {
 			if( is_admin() ) {
 				add_action( 'admin_enqueue_scripts', array ($this, 'enqueue_common_scripts_and_styles' ) );
 			}
+		}
+		
+		/**
+		 * [AJAX] Saves new user profile photo in user metadata table
+		 */
+		public function save_profile_photo() {
+			global $current_user;
+	
+			$filename = $this->process_photo_to_150px( $_POST['url'] );
+			
+			$user_id = $_POST['userId'];
+	
+			update_user_meta( $user_id, 'wp-athletics_profile_photo', $filename );
+	
+			$result = array('filename'=>$filename);
+	
+			// return as json
+			wp_send_json($result);
+			die();
 		}
 
 		/**
@@ -727,6 +747,7 @@ if( !class_exists( 'WPA_Base' ) ) {
 				wp_enqueue_script( 'jquery-ui-tooltip' );
 				wp_enqueue_script( 'jquery-effects-highlight' );
 				wp_enqueue_script( 'jquery-ui-datepicker' );
+				wp_enqueue_media();
 
 				// stats scripts
 				if( defined( 'WPA_STATS_ENABLED' ) ) {
@@ -775,6 +796,45 @@ if( !class_exists( 'WPA_Base' ) ) {
 					<input readonly="readonly" style="position:relative; top:-2px" class="ui-widget ui-widget-content ui-state-default ui-corner-all add-result-required" size="30" type="text" id="editResultDate"/>
 				</div>
 			</div>
+		<?php
+		}
+	
+		/**
+		 * Creates a dialog to add a new athlete
+		 */
+		public function create_new_athlete_dialog() {
+		?>
+		<div id="create-user-dialog" style="display:none">
+			<div class="wpa-add-result-field add-result-no-bg">
+				<label class="required"><?php echo $this->get_property('add_result_name'); ?>:</label>
+				<input class="ui-widget ui-widget-content ui-state-default ui-corner-all add-result-required" size="30" maxlength=100 type="text" id="createAthleteName" />
+			</div>
+			<div class="wpa-add-result-field add-result-no-bg">
+				<label class="required"><?php echo $this->get_property('column_athlete_username'); ?>:</label>
+				<input class="ui-widget ui-widget-content ui-state-default ui-corner-all add-result-required" size="30" maxlength=100 type="text" id="createAthleteUsername" />
+			</div>
+			<div class="wpa-add-result-field add-result-no-bg">
+				<label><?php echo $this->get_property('column_athlete_email'); ?>:</label>
+				<input class="ui-widget ui-widget-content ui-state-default ui-corner-all" size="20" type="text" id="createAthleteEmail"/>
+			</div>
+			<div class="wpa-add-result-field add-result-no-bg" style="position: relative; top: 7px;">
+				<label></label>
+				<input checked="checked" type="checkbox" id="createAthleteSendDetails"/>
+				<span><?php echo $this->get_property('email_details_text'); ?></span>
+			</div>
+			<div class="wpa-add-result-field add-result-no-bg">
+				<label class="required"><?php echo $this->get_property('my_profile_gender'); ?>:</label>
+				<select id="createAthleteGender">
+					<option value="M"><?php echo $this->get_property('gender_M'); ?></option>
+					<option value="F"><?php echo $this->get_property('gender_F'); ?></option>
+				</select>
+			</div>
+			<div class="wpa-add-result-field add-result-no-bg">
+				<label><?php echo $this->get_property('my_profile_dob'); ?>:</label>
+				<input readonly="readonly" class="ui-widget ui-widget-content ui-state-default ui-corner-all" size="20" type="text" id="createAthleteDob"/>
+				<span class="wpa-help" title="<?php echo $this->get_property('add_result_create_user_dob_help'); ?>"></span>
+			</div>
+		</div>
 		<?php
 		}
 

@@ -72,6 +72,7 @@ if ( $this->has_permission_to_manage() ) {
 						<select id="setting-language">
 							<option value="en">English</option>
 							<option value="it">Italian</option>
+							<option value="pt">Portuguese</option>
 							<!--
 							<option value="fr">French</option>
 							<option value="es">Spanish</option>
@@ -172,6 +173,7 @@ if ( $this->has_permission_to_manage() ) {
 		<p>
 			<ul>
 				<li>Roberto Luceri for translating the plugin into Italian.
+				<li>Darrin Ormston for ongoing testing and feature development
 			</ul>
 		</p>
 	</div>

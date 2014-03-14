@@ -296,6 +296,7 @@ $admin_lang = array(
 	'delete_athlete_text' => 'Are you sure you wish to remove this athlete and all associated records?',
 	'delete_athlete_tooltip' => 'Delete this athlete (cannot be undone)',
 	'edit_athlete_tooltip' => 'Edit this athlete',
+	'email_details_text' => 'Send this athlete their login details',
 
 	// event manager
 	'edit_event_text' => 'Edit Event',

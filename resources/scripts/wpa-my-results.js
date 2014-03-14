@@ -3,17 +3,7 @@
  */
 
 WPA.MyResults = {
-	
-	/**
-	 * reads the profile photo url from the hidden input and populates as background image of the profile photo div
-	 */
-	loadProfilePhoto: function() {
-		var url =  jQuery('#user-image').val();
-		if(url) {
-			jQuery('#wpaProfilePhoto').removeClass('wpa-profile-photo-default').css('background-image', 'url(' + url + ')');
-		}
-	},
-	
+
 	/**
 	 * reloads all results
 	 */

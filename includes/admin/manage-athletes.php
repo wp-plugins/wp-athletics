@@ -27,6 +27,11 @@ if ( $this->has_permission_to_manage() ) {
 		WPA.Admin.deleteAthlete(id);
 	}
 
+	WPA.Admin.launchCustomUploader = function(userId) {
+		WPA.Admin.customUploaderUserId = userId;
+	    WPA.Admin.customUploader.open();
+	}
+
 	WPA.Admin.createAthletesTable = function() {
 		WPA.Admin.athletesTable = jQuery('#athletes-table').dataTable(WPA.createTableConfig({
 			"bServerSide": true,
@@ -53,7 +58,8 @@ if ( $this->has_permission_to_manage() ) {
 				"sWidth": "60px",
 				"sClass": "datatable-center"
 			},{
-				"mData": "athlete_name"
+				"mData": "athlete_name",
+				"mRender": WPA.renderAdminAthleteLinkColumn
 			},{
 				"mData": "user_login"
 			},{
@@ -78,6 +84,17 @@ if ( $this->has_permission_to_manage() ) {
 			// common setup function
 			WPA.setupCommon();
 
+			// set up new athlete dialog
+			WPA.setupNewAthleteDialog(function(result) {
+				WPA.toggleLoading(false);
+				if(parseInt(result.id) > 0) {
+					jQuery('#create-user-dialog').dialog('close');
+
+					// reload the table
+					WPA.Admin.athletesTable.fnDraw();
+				}
+			});
+
 			// setup filters
 			WPA.setupFilters(null, WPA.Admin.athleteTable, null, null, {}, WPA.Admin.doAthleteNameFilter);
 
@@ -87,8 +104,31 @@ if ( $this->has_permission_to_manage() ) {
 		        }
 			}).click(function(e) {
 				e.preventDefault();
-				WPA.showCreateAthleteDialog();
+				WPA.displayNewAthleteDialog();
 			});
+
+	        // extend the wp.media object for custom uploader
+	        WPA.Admin.customUploader = wp.media.frames.file_frame = wp.media({
+	            title: WPA.getProperty('my_profile_select_profile_image_title'),
+	            button: {
+	                text: WPA.getProperty('my_profile_select_profile_image')
+	            },
+	            multiple: false
+	        });
+
+	        // when a photo is selected, grab the URL and set it as the text field's value, then save to user metadata
+	        WPA.Admin.customUploader.on('select', function() {
+
+				// set image to loading spinner
+				console.log(WPA.globals.pluginUrl + '/resources/images/img-loading.gif');
+				jQuery('#user-image-' + WPA.Admin.customUploaderUserId).attr('src', WPA.globals.pluginUrl + '/resources/images/img-loading.gif');
+		        
+	            attachment = WPA.Admin.customUploader.state().get('selection').first().toJSON();
+	            WPA.Ajax.saveProfilePhoto(attachment.url, WPA.Admin.customUploaderUserId, function(filename) {
+		            jQuery('#user-image-' + WPA.Admin.customUploaderUserId).attr('src', filename);
+	            });
+	            WPA.Admin.customUploader.close();
+	        });
 		});
 	});
 
@@ -107,7 +147,6 @@ if ( $this->has_permission_to_manage() ) {
 
 			<!-- FILTERS -->
 			<div class="wpa-filters ui-corner-all">
-
 				<div class="filter-ignore-for-pb">
 					<input id="filterAthleteName" highlight-class="filter-highlight" default-text="<?php echo $this->get_property('filter_athlete_name_input_text'); ?>" class="ui-corner-all ui-widget ui-widget-content ui-state-default wpa-search wpa-search-disabled"></input>
 					<span id="filterAthleteNameCancel" style="display:none;" title="<?php echo $this->get_property('filter_athlete_name_cancel_text'); ?>" class="filter-name-remove"></span>
@@ -143,6 +182,9 @@ if ( $this->has_permission_to_manage() ) {
 				<?php echo $this->get_property('delete_athlete_text') ?>
 			</p>
 		</div>
+		
+		<!-- ADD ATHLETE DIALOG -->
+		<?php $this->create_new_athlete_dialog(); ?>
 
 		<!-- COMMON DIALOGS -->
 		<?php $this->create_common_dialogs(); ?>

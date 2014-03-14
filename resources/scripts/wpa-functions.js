@@ -1026,6 +1026,22 @@ var WPA = {
 		WPA.createRankingsDataTable();
 	},
 	
+	displayTableColumnClubRankings: function(ageCat, eventCat, gender) {
+
+		WPA.rankingsDialog.dialog('option', 'title', WPA.generateRankingsDialogTitle(eventCat, gender, ageCat, true));
+		
+		jQuery('#best-athlete-result-radio').attr('checked', 'checked');
+		var params = {
+			ageCategory: ageCat,
+			gender: gender,
+			eventSubTypeId: 'all',
+			eventDate: 'all',
+			eventCategoryId: eventCat,
+			rankingDisplay: 'best-athlete-result'
+		}
+		WPA.getRankingsPersonalBests(params, true);
+	},
+	
 	/**
 	 * Loads rankings for a given event
 	 */
@@ -1915,6 +1931,64 @@ var WPA = {
 	},
 	
 	/**
+	 * Sets up the add new athlete dialog
+	 */
+	setupNewAthleteDialog: function(callbackFn) {
+		jQuery('#create-user-dialog').dialog({
+			title: WPA.getProperty('add_result_create_user_dialog_title'),
+			autoOpen: false,
+			resizable: false,
+			modal: true,
+			height: 'auto',
+			width: 'auto',
+			buttons: [{
+		    	text: WPA.getProperty('cancel'),
+		    	click: function() {
+		    		jQuery('#create-user-dialog').dialog('close');
+			    }
+			},{
+		    	text: WPA.getProperty('submit'),
+		    	click: function() {
+		    		WPA.Ajax.createAthlete(callbackFn);
+		    	}
+		    }]
+		});
+		
+		// username field
+		jQuery('#createAthleteName').keyup(function() {
+			jQuery('#createAthleteUsername').val(jQuery(this).val().replace(/ /g,'').toLowerCase());
+		});
+		
+		// keyup on create user name field
+		jQuery('#createAthleteName').keyup(function() {
+			jQuery(this).removeClass('ui-state-error');
+		});
+		
+		// date picker
+		jQuery('#createAthleteDob').datepicker({
+	      showOn: "both",
+	      buttonImage: WPA.globals.pluginUrl + '/resources/images/date_picker.png',
+	      buttonImageOnly: true,
+	      changeMonth: true,
+	      changeYear: true,
+	      maxDate: 0,
+	      dateFormat: WPA.Settings['display_date_format'],
+	      yearRange: 'c-100:c'
+	    });
+	},
+	
+	/**
+	 * Resets and opens the new athlete dialog
+	 */
+	displayNewAthleteDialog: function() {
+		// reset fields
+		jQuery('#createUserName,#createUserDob').val('');
+		
+		// opens
+		jQuery('#create-user-dialog').dialog('open');
+	},
+	
+	/**
 	 * Validates the edit/add event data and submits ajax request if valid.
 	 */
 	submitEditEvent: function(reloadFn) {
@@ -2375,22 +2449,6 @@ var WPA = {
 		return '[wpa-event id=' + data + ']';
 	},
 	
-	displayTableColumnClubRankings: function(ageCat, eventCat, gender) {
-
-		WPA.rankingsDialog.dialog('option', 'title', WPA.generateRankingsDialogTitle(eventCat, gender, ageCat, true));
-		
-		jQuery('#best-athlete-result-radio').attr('checked', 'checked');
-		var params = {
-			ageCategory: ageCat,
-			gender: gender,
-			eventSubTypeId: 'all',
-			eventDate: 'all',
-			eventCategoryId: eventCat,
-			rankingDisplay: 'best-athlete-result'
-		}
-		WPA.getRankingsPersonalBests(params, true);
-	},
-	
 	renderClubRankColumnNoLink: function(data, type, full) {
 		var rank = parseInt(data);
 		var divClass = 'wpa-rank';
@@ -2425,10 +2483,14 @@ var WPA = {
 		return '-';
 	},
 	
-	renderAthletePhoto: function(data, full, type) {
+	renderAthletePhoto: function(data, type, full) {
 		if(!data || data == 'null') {
 			data = WPA.globals.pluginUrl + '/resources/images/profile-blank.jpg';
 		}
-		return '<img class="datatable-image" src="' + data + '" width="50" height="50"/>';
-	}
+		return '<img title="' + WPA.getProperty('my_profile_image_upload_text') + '" id="user-image-' + full['id'] + '" onclick="WPA.Admin.launchCustomUploader(' + full['id'] + ')" class="wpa-admin-profile-img datatable-image" src="' + data + '" width="50" height="50"/>';
+	},
+	
+	renderAdminAthleteLinkColumn: function(data, type, full) {
+		return '<div class="wpa-link" onclick="WPA.displayUserProfileDialog(' + full['id'] + ')">' + data + '</div>';
+	},
 };

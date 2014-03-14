@@ -104,12 +104,8 @@
 	margin: 0px 20px 0px 0px;
 }
 
-.wpa-add-result-field input {
+.wpa-add-result-field input[type=text] {
 	height: 28px;
-}
-
-.wpa-add-result-field .custom-combobox .custom-combobox-input {
-  height: 17px !important;
 }
 
 #merge-events-dialog, #delete-events-confirm-dialog {
@@ -250,4 +246,16 @@
 	margin: 0px 5px 0px 0px;
 	font-size: 15px;
 	text-align: right;
+}
+
+.wpa-admin-profile-img {
+	cursor: pointer;
+}
+
+.wpa-admin-profile-img:hover {
+	border: 1px solid red;
+}
+
+.custom-combobox .custom-combobox-input {
+	height: 27px !important;
 }
