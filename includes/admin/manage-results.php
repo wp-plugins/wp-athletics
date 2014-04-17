@@ -158,21 +158,17 @@ if ( $this->has_permission_to_manage() ) {
 				"bVisible": false,
 				"mRender": WPA.renderEventLocationColumn
 			},{
-				"mData": "event_sub_type_id",
-				"mRender" : WPA.renderEventTypeColumn
-			},{
 				"mData": "category"
 			},{
 				"mData": "age_category",
 				"mRender" : WPA.renderAgeCategoryColumn
 			},{
-				"mData": "time",
-				"mRender": WPA.renderTimeColumn
+				"mData": "score",
+				"sClass": "datatable-center"
 			},{
-				"mData": "garmin_id",
-				"sWidth": "16px",
-				"mRender": WPA.renderGarminColumn,
-				"bSortable": false
+				"mData": "total",
+				"mRender" : WPA.renderGolfTotal,
+				"sClass": "datatable-center"
 			}]
 		}));
 	}
@@ -200,9 +196,8 @@ if ( $this->has_permission_to_manage() ) {
 
 			// setup filters
 			WPA.setupFilters(null, WPA.Admin.resultsTable, null, WPA.Admin.doEventNameFilter, {
-				event: 8,
-				type: 7,
-				age: 9,
+				event: 7,
+				age: 8,
 				period: 4
 			}, WPA.Admin.doAthleteNameFilter);
 
@@ -265,10 +260,6 @@ if ( $this->has_permission_to_manage() ) {
 					<option value="this_year"><?php echo $this->get_property('filter_period_option_this_year'); ?></option>
 				</select>
 
-				<select id="filterType">
-					<option value="all" selected="selected"><?php echo $this->get_property('filter_type_option_all'); ?></option>
-				</select>
-
 				<select id="filterAge">
 					<option value="all" selected="selected"><?php echo $this->get_property('filter_age_option_all'); ?></option>
 				</select>
@@ -305,11 +296,10 @@ if ( $this->has_permission_to_manage() ) {
 					<th><?php echo $this->get_property('column_event_date') ?></th>
 					<th><?php echo $this->get_property('column_event_name') ?></th>
 					<th><?php echo $this->get_property('column_event_location') ?></th>
-					<th><?php echo $this->get_property('column_event_type') ?></th>
 					<th><?php echo $this->get_property('column_category') ?></th>
 					<th><?php echo $this->get_property('column_age_category') ?></th>
-					<th><?php echo $this->get_property('column_time') ?></th>
-					<th></th>
+					<th><?php echo $this->get_property('column_score') ?></th>
+					<th><?php echo $this->get_property('column_total') ?></th>
 					</tr>
 				</thead>
 			</table>

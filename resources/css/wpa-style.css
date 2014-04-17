@@ -294,7 +294,7 @@
 	color: #a3a3a3;
 }
 
-#eventInfoDetail {
+#eventInfoDetail, #eventInfoParDetail {
 	font-size: 14px;
 	color: #afafaf;
 }

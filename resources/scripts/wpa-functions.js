@@ -424,6 +424,7 @@ var WPA = {
 		WPA.Ajax.getEventInfo(eventId, function(result) {
 			jQuery('#eventInfoName').html(result.name + ', ' + result.location);
 			jQuery('#eventInfoDate').html(result.date);
+			jQuery('#eventInfoPar').html(result.par);
 			jQuery('#eventInfoDetail').html(WPA.getEventSubTypeDescription(result.sub_type_id) + ' ' + WPA.getEventCategoryDescription(result.event_cat_id));
 		})
 		
@@ -483,7 +484,7 @@ var WPA = {
 		WPA.Ajax.getEventInfo(id, function(result) {
 			jQuery('#eventInfoName' + id).html(result.name + ', ' + result.location);
 			jQuery('#eventInfoDate' + id).html(result.date);
-			jQuery('#eventInfoDetail' + id).html(WPA.getEventCategoryDescription(result.event_cat_id) + ' (' + WPA.getEventSubTypeDescription(result.sub_type_id) + ')');
+			jQuery('#eventInfoDetail' + id).html(WPA.getProperty('label_par') + ' ' + result.par + ' ' );
 			jQuery('#wpa-event-results-info-' + id).show();
 		}, true)
 		
@@ -548,43 +549,27 @@ var WPA = {
 				"sEmptyTable": '',
 				"sProcessing": WPA.getProperty('table_loading_message')
 			},
-			"aoColumns": [{ 
-				"mData": "time_format",
+			"aoColumns": [{
+				"mData": "total",
 				"bVisible": false
 			},{ 
 				"mData": "rank",
-				"bVisible": false
-			},{ 
-				"mData": "rank",
-				"sClass": "datatable-center",
-				"bSortable": false
+				"mRender": WPA.renderPositionColumn
 			},{ 
 				"mData": "athlete_name",
 				"mRender" : WPA.renderProfileLinkColumn,
 				"sClass": "datatable-right",
 				"bSortable": false
-			},{ 
-				"mData": "time",
-				"sClass": "datatable-bold",
-				"mRender": WPA.renderTimeColumn,
-				"bSortable": false
-			},{
-				"mData": "time",
-				"mRender": WPA.renderPaceMilesColumn,
-				"bSortable": false
 			},{
 				"mData": "age_category",
-				"mRender" : WPA.renderAgeCategoryColumn,
-				"bSortable": false
-			},{ 
-				"mData": "position",
-				"mRender": WPA.renderPositionColumn,
-				"bSortable": false
+				"mRender" : WPA.renderAgeCategoryColumn
 			},{
-				"mData": "garmin_id",
-				"sWidth": "16px",
-				"mRender": WPA.renderGarminColumn,
-				"bSortable": false
+				"mData": "score",
+				"sClass": "datatable-center"
+			},{
+				"mData": "total",
+				"mRender" : WPA.renderGolfTotal,
+				"sClass": "datatable-center"
 			}]
 		}));
 		
@@ -702,32 +687,23 @@ var WPA = {
 				"mData": "event_location",
 				"mRender" : WPA.renderEventLocationColumn
 			},{
-				"mData": "event_sub_type_id",
-				"mRender" : WPA.renderEventTypeColumn,
-				"bVisible": false
-			},{
 				"mData": "category",
 				"mRender": WPA.renderCategoryAndTerrainColumn
 			},{
 				"mData": "age_category",
 				"mRender" : WPA.renderAgeCategoryColumn
 			},{
-				"mData": "time",
-				"mRender": WPA.renderTimeColumn
-			},{
-				"mData": "time",
-				"mRender": WPA.renderPaceMilesColumn,
-				"bSortable": false
-			},{
 				"mData": "position",
 				"sWidth": "20px",
 				"sClass": "datatable-center",
 				"mRender": WPA.renderPositionColumn
 			},{
-				"mData": "garmin_id",
-				"sWidth": "16px",
-				"mRender": WPA.renderGarminColumn,
-				"bSortable": false
+				"mData": "score",
+				"sClass": "datatable-center"
+			},{
+				"mData": "total",
+				"mRender" : WPA.renderGolfTotal,
+				"sClass": "datatable-center"
 			}]
 		}));
 		
@@ -1571,6 +1547,9 @@ var WPA = {
 		if(enable) {
 			// reset the event category id
 			jQuery('#addResultEventId').val('');
+			jQuery('#addResultPar').val('');
+			jQuery('#addResultScore').val('');
+			jQuery('#addResultTotal').val('');
 			jQuery('#addResultEventName').val('').focus();
 			jQuery('#addResultEventCategory').combobox('setValue', '');
 			jQuery('#addResultEventSubType').combobox('setValue', '');
@@ -1580,6 +1559,7 @@ var WPA = {
 		jQuery('#add-result-dialog .ui-datepicker-trigger').toggle(enable);
 		jQuery('.add-result-cancel-event').toggle(!enable);
 		jQuery('#addResultEventName').prop('disabled', !enable);
+		jQuery('#addResultPar').prop('disabled', !enable);
 		jQuery('#addResultDate').prop('disabled', !enable);
 		jQuery('#addResultEventLocation').prop('disabled', !enable);
 		
@@ -1630,6 +1610,7 @@ var WPA = {
 		jQuery('#addResultDate').removeClass('ui-state-error').datepicker('setDate', result.date);
 		jQuery('#addResultEventName').removeClass('ui-state-error').val(result.name);
 		jQuery('#addResultEventId').val(result.id);
+		jQuery('#addResultPar').val(result.par);
 		jQuery('#addResultEventLocation').removeClass('ui-state-error').val(result.location).change();
 		
 		// selects
@@ -1658,7 +1639,7 @@ var WPA = {
 			jQuery("#addResultId").val(result.id);
 			jQuery('#addResultAgeCat').combobox('setValue', result.age_category);
 			jQuery('#addResultPosition').val(result.position);
-			jQuery('#addResultGarminId').val(result.garmin_id);
+			jQuery('#addResultScore').val(result.score).trigger('keyup');
 			jQuery('#addResultTimeHours').val(time.hours);
 			jQuery('#addResultTimeMinutes').val(time.minutes);
 			jQuery('#addResultTimeSeconds').val(time.seconds);
@@ -1771,36 +1752,25 @@ var WPA = {
 	submitResult: function(reloadFn) {
 
 		if(WPA.validateAddEditForm('add-result-dialog')) {
-			
-			// incase anyone ignore the instructions ;)
-			var garminLink = jQuery('#addResultGarminId').val();
-			garminLink = garminLink.replace('http://connect.garmin.com/activity/', '');
-			
-			var timeMillis = WPA.timeToMilliseconds(
-				jQuery('#addResultTimeHours').val(),
-				jQuery('#addResultTimeMinutes').val(),
-				jQuery('#addResultTimeSeconds').val(),
-				jQuery('#addResultTimeMilliSeconds').val()
-			);
-			var distanceMeters = WPA.getEventDistanceMeters(jQuery('#addResultEventCategory').val());
-			var paces = WPA.getResultPaces(timeMillis, distanceMeters);
-			
+
 			WPA.toggleLoading(true);
 			WPA.Ajax.updateResult({
 				resultId: jQuery('#addResultId').val(),
-				time: timeMillis,
+				time: 0,
 				eventId: jQuery('#addResultEventId').val(),
 				eventDate: jQuery('#addResultEventDate').val(),
 				eventName: jQuery('#addResultEventName').val(),
 				eventCategory: jQuery('#addResultEventCategory').val(),
-				eventSubType: jQuery('#addResultEventSubType').val(),
+				eventSubType: '',
 				position: jQuery('#addResultPosition').val(),
-				garminId: garminLink,
+				par: jQuery('#addResultPar').val(),
+				score: jQuery('#addResultScore').val(),
+				total: jQuery('#addResultTotalRaw').val(),
 				ageCategory: jQuery("#addResultAgeCat").val(),
 				eventLocation: jQuery('#addResultEventLocation').val(),
 				gender: WPA.userGender,
-				paceKm: paces.km,
-				paceMiles: paces.miles
+				paceKm: '',
+				paceMiles: ''
 			}, function() {
 				WPA.toggleLoading(false);
 				
@@ -2042,7 +2012,8 @@ var WPA = {
 			eventDate: jQuery('#editEventDate').val(),
 			eventName: jQuery('#editEventName').val(),
 			eventCategory: jQuery('#editEventCategory').val(),
-			eventSubType: jQuery('#editEventSubType').val(),
+			eventSubType: '',
+			par: jQuery('#editEventPar').val(),
 			eventLocation: jQuery('#editEventLocation').val()
 		}
 	},
@@ -2085,6 +2056,45 @@ var WPA = {
 			// create age cat type selection list
 			jQuery.each(WPA.globals.ageCategories, function(id, item) {
 				jQuery("#addResultAgeCat").append('<option value="' + id + '">' + item.name + '</option>');
+			});
+			
+			jQuery('#addResultScore, #addResultPar').keyup(function() {
+				var value = jQuery('#addResultScore').val();
+				if(value) {
+					var par = jQuery('#addResultPar').val();
+					if(par) {
+						
+						var total = value - par;
+						var symbol = '';
+						if( total > 0) {
+							symbol = '+';
+						}
+						else if(total == 0) {
+							symbol = WPA.getProperty('golf_score_even');
+						}					
+
+						jQuery('#addResultTotal').val(symbol + (total != 0 ? total : ''));
+						jQuery('#addResultTotalRaw').val(total);
+						return false;
+					}
+				}
+				jQuery('#addResultTotal').val('');
+			});
+			
+			var validateNumFields = jQuery('input.validate-num');
+			jQuery.each(validateNumFields, function() {
+				jQuery(this).keyup(function() {
+					var value = jQuery(this).val();
+					console.log(value);
+					if(value != '' && jQuery.isNumeric(value) == false) {
+						jQuery(this).val('');
+					}
+					else {
+						jQuery(this).removeClass('ui-state-error');
+					}
+				}).focus(function() {
+					jQuery(this).select();
+				});
 			});
 			
 			// change event for time fields to validate real time
@@ -2488,6 +2498,17 @@ var WPA = {
 			data = WPA.globals.pluginUrl + '/resources/images/profile-blank.jpg';
 		}
 		return '<img title="' + WPA.getProperty('my_profile_image_upload_text') + '" id="user-image-' + full['id'] + '" onclick="WPA.Admin.launchCustomUploader(' + full['id'] + ')" class="wpa-admin-profile-img datatable-image" src="' + data + '" width="50" height="50"/>';
+	},
+	
+	renderGolfTotal: function(data, type, full) {
+		var data = parseInt(data);
+		if(data > 0) {
+			return '+' + data;
+		}
+		else if(data == 0) {
+			return WPA.getProperty('golf_score_even');
+		}
+		return data;
 	},
 	
 	renderAdminAthleteLinkColumn: function(data, type, full) {

@@ -69,8 +69,8 @@ if( !class_exists( 'WP_Athletics_Event_Results' ) ) {
 						<div id="wpa-event-results-info-<?php echo $id; ?>" class="wpa-event-results-info">
 							<strong><span id="eventInfoName<?php echo $id; ?>"></span></strong>
 							<div>
-								<span class="wpa-event-results-info-right" style="font-weight:bold" id="eventInfoDate<?php echo $id; ?>"></span>
-								<span class="wpa-event-results-info-right" id="eventInfoDetail<?php echo $id; ?>"></span>
+								<span class="wpa-event-results-info-right" style="font-weight:bold" id="eventInfoDetail<?php echo $id; ?>"></span>
+								<span class="wpa-event-results-info-right"  id="eventInfoDate<?php echo $id; ?>"></span>
 							</div>
 						</div>
 					</div>
@@ -78,26 +78,6 @@ if( !class_exists( 'WP_Athletics_Event_Results' ) ) {
 					<div id="wpa-embedded-results-bottom">
 						<div id="wpa-embedded-results-actions">
 							<span onclick="WPA.launchAddResultDialog(<?php echo $id ?>, true)"><?php echo $this->get_property('embedded_event_results_add_result_link')?></span>
-						</div>
-						<div id="wpa-embedded-results-options">
-							<?php
-							if(get_option('wp-athletics_records_mode') == 'combined') {
-							?>
-								<span onclick="window.location='<?php echo get_permalink(get_option('wp-athletics_records_page_id')); ?>'">
-									<?php echo $this->get_property('embedded_event_results_club_records_link')?>
-								</span>
-							<?php
-							} else {
-							?>
-								<span onclick="window.location='<?php echo get_permalink(get_option('wp-athletics_records_male_page_id')); ?>'">
-									<?php echo $this->get_property('embedded_event_results_male_records_link')?>
-								</span>
-								<span onclick="window.location='<?php echo get_permalink(get_option('wp-athletics_records_female_page_id')); ?>'">
-									<?php echo $this->get_property('embedded_event_results_female_records_link')?>
-								</span>
-							<?php
-							}
-							?>
 						</div>
 						<br style="clear:both;"/>
 					</div>

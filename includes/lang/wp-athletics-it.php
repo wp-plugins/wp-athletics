@@ -5,6 +5,13 @@
  */
 
 $common_lang = array(
+	
+	// for golf ;)
+	'label_par' => 'Par',
+	'golf_score_even' => 'E',
+	'add_result_total' => 'Total',
+	'add_result_score' => 'Score',
+		
 	// results/records tables
     'garmin_link_text' => 'Esplora attivit&agrave; su Garmin Connect',
 	'rankings_link_text' => 'Visualizza classifica della squadra per questo evento',
@@ -12,7 +19,7 @@ $common_lang = array(
 	'column_result_date' => 'Data Inserita',
 	'column_event_type' => 'Terreno',
 	'column_event_name' => 'Evento',
-	'column_athlete_name' => 'Atleta',
+	'column_athlete_name' => 'Nome',
 	'column_athlete_username' => 'Nome utente',
 	'column_athlete_email' => 'Email',
 	'column_athlete_registered' => 'Registrato',
@@ -30,7 +37,7 @@ $common_lang = array(
 	'column_event_shortcode' => 'Embed Code',
 
 	// my results - profile
-	'my_profile_display_name_label' => 'Nome Atleta',
+	'my_profile_display_name_label' => 'Nome',
 	'my_profile_age_class' => 'Categoria',
 	'my_profile_select_fave_event' => 'Seleziona Evento',
 	'my_profile_fave_event' => 'Event Preferito',
@@ -53,8 +60,8 @@ $common_lang = array(
 	'filter_age_option_all' => 'Tutte le categorie',
 	'filter_event_name_input_text' => 'Filtra nome evento',
 	'filter_event_name_cancel_text' => 'Rimuovi Filtro nome evento',
-	'filter_athlete_name_input_text' => 'Filtra nome atleta',
-	'filter_athlete_name_cancel_text' => 'Rimuovi filtro nome atleta',
+	'filter_athlete_name_input_text' => 'Filtra nome utente',
+	'filter_athlete_name_cancel_text' => 'Rimuovi filtro nome utente',
 
 	// user profile dialog
 	'user_profile_dialog_title' => 'Profilo Utente',
@@ -67,8 +74,8 @@ $common_lang = array(
 
 	// rankings dialog - ** DO NOT TRANSLATE THE PROPERTIES IN [brackets] AS THESE ARE TOKENS THAT WILL BE REPLACED WHEN RENDERED ** 
 	'rankings_dialog_title' => '[age] [gender] [category] Posizioni ([period], [type])',
-	'rankings_display_best_athlete_result' => 'Visualizza solo i miglior risultati per questo atleta',
-	'rankings_display_all_athlete_results' => 'Visualizza tutti i risultati per ogni atleta',
+	'rankings_display_best_athlete_result' => 'Visualizza solo i miglior risultati per questo utente',
+	'rankings_display_all_athlete_results' => 'Visualizza tutti i risultati per ogni utente',
 	'rankings_column_hover_text' => 'Click per le cassifiche complete',
 
 	// my results - tabs
@@ -80,7 +87,7 @@ $common_lang = array(
 	'results_personal_bests_tab' => 'Personal Bests',
 
 	// wpa search
-	'wpa_search_text' => 'Cerca atleta per evento',
+	'wpa_search_text' => 'Cerca utente per evento',
 	'wpa_search_category_event' => 'Eventi',
 	'wpa_search_category_athlete' => 'Atleti',
 
@@ -174,7 +181,7 @@ $common_lang = array(
 	'stats_heading_summary' => 'Sommario',
 	'stats_events_not_enough_results' => 'Non ci sono risultati disponibili',
 	'stats_heading_events' => 'Statistiche Evento',
-	'stats_heading_runner' => 'Statistiche Atleta',
+	'stats_heading_runner' => 'Statistiche utente',
 	'stats_label_total_races' => 'Gare',
 	'stats_label_total_distance' => 'Distanza',
 	'stats_label_total_time' => 'Tempo Totale di gara',
@@ -206,7 +213,7 @@ $common_lang = array(
 	'records_page_title' => 'Records Squadra',
 
 	// logs
-	'new_result' => '<user>{name}</user> corso al tempo di <time>{result}</time> al <event>{event-name}</event>',
+	'new_result' => '<user>{name}</user> shot a score of {score} ({total}) at the <event>{event-name}</event>',
 	'new_result_position_addon' => ' and came {position} overall',
 	'update_result' => '<user>{name}</user> updated the result for <event>{event-name}</event>',
 	'new_event' => '<user>{name}</user> has created a new event <event>{event-name}</event>',
@@ -310,23 +317,23 @@ $admin_lang = array(
 	'add_results_choose_event_title' => 'Scegli Evento',
 	'add_results_choose_event_text' => 'Selezionare l\'evento che si desidera aggiungere per i risultati. Controllare se l\'evento &egrave; gi&agrave; presente digitando il nome. Se non esiste, &egrave; sufficiente creare un nuovo evento.',
 	'add_results_title' => 'Aggiungi Risultati',
-	'add_results_text' => 'Ora puoi aggiungere i risultati che vuoi qui sotto. Prima di creare un nuovo atleta, assicurarsi l\'atleta non esiste gi&agrave; nel database. Quando si crea un nuovo atleta utilizzando questo strumento, questa persona non pu&uacute; gestire il suo / suoi propri risultati a meno che non si informa l\'utente del loro credenziali di accesso',
-	'add_results_athlete_input_text' => 'Iniziare a digitare il nome dell\'atleta',
-	'add_result_create_athlete_button' => 'Crea Nuovo Atleta',
+	'add_results_text' => 'Ora puoi aggiungere i risultati che vuoi qui sotto. Prima di creare un nuovo utente, assicurarsi l\'atleta non esiste gi&agrave; nel database. Quando si crea un nuovo atleta utilizzando questo strumento, questa persona non pu&uacute; gestire il suo / suoi propri risultati a meno che non si informa l\'utente del loro credenziali di accesso',
+	'add_results_athlete_input_text' => 'Iniziare a digitare il nome dell\'utente',
+	'add_result_create_athlete_button' => 'Crea Nuovo Utente',
 	'add_results_view_current_event_results' => 'Guarda i risultati',
 	'add_result_button_text' => 'Aggiungi Risultato',
-	'add_result_gender_text' => 'Il sesso di questo atleta &egrave; sconosciuto. Si prega di specificare il sesso di corretto prima di entrare nei risultati',
-	'add_result_gender_dialog_title' => 'Sesso dell\' Atleta Richiesto',
-	'add_result_age_class_help' => 'Questa dovrebbe essere la classe di et&agrave; per l\'atleta alla data di questo evento. Siete pregati di fornire una classe di et&agrave;, perché la data di nascita di questo atleta &egrave; sconosciuta. <br/> Se conosci questa data, fare clic sul calendario<b> Imposta nascita </ b> per evitare di impostare questo valore in futuro',
+	'add_result_gender_text' => 'Il sesso di questo utente &egrave; sconosciuto. Si prega di specificare il sesso di corretto prima di entrare nei risultati',
+	'add_result_gender_dialog_title' => 'Sesso dell\' Utente Richiesto',
+	'add_result_age_class_help' => 'Questa dovrebbe essere la classe di et&agrave; per l\'utente alla data di questo evento. Siete pregati di fornire una classe di et&agrave;, perché la data di nascita di questo utente &egrave; sconosciuta. <br/> Se conosci questa data, fare clic sul calendario<b> Imposta nascita </ b> per evitare di impostare questo valore in futuro',
 	'add_result_set_dob_text' => 'Imposta la data di nascita',
-	'add_result_dob_dialog_title' => 'Imposta la data di nascita dell\'atleta',
+	'add_result_dob_dialog_title' => 'Imposta la data di nascita dell\'utente',
 	'add_result_dob_text' => 'Si prega di scegliere la data di nascita degli atleti utilizzando il selettore di data qui sotto',
 	'add_result_set_dob_error' => 'Non hai ancora scelto una data di nascita',
 	'add_result_success_message' => 'Il risultato &egrave; stato inserito con successo',
-	'add_result_create_user_dialog_title' => 'Crea Nuovo Atleta',
+	'add_result_create_user_dialog_title' => 'Crea Nuovo Utente',
 	'add_result_create_user_dob_help' => 'La data di nascita non &egrave; obbligatoria ma render&agrave; la vita pi&ugrave; facile quando si aggiunge un risultato per questo utente perch&egrave; definisce la categoria di appartenenza determinata automaticamente con la data di nascita e la data della manifestazione',
-	'add_result_create_user_success_dialog_title' => 'Atleta Creato',
-	'add_result_create_user_success_text' => 'L\'atleta &egrave; stato creato correttamente. I dati d\'accesso possono essere forniti per questo atleta per consentire loro di gestire i propri risultati. Si prega di prendere nota dei dettagli username / password qui sotto se si desidera consentire all\'utente il login nel sistema.',
+	'add_result_create_user_success_dialog_title' => 'Utente Creato',
+	'add_result_create_user_success_text' => 'L\'utente &egrave; stato creato correttamente. I dati d\'accesso possono essere forniti per questo atleta per consentire loro di gestire i propri risultati. Si prega di prendere nota dei dettagli username / password qui sotto se si desidera consentire all\'utente il login nel sistema.',
 	'add_result_embed_text' => 'Incorporare i risultati degli eventi in un post usando il seguente shortcode:',
 
 	// misc

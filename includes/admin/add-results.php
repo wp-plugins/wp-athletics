@@ -152,32 +152,36 @@ if ( $this->has_permission_to_manage() ) {
 		}
 
 		WPA.Admin.submitResult = function() {
-			var timeMillis = WPA.timeToMilliseconds(
-				jQuery('#addResultTimeHours').val(),
-				jQuery('#addResultTimeMinutes').val(),
-				jQuery('#addResultTimeSeconds').val(),
-				jQuery('#addResultTimeMilliSeconds').val()
-			);
+			var score = parseInt(jQuery('#addResultScore').val());
 
-			var paces = WPA.getResultPaces(timeMillis, WPA.Admin.eventDistanceMeters);
+			if(score > 0) {
 
-			WPA.toggleLoading(true);
-			WPA.Ajax.updateResult({
-				isAdmin: true,
-				userId: WPA.Admin.selectedAthleteId,
-				eventId: WPA.Admin.selectedEventId,
-				eventName: WPA.Admin.selectedEventName,
-				ageCategory: WPA.Admin.athleteAgeCat,
-				gender: WPA.Admin.athleteGender,
-				paceKm: paces.km,
-				paceMiles: paces.miles,
-				position: jQuery('#addResultPosition').val(),
-				time: timeMillis
-			}, function() {
-				WPA.toggleLoading(false);
-				WPA.Admin.addAthleteCancel();
-				WPA.Admin.showResultSuccess();
-			});
+				WPA.toggleLoading(true);
+				WPA.Ajax.updateResult({
+					isAdmin: true,
+					userId: WPA.Admin.selectedAthleteId,
+					eventId: WPA.Admin.selectedEventId,
+					eventName: WPA.Admin.selectedEventName,
+					ageCategory: WPA.Admin.athleteAgeCat,
+					gender: WPA.Admin.athleteGender,
+					score: jQuery('#addResultScore').val(),
+					total: jQuery('#addResultTotalRaw').val(),
+					paceKm: '',
+					paceMiles: '',
+					position: jQuery('#addResultPosition').val(),
+					time: 0
+				}, function() {
+					WPA.toggleLoading(false);
+					WPA.Admin.addAthleteCancel();
+					WPA.Admin.showResultSuccess();
+					jQuery('#addResultScore').val('');
+					jQuery('#addResultTotal').val('');
+				});
+
+			}
+			else {
+				alert('Please enter a valid score');
+			}
 		}
 
 		WPA.Admin.addAthleteCancel = function() {
@@ -230,11 +234,13 @@ if ( $this->has_permission_to_manage() ) {
 		WPA.Admin.selectEvent = function() {
 			WPA.Ajax.getEventInfo(WPA.Admin.selectedEventId, function(result) {
 				// find the time format
-				WPA.Admin.eventTimeFormat = WPA.getEventTimeFormat(result.event_cat_id);
+				//WPA.Admin.eventTimeFormat = WPA.getEventTimeFormat(result.event_cat_id);
 				WPA.Admin.eventDate = result.date;
 				WPA.Admin.selectedEventName = result.name;
-				WPA.Admin.eventDistanceMeters = result.distance_meters;
+				//WPA.Admin.eventDistanceMeters = result.distance_meters;
 				WPA.Admin.eventSelected();
+				jQuery('#addResultPar').val(result.par);
+				WPA.Admin.par = parseInt(result.par);
 
 				// show shortcode
 				jQuery('#add-results-embed span').html(WPA.Admin.selectedEventId);
@@ -360,24 +366,41 @@ if ( $this->has_permission_to_manage() ) {
 		    }).focus(function(){
 		        this.select();
 		    })
-
-			// change event for time fields to validate real time
-			var timeFields = jQuery('input[time-format]');
-			jQuery.each(timeFields, function() {
+		    
+			jQuery('#addResultScore, #addResultPar').keyup(function() {
+				var value = jQuery('#addResultScore').val();
+				if(value) {
+					if(WPA.Admin.par) {
+						var total = value - WPA.Admin.par;
+						var symbol = '';
+						if( total > 0) {
+							symbol = '+';
+						}
+						else if(total == 0) {
+							symbol = WPA.getProperty('golf_score_even');
+						}
+						
+						jQuery('#addResultTotal').val(symbol + (total != 0 ? total : ''));
+						jQuery('#addResultTotalRaw').val(total);
+						return false;
+					}
+				}
+				jQuery('#addResultTotal').val('');
+			});
+			
+			var validateNumFields = jQuery('input.validate-num');
+			jQuery.each(validateNumFields, function() {
 				jQuery(this).keyup(function() {
 					var value = jQuery(this).val();
-					if(value != '' && !WPA.isValidTime(jQuery(this).attr('time-format'), value)) {
-						jQuery(this).val('0');
+					console.log(value);
+					if(value != '' && jQuery.isNumeric(value) == false) {
+						jQuery(this).val('');
 					}
 					else {
 						jQuery(this).removeClass('ui-state-error');
 					}
 				}).focus(function() {
 					jQuery(this).select();
-				}).blur(function() {
-					if(jQuery(this).val() == '') {
-						jQuery(this).val('0');
-					}
 				});
 			});
 
@@ -474,31 +497,20 @@ if ( $this->has_permission_to_manage() ) {
 			</div>
 
 			<div id="add-result-form" style="display:none">
+			
+				<input type="hidden" value="" id="addResultTotalRaw"/>
 
-				<!-- time fields -->
-				<div id="add-result-time">
-					<div time-format="h" class="wpa-add-result-field add-result-no-bg">
-						<label><?php echo $this->get_property('add_result_event_time_hours'); ?>:</label>
-						<input class="ui-widget ui-widget-content ui-state-default ui-corner-all" time-format="h" maxlength="2" size="3" type="text" id="addResultTimeHours" value="0">
-					</div>
-					<div time-format="m" class="wpa-add-result-field add-result-no-bg">
-						<label><?php echo $this->get_property('add_result_event_time_minutes'); ?>:</label>
-						<input class="ui-widget ui-widget-content ui-state-default ui-corner-all" time-format="m" maxlength="2" size="3" type="text" id="addResultTimeMinutes" value="0">
-					</div>
-					<div time-format="s" class="wpa-add-result-field add-result-no-bg">
-						<label><?php echo $this->get_property('add_result_event_time_seconds'); ?>:</label>
-						<input class="ui-widget ui-widget-content ui-state-default ui-corner-all" time-format="s" maxlength="2" size="3" type="text" id="addResultTimeSeconds" value="0">
-					</div>
-					<div time-format="ms" class="wpa-add-result-field add-result-no-bg">
-						<label><?php echo $this->get_property('add_result_event_time_milliseconds'); ?>:</label>
-						<input class="ui-widget ui-widget-content ui-state-default ui-corner-all" time-format="ms" maxlength="2" size="3" type="text" id="addResultTimeMilliSeconds" value="0">
-					</div>
-				</div>
-
-				<!-- position -->
 				<div class="wpa-add-result-field add-result-no-bg">
-					<label><?php echo $this->get_property('add_result_event_position'); ?>:</label>
-					<input class="ui-widget ui-widget-content ui-state-default ui-corner-all" size="3" type="text" id="addResultPosition" value="">
+					<label class="required"><?php echo $this->get_property('add_result_score'); ?>:</label>
+					<input class="validate-num ui-widget ui-widget-content ui-state-default ui-corner-all add-result-required" maxlength="3" size="3" type="text" id="addResultScore" value="">
+				</div>
+				<div class="wpa-add-result-field add-result-no-bg">
+					<label><?php echo $this->get_property('add_result_par'); ?>:</label>
+					<input disabled="disabled" readonly="readonly" class="ui-widget ui-widget-content ui-state-default ui-corner-all" maxlength="3" size="3" type="text" id="addResultPar" value="">
+				</div>
+				<div class="wpa-add-result-field add-result-no-bg">
+					<label><?php echo $this->get_property('add_result_total'); ?>:</label>
+					<input disabled="disabled" readonly="readonly" class="ui-widget ui-widget-content ui-state-default ui-corner-all" maxlength="3" size="3" type="text" id="addResultTotal" value="">
 				</div>
 
 				<!-- add result age class -->

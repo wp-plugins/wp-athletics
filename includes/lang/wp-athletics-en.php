@@ -8,15 +8,17 @@ $common_lang = array(
 	'column_result_date' => 'Date Entered',
 	'column_event_type' => 'Terrain',
 	'column_event_name' => 'Event',
-	'column_athlete_name' => 'Athlete',
+	'column_athlete_name' => 'Name',
 	'column_athlete_username' => 'Username',
 	'column_athlete_email' => 'Email',
 	'column_athlete_registered' => 'Registered',
 	'column_event_location' => 'Location',
-	'column_category' => 'Distance',
+	'column_category' => 'Type',
 	'column_time' => 'Time',
 	'column_pace' => 'Pace',
 	'column_position' => 'Pos.',
+	'column_score' => 'Score',
+	'column_total' => 'Total',
 	'column_garmin' => 'Garmin',
 	'column_athlete_name' => 'Name',
 	'column_age_category' => 'Class',
@@ -24,6 +26,9 @@ $common_lang = array(
 	'column_club_rank' => 'Rank',
 	'column_result_count' => 'Result Count',
 	'column_event_shortcode' => 'Embed Code',
+		
+	'label_par' => 'Par',
+	'golf_score_even' => 'E',
 
 	// my results - profile
 	'my_profile_display_name_label' => 'Athlete Name',
@@ -40,7 +45,7 @@ $common_lang = array(
 	'my_profile_select_profile_image_title' => 'Select Profile Photo',
 
 	// filters
-	'filter_events_option_all' => 'All Events',
+	'filter_events_option_all' => 'All Types',
 	'filter_period_option_all' => 'All Time',
 	'filter_month_all' => 'All Months',
 	'filter_period_option_this_month' => 'This Month',
@@ -49,8 +54,8 @@ $common_lang = array(
 	'filter_age_option_all' => 'All Age Classes',
 	'filter_event_name_input_text' => 'Filter event name',
 	'filter_event_name_cancel_text' => 'Remove event name filter',
-	'filter_athlete_name_input_text' => 'Filter athlete name',
-	'filter_athlete_name_cancel_text' => 'Remove athlete name filter',
+	'filter_athlete_name_input_text' => 'Filter user name',
+	'filter_athlete_name_cancel_text' => 'Remove user name filter',
 
 	// user profile dialog
 	'user_profile_dialog_title' => 'User Profile',
@@ -63,8 +68,8 @@ $common_lang = array(
 
 	// rankings dialog - ** DO NOT TRANSLATE THE PROPERTIES IN [brackets] AS THESE ARE TOKENS THAT WILL BE REPLACED WHEN RENDERED **
 	'rankings_dialog_title' => '[age] [gender] [category] Rankings ([period], [type])',
-	'rankings_display_best_athlete_result' => 'Show only best result for each athlete',
-	'rankings_display_all_athlete_results' => 'Show all results for each athlete',
+	'rankings_display_best_athlete_result' => 'Show only best result for each user',
+	'rankings_display_all_athlete_results' => 'Show all results for each user',
 	'rankings_column_hover_text' => 'Click for full rankings',
 
 	// my results - tabs
@@ -76,16 +81,19 @@ $common_lang = array(
 	'results_personal_bests_tab' => 'Personal Bests',
 
 	// wpa search
-	'wpa_search_text' => 'Search athlete or event',
+	'wpa_search_text' => 'Search user or event',
 	'wpa_search_category_event' => 'Events',
-	'wpa_search_category_athlete' => 'Athletes',
+	'wpa_search_category_athlete' => 'Users',
 
 	// my_results - add result
 	'add_result_event_name' => 'Event Name',
 	'add_result_name' => 'Name',
-	'add_result_event_category' => 'Distance',
+	'add_result_event_category' => 'Type',
 	'add_result_age_class' => 'Age Class',
 	'add_result_location' => 'Location',
+	'add_result_par' => 'Par',
+	'add_result_total' => 'Total',
+	'add_result_score' => 'Score',
 	'add_result_event_date' => 'Date',
 	'add_result_event_position' => 'Position',
 	'add_result_event_time_hours' => 'Hours',
@@ -170,7 +178,7 @@ $common_lang = array(
 	'stats_heading_summary' => 'Summary',
 	'stats_events_not_enough_results' => 'There are no results available',
 	'stats_heading_events' => 'Event Statistics',
-	'stats_heading_runner' => 'Athlete Statistics',
+	'stats_heading_runner' => 'User Statistics',
 	'stats_label_total_races' => 'Races',
 	'stats_label_total_distance' => 'Distance Covered',
 	'stats_label_total_time' => 'Total Racing Time',
@@ -202,7 +210,7 @@ $common_lang = array(
 	'records_page_title' => 'Club Records',
 
 	// logs
-	'new_result' => '<user>{name}</user> ran a time of <time>{result}</time> at the <event>{event-name}</event>',
+	'new_result' => '<user>{name}</user> shot a score of {score} ({total}) at the <event>{event-name}</event>',
 	'new_result_position_addon' => ' and came {position} overall',
 	'update_result' => '<user>{name}</user> updated the result for <event>{event-name}</event>',
 	'new_event' => '<user>{name}</user> has created a new event <event>{event-name}</event>',
@@ -287,16 +295,16 @@ $admin_lang = array(
 	'admin_edit_event_cat_title' => 'Event Category Settings',
 	'admin_edit_age_cat_title' => 'Age Category Settings',
 	'admin_manage_results_title' => 'Manage Results',
-	'admin_manage_athletes_title' => 'Manage Athletes',
+	'admin_manage_athletes_title' => 'Manage Users',
 	'admin_manage_events_title' => 'Manage Events',
 	'admin_print_rankings_title' => 'Print Rankings',
 		
 	// athlete manager
-	'admin_athlete_create_button' => 'Create Athlete',
-	'delete_athlete_text' => 'Are you sure you wish to remove this athlete and all associated records?',
-	'delete_athlete_tooltip' => 'Delete this athlete (cannot be undone)',
-	'edit_athlete_tooltip' => 'Edit this athlete',
-	'email_details_text' => 'Send this athlete their login details',
+	'admin_athlete_create_button' => 'Create User',
+	'delete_athlete_text' => 'Are you sure you wish to remove this user and all associated records?',
+	'delete_athlete_tooltip' => 'Delete this user (cannot be undone)',
+	'edit_athlete_tooltip' => 'Edit this user',
+	'email_details_text' => 'Send this user their login details',
 
 	// event manager
 	'edit_event_text' => 'Edit Event',
@@ -333,23 +341,23 @@ $admin_lang = array(
 	'add_results_choose_event_title' => 'Choose Event',
 	'add_results_choose_event_text' => 'Select the event you wish to add results for. Check if the event already exists by typing the name in the input below. If it does not exist, simply create a new event.',
 	'add_results_title' => 'Add Results',
-	'add_results_text' => 'Now add as many results as you like below. Before creating a new athlete, please ensure the athlete does not exist in the database already. When you create a new athlete using this tool, this person cannot manage his/her own results unless you inform the user of their login credentials.',
-	'add_results_athlete_input_text' => 'Start typing athlete name',
-	'add_result_create_athlete_button' => 'Create New Athlete',
+	'add_results_text' => 'Now add as many results as you like below. Before creating a new user, please ensure the user does not exist in the database already. When you create a new user using this tool, this person cannot manage his/her own results unless you inform the user of their login credentials.',
+	'add_results_athlete_input_text' => 'Start typing user name',
+	'add_result_create_athlete_button' => 'Create New User',
 	'add_results_view_current_event_results' => 'View current event results',
 	'add_result_button_text' => 'Add Result',
-	'add_result_gender_text' => 'The gender for this athlete is currently unknown. Please specify the gender below before entering results',
-	'add_result_gender_dialog_title' => 'Athlete Gender Required',
-	'add_result_age_class_help' => 'This should be the age class for the athlete on the date of this event. You are requested to provide an age class because the date of birth for this athlete is unknown. <br/><br/>If you know this athletes date of birth, click on the <b>Set date of birth</b> link to avoid setting this value in the future',
+	'add_result_gender_text' => 'The gender for this user is currently unknown. Please specify the gender below before entering results',
+	'add_result_gender_dialog_title' => 'User Gender Required',
+	'add_result_age_class_help' => 'This should be the age class for the user on the date of this event. You are requested to provide an age class because the date of birth for this user is unknown. <br/><br/>If you know this users date of birth, click on the <b>Set date of birth</b> link to avoid setting this value in the future',
 	'add_result_set_dob_text' => 'Set date of birth',
-	'add_result_dob_dialog_title' => 'Set Athlete Date of Birth',
-	'add_result_dob_text' => 'Please choose the athletes date of birth using the date picker below',
+	'add_result_dob_dialog_title' => 'Set user Date of Birth',
+	'add_result_dob_text' => 'Please choose the users date of birth using the date picker below',
 	'add_result_set_dob_error' => 'You have not yet selected a date of birth',
 	'add_result_success_message' => 'The result has been entered successfully',
-	'add_result_create_user_dialog_title' => 'Create New Athlete',
-	'add_result_create_user_dob_help' => 'A date of birth is not required but will make life easier when adding results for this user as the age class for results is automatically determined using the athletes date of birth and the date of the event',
-	'add_result_create_user_success_dialog_title' => 'Athlete Create',
-	'add_result_create_user_success_text' => 'The athlete has been created successfully. The login details can be provided to this athlete to allow them manage their own results. Please make a note of username / password details below if you wish to allow this user log into the system.',
+	'add_result_create_user_dialog_title' => 'Create New User',
+	'add_result_create_user_dob_help' => 'A date of birth is not required but will make life easier when adding results for this user as the age class for results is automatically determined using the users date of birth and the date of the event',
+	'add_result_create_user_success_dialog_title' => 'User Create',
+	'add_result_create_user_success_text' => 'The user has been created successfully. The login details can be provided to this user to allow them manage their own results. Please make a note of username / password details below if you wish to allow this user log into the system.',
 	'add_result_embed_text' => 'Embed these event results in a post using the following shortcode:',
 
 	// misc

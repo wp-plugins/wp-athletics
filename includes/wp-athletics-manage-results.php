@@ -138,7 +138,7 @@ if(!class_exists('WP_Athletics_Manage_Results')) {
 							WPA.setupEditResultDialog(WPA.MyResults.reloadResults);
 
 							// setup filters
-							WPA.setupFilters(WPA.userID, WPA.MyResults.myResultsTable, WPA.MyResults.getPersonalBests, WPA.MyResults.doEventNameFilter, {
+							WPA.setupFilters(WPA.userID, WPA.MyResults.myResultsTable, null, WPA.MyResults.doEventNameFilter, {
 								event: 6,
 								type: 5,
 								age: 7,
@@ -329,11 +329,19 @@ if(!class_exists('WP_Athletics_Manage_Results')) {
 								</div>
 
 								<!-- FAVOURITE EVENT -->
+								<!--
 								<div class="wpa-profile-field">
 									<label><?php echo $this->get_property('my_profile_fave_event'); ?>:</label>
 									<select id="myProfileFaveEvent">
 										<option value=""><?php echo $this->get_property('my_profile_select_fave_event'); ?></option>
 									</select>
+								</div>
+								-->
+
+								<!-- DATE OF BIRTH -->
+								<div class="wpa-profile-field" style="padding-bottom:3px">
+									<label><?php echo $this->get_property('my_profile_dob'); ?>:</label>
+									<input readonly="readonly" class="ui-widget ui-widget-content ui-state-default ui-corner-all" size="30" type="text" id="myProfileDOB"/>
 								</div>
 
 								<!-- GENDER -->
@@ -347,12 +355,6 @@ if(!class_exists('WP_Athletics_Manage_Results')) {
 							</div>
 
 							<div class="wpa-profile-info-fieldset">
-
-								<!-- DATE OF BIRTH -->
-								<div class="wpa-profile-field" style="padding-bottom:3px">
-									<label><?php echo $this->get_property('my_profile_dob'); ?>:</label>
-									<input readonly="readonly" class="ui-widget ui-widget-content ui-state-default ui-corner-all" size="30" type="text" id="myProfileDOB"/>
-								</div>
 
 								<!-- HIDE DATE OF BIRTH ON PROFILE -->
 								<div class="wpa-profile-field">
@@ -398,9 +400,11 @@ if(!class_exists('WP_Athletics_Manage_Results')) {
 								<option value="this_year"><?php echo $this->get_property('filter_period_option_this_year'); ?></option>
 							</select>
 
+							<!-- 
 							<select id="filterType">
 								<option value="all" selected="selected"><?php echo $this->get_property('filter_type_option_all'); ?></option>
 							</select>
+							-->
 
 							<select id="filterAge">
 								<option value="all" selected="selected"><?php echo $this->get_property('filter_age_option_all'); ?></option>
@@ -424,7 +428,6 @@ if(!class_exists('WP_Athletics_Manage_Results')) {
 					<div id="tabs">
 					  <ul>
 					    <li><a href="#tabs-my-results"><?php echo $this->get_property('my_results_main_tab') ?></a></li>
-					    <li><a href="#tabs-my-personal-bests"><?php echo $this->get_property('my_results_personal_bests_tab') ?></a></li>
 						<?php
 						  if( defined( 'WPA_STATS_ENABLED' ) ) {
 						  	global $wpa;
@@ -444,36 +447,14 @@ if(!class_exists('WP_Athletics_Manage_Results')) {
 									<th><?php echo $this->get_property('column_event_type') ?></th>
 									<th><?php echo $this->get_property('column_category') ?></th>
 									<th><?php echo $this->get_property('column_age_category') ?></th>
-									<th><?php echo $this->get_property('column_time') ?></th>
-									<th><?php echo $this->get_property('column_pace') ?></th>
 									<th><?php echo $this->get_property('column_position') ?></th>
-									<th></th>
+									<th><?php echo $this->get_property('column_score') ?></th>
+									<th><?php echo $this->get_property('column_total') ?></th>
 								</tr>
 							</thead>
 						</table>
 					  </div>
-					  <div id="tabs-my-personal-bests" class="ui-tabs-panel ui-widget-content ui-corner-bottom" wpa-tab-type="pb">
-						<table cellpadding="0" cellspacing="0" border="0" class="display ui-state-default" id="my-personal-bests-table" width="100%">
-							<thead>
-								<tr>
-									<th></th>
-									<th></th>
-									<th></th>
-									<th></th>
-									<th><?php echo $this->get_property('column_category') ?></th>
-									<th><?php echo $this->get_property('column_time') ?></th>
-									<th><?php echo $this->get_property('column_pace') ?></th>
-									<th><?php echo $this->get_property('column_event_name') ?></th>
-									<th><?php echo $this->get_property('column_event_location') ?></th>
-									<th><?php echo $this->get_property('column_event_type') ?></th>
-									<th><?php echo $this->get_property('column_age_category') ?></th>
-									<th><?php echo $this->get_property('column_event_date') ?></th>
-									<th><?php echo $this->get_property('column_club_rank') ?><span class="column-help" title="<?php echo $this->get_property('help_column_rank'); ?>"></span></th>
-									<th></th>
-								</tr>
-							</thead>
-						</table>
-					  </div>
+
 					  <?php
 					  if( defined( 'WPA_STATS_ENABLED' ) ) {
 					  	global $wpa;

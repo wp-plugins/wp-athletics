@@ -66,15 +66,16 @@ if(!class_exists('WP_Athletics_DB')) {
 				contact_name varchar(100),
 				contact_email varchar(100),
 				url varchar(55),
+				par int(10) NOT NULL,
 				UNIQUE KEY id (id)
 				);
 
 				CREATE TABLE $this->EVENT_CAT_TABLE (
 				id mediumint(9) NOT NULL AUTO_INCREMENT,
 				name tinytext NOT NULL,
-				distance float(10) NOT NULL,
-				distance_meters float(10) NOT NULL,
-				unit varchar(6) NOT NULL,
+				distance float(10),
+				distance_meters float(10),
+				unit varchar(6),
 				default_data boolean DEFAULT false,
 				show_records boolean DEFAULT false,
 				type varchar(20) NOT NULL,
@@ -87,7 +88,9 @@ if(!class_exists('WP_Athletics_DB')) {
 				date_created timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 				user_id mediumint(9) NOT NULL,
 				event_id mediumint(9) NOT NULL,
-				time bigint(10) NOT NULL,
+				time bigint(10),
+				score int NOT NULL,
+				total int NOT NULL,
 				garmin_id varchar(100),
 				position integer(4),
 				age_category varchar(4),
@@ -139,8 +142,8 @@ if(!class_exists('WP_Athletics_DB')) {
 		 */
 		public function create_view() {
 			global $wpdb;
-			$sql = 'CREATE VIEW ' . $this->RESULT_VIEW . ' AS SELECT r.id, r.time, r.user_id, r.event_id, r.garmin_id, r.position, r.age_category, r.gender, r.date_created,
-			e.event_cat_id, e.name as event_name, e.location as event_location, ec.name as category, ec.time_format, ec.type, ec.distance_meters,
+			$sql = 'CREATE VIEW ' . $this->RESULT_VIEW . ' AS SELECT r.id, r.time, r.user_id, r.score, r.total, r.event_id, r.garmin_id, r.position, r.age_category, r.gender, r.date_created,
+			e.event_cat_id, e.par, e.name as event_name, e.location as event_location, ec.name as category, ec.time_format, ec.type, ec.distance_meters,
 			e.date, e.sub_type_id as event_sub_type_id
 			FROM ' . $this->RESULT_TABLE . ' r
 			JOIN ' . $this->EVENT_TABLE . ' e on e.id = r.event_id
@@ -163,22 +166,9 @@ if(!class_exists('WP_Athletics_DB')) {
 		public function create_default_event_cats() {
 			global $wpdb;
 			$wpdb->query('delete from ' . $this->EVENT_CAT_TABLE . ' where default_data = true');
-			$wpdb->insert( $this->EVENT_CAT_TABLE, array( 'name' => '100m', 'distance' => 100, 'distance_meters' => 100, 'unit' => 'm', 'default_data' => true, 'type' => 'running', 'show_records' => true, 'time_format' => 's:ms' ) );
-			$wpdb->insert( $this->EVENT_CAT_TABLE, array( 'name' => '200m', 'distance' => 200, 'distance_meters' => 200, 'unit' => 'm', 'default_data' => true, 'type' => 'running', 'show_records' => true, 'time_format' => 's:ms' ) );
-			$wpdb->insert( $this->EVENT_CAT_TABLE, array( 'name' => '400m', 'distance' => 400, 'distance_meters' => 400, 'unit' => 'm', 'default_data' => true, 'type' => 'running', 'show_records' => true, 'time_format' => 'm:s:ms' ) );
-			$wpdb->insert( $this->EVENT_CAT_TABLE, array( 'name' => '800m', 'distance' => 800, 'distance_meters' => 800, 'unit' => 'm', 'default_data' => true, 'type' => 'running', 'show_records' => true, 'time_format' => 'm:s:ms' ) );
-			$wpdb->insert( $this->EVENT_CAT_TABLE, array( 'name' => '1000m', 'distance' => 1000, 'distance_meters' => 1000, 'unit' => 'm', 'default_data' => true, 'type' => 'running', 'show_records' => true, 'time_format' => 'm:s:ms' ) );
-			$wpdb->insert( $this->EVENT_CAT_TABLE, array( 'name' => '1500m', 'distance' => 1500, 'distance_meters' => 1500, 'unit' => 'm', 'default_data' => true, 'type' => 'running', 'show_records' => true, 'time_format' => 'm:s:ms' ) );
-			$wpdb->insert( $this->EVENT_CAT_TABLE, array( 'name' => '1 mile', 'distance' => 1, 'distance_meters' => 1609.34, 'unit' => 'mile', 'default_data' => true, 'type' => 'running', 'show_records' => true, 'time_format' => 'm:s:ms' ) );
-			$wpdb->insert( $this->EVENT_CAT_TABLE, array( 'name' => '3000m', 'distance' => 3000, 'distance_meters' => 3000, 'unit' => 'm', 'default_data' => true, 'type' => 'running', 'show_records' => true, 'time_format' => 'm:s:ms' ) );
-			$wpdb->insert( $this->EVENT_CAT_TABLE, array( 'name' => '5k', 'distance' => 5, 'distance_meters' => 5000, 'unit' => 'km', 'default_data' => true, 'type' => 'running', 'show_records' => true, 'time_format' => 'm:s' ) );
-			$wpdb->insert( $this->EVENT_CAT_TABLE, array( 'name' => '4 miles', 'distance' => 4, 'distance_meters' => 6437.38, 'unit' => 'mile', 'default_data' => true, 'type' => 'running', 'show_records' => true, 'time_format' => 'h:m:s' ) );
-			$wpdb->insert( $this->EVENT_CAT_TABLE, array( 'name' => '5 miles', 'distance' => 5, 'distance_meters' => 8046.72, 'unit' => 'mile', 'default_data' => true, 'type' => 'running', 'show_records' => true, 'time_format' => 'h:m:s' ) );
-			$wpdb->insert( $this->EVENT_CAT_TABLE, array( 'name' => '10k', 'distance' => 10, 'distance_meters' => 10000, 'unit' => 'km', 'default_data' => true, 'type' => 'running', 'show_records' => true, 'time_format' => 'h:m:s' ) );
-			$wpdb->insert( $this->EVENT_CAT_TABLE, array( 'name' => '10 miles', 'distance' => 10, 'distance_meters' => 16093.4, 'unit' => 'mile', 'default_data' => true, 'type' => 'running', 'show_records' => true, 'time_format' => 'h:m:s' ) );
-			$wpdb->insert( $this->EVENT_CAT_TABLE, array( 'name' => '1/2 Marathon', 'distance' => 21.0975, 'distance_meters' => 21097, 'unit' => 'km', 'default_data' => true, 'type' => 'running', 'show_records' => true, 'time_format' => 'h:m:s' ) );
-			$wpdb->insert( $this->EVENT_CAT_TABLE, array( 'name' => 'Marathon', 'distance' => 42.195, 'distance_meters' => 42195, 'unit' => 'km', 'default_data' => true, 'type' => 'running', 'show_records' => true, 'time_format' => 'h:m:s' ) );
-			$wpdb->insert( $this->EVENT_CAT_TABLE, array( 'name' => '50k', 'distance' => 50, 'distance_meters' => 50000, 'unit' => 'km', 'default_data' => true, 'type' => 'running', 'show_records' => true, 'time_format' => 'h:m:s' ) );
+			$wpdb->insert( $this->EVENT_CAT_TABLE, array( 'name' => 'Competition', 'distance' => 100, 'distance_meters' => 100, 'unit' => 'm', 'default_data' => true, 'type' => 'running', 'show_records' => true, 'time_format' => 's:ms' ) );
+			$wpdb->insert( $this->EVENT_CAT_TABLE, array( 'name' => 'Friendly', 'distance' => 100, 'distance_meters' => 100, 'unit' => 'm', 'default_data' => true, 'type' => 'running', 'show_records' => true, 'time_format' => 's:ms' ) );
+			$wpdb->insert( $this->EVENT_CAT_TABLE, array( 'name' => 'Practice', 'distance' => 200, 'distance_meters' => 200, 'unit' => 'm', 'default_data' => true, 'type' => 'running', 'show_records' => true, 'time_format' => 's:ms' ) );	
 		}
 
 		/**
@@ -192,12 +182,12 @@ if(!class_exists('WP_Athletics_DB')) {
 
 			$results = $wpdb->get_results(
 					"
-					SELECT @rank:=@rank+1 AS rank, r.id, r.user_id, r.time, r.age_category, r.garmin_id, r.gender, r.position, ec.id as event_cat, ec.time_format, ec.distance_meters,
+					SELECT @rank:=@rank+1 AS rank, r.id, r.score, r.total, r.user_id, r.time, r.age_category, r.garmin_id, r.gender, r.position, ec.id as event_cat, ec.time_format, ec.distance_meters,
 					(SELECT display_name FROM wp_users WHERE id = r.user_id) as athlete_name
 					FROM $this->RESULT_TABLE r
 					LEFT JOIN $this->EVENT_TABLE e ON r.event_id = e.id
 					LEFT JOIN $this->EVENT_CAT_TABLE ec ON e.event_cat_id = ec.id
-					WHERE r.event_id = $event_id ORDER BY time asc
+					WHERE r.event_id = $event_id ORDER BY total, athlete_name asc
 					"
 			);
 
@@ -279,29 +269,15 @@ if(!class_exists('WP_Athletics_DB')) {
 				$where = 'WHERE ' . $where;
 			}
 
-			if( !WPA_DB_DISABLE_SQL_VIEW ) {
-				$results = $wpdb->get_results(
-					"
-					SELECT r.id, user_id, u.display_name as athlete_name, time, age_category, gender, garmin_id, position, event_id,
-					event_name, event_location, event_sub_type_id, date_format(date,'" . WPA_DATE_FORMAT . "') as event_date, category, distance_meters, time_format, event_cat_id AS event_cat
-					FROM $this->RESULT_VIEW r LEFT JOIN wp_users u ON user_id = u.id
-					$where ORDER BY date ASC
-					"
-				);
-			}
-			else {
-				$results = $wpdb->get_results(
-					"
-					SELECT r.id, user_id, u.display_name AS athlete_name, r.time, r.age_category, r.gender, r.garmin_id, r.position, r.event_id,
-					e.name as event_name, e.location AS event_location, e.sub_type_id AS event_sub_type_id, date_format(e.date,'" . WPA_DATE_FORMAT . "') AS event_date, ec.name AS category, ec.distance_meters, ec.time_format, ec.id AS event_cat
-					FROM $this->RESULT_TABLE r
-					LEFT JOIN $this->EVENT_TABLE e ON r.event_id = e.id
-					LEFT JOIN $this->EVENT_CAT_TABLE ec ON e.event_cat_id = ec.id
-					LEFT JOIN wp_users u ON r.user_id = u.id
-					$where ORDER BY date ASC
-					"
-				);
-			}
+			$results = $wpdb->get_results(
+				"
+				SELECT r.id, user_id, u.display_name as athlete_name, score, par, total, time, age_category, gender, garmin_id, position, event_id,
+				event_name, event_location, event_sub_type_id, date_format(date,'" . WPA_DATE_FORMAT . "') as event_date, category, distance_meters, time_format, event_cat_id AS event_cat
+				FROM $this->RESULT_VIEW r LEFT JOIN wp_users u ON user_id = u.id
+				$where ORDER BY date ASC
+				"
+			);
+
 
 			return $results;
 		}
@@ -401,6 +377,7 @@ if(!class_exists('WP_Athletics_DB')) {
 			$search_sub_type;
 			$search_period;
 			$search_event;
+			$search_par;
 
 			// loops columns and set and process any filters that have been set
 			for($i = 0; $i < $num_columns; $i++) {
@@ -419,6 +396,9 @@ if(!class_exists('WP_Athletics_DB')) {
 					else if( $dataProp == 'event_name' ) {
 						$search_event = $param;
 					}
+					else if( $dataProp == 'par' ) {
+						$search_par = $param;
+					}
 				}
 			}
 
@@ -431,6 +411,10 @@ if(!class_exists('WP_Athletics_DB')) {
 			if(isset( $search_sub_type ) && $search_sub_type != 'all') {
 				$where = $where . ( $where == '' ? 'WHERE ' : ' AND ' );
 				$where .= "e.sub_type_id = '" . $search_sub_type . "'";
+			}
+			if(isset( $search_par ) && $search_par != 'all') {
+				$where = $where . ( $where == '' ? 'WHERE ' : ' AND ' );
+				$where .= "e.par = '" . $search_par . "'";
 			}
 
 			if(isset( $search_period ) && $search_period != 'all') {
@@ -458,7 +442,7 @@ if(!class_exists('WP_Athletics_DB')) {
 			// get the actual results
 			$results = $wpdb->get_results(
 				"
-				SELECT e.id as event_id, e.name AS event_name, e.location AS event_location, e.sub_type_id AS event_sub_type_id,
+				SELECT e.id as event_id, e.par, e.name AS event_name, e.location AS event_location, e.sub_type_id AS event_sub_type_id,
 				date_format(e.date,'" . WPA_DATE_FORMAT . "') AS event_date, ec.name AS category, e.event_cat_id AS event_cat,
 				(SELECT count(r.id) from $this->RESULT_TABLE r WHERE r.event_id = e.id) AS result_count
 				FROM $this->EVENT_TABLE e
@@ -567,50 +551,22 @@ if(!class_exists('WP_Athletics_DB')) {
 				$extra_where .= " AND lower(display_name) like '%" . strtolower( $search_athlete ) . "%'";
 			}
 			
-			// using SQL results view
-			if( !WPA_DB_DISABLE_SQL_VIEW ) {
-				$result_display_count = $wpdb->get_var(
-					"
-					SELECT COUNT(id) FROM $this->RESULT_VIEW
-					$where $extra_where
-					"
-				);
-	
-				$results = $wpdb->get_results(
-					"
-					SELECT r.id, user_id, u.display_name as athlete_name, time, age_category, gender, date_created as result_date, garmin_id, position, event_id,
-					event_name, event_location, event_sub_type_id, date_format(date,'" . WPA_DATE_FORMAT . "') as event_date, category, distance_meters, time_format, event_cat_id AS event_cat
-					FROM $this->RESULT_VIEW r LEFT JOIN wp_users u ON user_id = u.id
-					$where $extra_where ORDER BY $sortCol $sortDir LIMIT $offset, $limit
-					"
-				);
-				
-			}
-			else {
-				// NOT using SQL results view
-				$result_display_count = $wpdb->get_var(
-					"
-					SELECT count(r.id) FROM $this->RESULT_TABLE r
-					LEFT JOIN $this->EVENT_TABLE e ON r.event_id = e.id
-					LEFT JOIN $this->EVENT_CAT_TABLE ec ON e.event_cat_id = ec.id
-					LEFT JOIN wp_users u ON r.user_id = u.id
-					$where $extra_where
-					"
-				);
-				
-				$results = $wpdb->get_results(
-					"
-					SELECT r.id, r.user_id, u.display_name as athlete_name, r.time, r.age_category, r.gender, r.date_created as result_date, r.garmin_id, r.position, e.id as event_id, e.name as event_name, e.location as event_location, e.sub_type_id AS event_sub_type_id,
-					date_format(e.date,'" . WPA_DATE_FORMAT . "') as event_date, ec.name as category, ec.distance_meters, ec.time_format, e.event_cat_id as event_cat
-					FROM $this->RESULT_TABLE r
-					LEFT JOIN $this->EVENT_TABLE e ON r.event_id = e.id
-					LEFT JOIN $this->EVENT_CAT_TABLE ec ON e.event_cat_id = ec.id
-					LEFT JOIN wp_users u ON r.user_id = u.id
-					$where $extra_where ORDER BY $sortCol $sortDir LIMIT $offset,$limit
-					"
-				);
-			}
-			
+			$result_display_count = $wpdb->get_var(
+				"
+				SELECT COUNT(r.id) FROM $this->RESULT_VIEW r LEFT JOIN wp_users u ON user_id = u.id
+				$where $extra_where
+				"
+			);
+
+			$results = $wpdb->get_results(
+				"
+				SELECT r.id, r.score, r.par, r.total, user_id, u.display_name as athlete_name, time, age_category, gender, date_created as result_date, garmin_id, position, event_id,
+				event_name, event_location, event_sub_type_id, date_format(date,'" . WPA_DATE_FORMAT . "') as event_date, category, distance_meters, time_format, event_cat_id AS event_cat
+				FROM $this->RESULT_VIEW r LEFT JOIN wp_users u ON user_id = u.id
+				$where $extra_where ORDER BY $sortCol $sortDir LIMIT $offset, $limit
+				"
+			);
+
 			// LOGGING 
 			/*
 			$tmp = "SELECT r.id, user_id, u.display_name as athlete_name, time, age_category, gender, date_created as result_date, garmin_id, position, event_id,
@@ -918,7 +874,7 @@ if(!class_exists('WP_Athletics_DB')) {
 		public function get_event( $id ) {
 			global $wpdb;
 			wpa_log('getting single event by ID "' . $id . '"');
-			return $wpdb->get_row( "SELECT id, name, event_cat_id, sub_type_id, location, date_format(date,'" . WPA_DATE_FORMAT . "') as date FROM $this->EVENT_TABLE WHERE id = $id"  );
+			return $wpdb->get_row( "SELECT id, par, name, event_cat_id, sub_type_id, location, date_format(date,'" . WPA_DATE_FORMAT . "') as date FROM $this->EVENT_TABLE WHERE id = $id"  );
 		}
 
 		/**
@@ -942,7 +898,8 @@ if(!class_exists('WP_Athletics_DB')) {
 					'location' => $data['eventLocation'],
 					'date' => $data['eventDate'],
 					'event_cat_id' => $data['eventCategory'],
-					'sub_type_id' => $data['eventSubType']
+					'sub_type_id' => $data['eventSubType'],
+					'par' => $data['par']
 				),
 				array( 'id' => $data['id'] ),
 				array(
@@ -950,7 +907,8 @@ if(!class_exists('WP_Athletics_DB')) {
 					'%s',
 					'%s',
 					'%d',
-					'%s'
+					'%s',
+					'%d'
 				),
 				array( '%d' )
 			);
@@ -983,8 +941,8 @@ if(!class_exists('WP_Athletics_DB')) {
 				$success = $wpdb->query( $wpdb->prepare(
 					"
 					INSERT INTO $this->RESULT_TABLE
-					( user_id, event_id, time, garmin_id, position, age_category, gender )
-					VALUES ( %d, %d, %d, %s, %d, %s, %s )
+					( user_id, event_id, time, garmin_id, position, age_category, gender, score, total )
+					VALUES ( %d, %d, %d, %s, %d, %s, %s, %d, %d )
 					",
 					$data['userId'],
 					$data['eventId'],
@@ -992,7 +950,9 @@ if(!class_exists('WP_Athletics_DB')) {
 					$data['garminId'],
 					$data['position'],
 					$data['ageCategory'],
-					$data['gender']
+					$data['gender'],
+					$data['score'],
+					$data['total']
 				) );
 
 				$data['resultId'] = $wpdb->get_var( "SELECT LAST_INSERT_ID()" );
@@ -1006,7 +966,9 @@ if(!class_exists('WP_Athletics_DB')) {
 						'time' => $data['time'],
 						'garmin_id' => $data['garminId'],
 						'position' => $data['position'],
-						'age_category' => $data['ageCategory']
+						'age_category' => $data['ageCategory'],
+						'score' => $data['score'],
+						'total' => $data['total']
 					),
 					array( 'id' => $data['resultId'] ),
 					array(
@@ -1014,7 +976,9 @@ if(!class_exists('WP_Athletics_DB')) {
 						'%d',
 						'%s',
 						'%d',
-						'%s'
+						'%s',
+						'%d',
+						'%d'
 					),
 					array( '%d' )
 				);
@@ -1089,7 +1053,7 @@ if(!class_exists('WP_Athletics_DB')) {
 			global $wpdb;
 			$result = $wpdb->get_row(
 				"
-				SELECT r.id, r.time, r.garmin_id, r.position, r.event_id, r.age_category
+				SELECT r.id, r.time, r.score, r.total, r.garmin_id, r.position, r.event_id, r.age_category
 				FROM $this->RESULT_TABLE r WHERE r.id = $id
 				"
 			);
@@ -1116,19 +1080,20 @@ if(!class_exists('WP_Athletics_DB')) {
 		/**
 		 * inserts a new event into the database
 		 */
-		function create_event( $data, $is_admin_update ) {
+		function create_event( $data, $is_admin_update = false ) {
 			global $wpdb;
 			$success = $wpdb->query( $wpdb->prepare(
 				"
 				INSERT INTO $this->EVENT_TABLE
-				( date, sub_type_id, name, location, event_cat_id )
-				VALUES ( %s, %s, %s, %s, %d )
+				( date, sub_type_id, name, location, event_cat_id, par )
+				VALUES ( %s, %s, %s, %s, %d, %d )
 				",
 				$data['eventDate'],
 				$data['eventSubType'],
 				$data['eventName'],
 				$data['eventLocation'],
-				$data['eventCategory']
+				$data['eventCategory'],
+				$data['par']
 			) );
 
 			if($success) {

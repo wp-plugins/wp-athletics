@@ -1,10 +1,10 @@
 <?php
 /*
-Plugin Name: WP Athletics
-Plugin URI: http://www.conormccauley.me/wordpress-athletics/
-Description: Allow your users to log, compare and analyse their athletic results. Generates a club records page to summarise athlete data for all to see.
+Plugin Name: WP Football Golf
+Plugin URI: http://www.conormccauley.me
+Description: Custom plugin that extends WP-Athletics, modified for football golf. 
 Author: Conor McCauley
-Version: 1.0.4
+Version: 1.0.0
 Author URI: http://www.conormccauley.me
 */
 
@@ -66,7 +66,7 @@ if(!class_exists('WP_Athletics')) {
 
 			// create objects
 			$this->wpa_common = new WPA_Base( $this->wpa_db );
-			$this->wpa_records = new WP_Athletics_Records( $this->wpa_db );
+			//$this->wpa_records = new WP_Athletics_Records( $this->wpa_db );
 			$this->wpa_manage_results = new WP_Athletics_Manage_Results( $this->wpa_db );
 			$this->wpa_recent_results = new WP_Athletics_Recent_Results( $this->wpa_db );
 			$this->wpa_event_results = new WP_Athletics_Event_Results( $this->wpa_db );
@@ -351,7 +351,7 @@ if(!class_exists('WP_Athletics')) {
 				$this->wpa_recent_results->create_page();
 
 				// create a records pages
-				$this->wpa_records->create_pages();
+				//$this->wpa_records->create_pages();
 
 				// add admin capabilities
 				$this->wpa_db->toggle_capabilities();

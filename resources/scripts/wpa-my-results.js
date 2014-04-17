@@ -84,22 +84,17 @@ WPA.MyResults = {
 				"mData": "age_category",
 				"mRender" : WPA.renderAgeCategoryColumn
 			},{
-				"mData": "time",
-				"mRender": WPA.renderTimeColumn
-			},{
-				"mData": "time",
-				"mRender": WPA.renderPaceMilesColumn,
-				"bSortable": false
-			},{
 				"mData": "position",
 				"sWidth": "20px",
 				"mRender": WPA.renderPositionColumn,
 				"sClass": "datatable-center"
 			},{
-				"mData": "garmin_id",
-				"sWidth": "16px",
-				"mRender": WPA.renderGarminColumn,
-				"bSortable": false
+				"mData": "score",
+				"sClass": "datatable-center"
+			},{
+				"mData": "total",
+				"mRender" : WPA.renderGolfTotal,
+				"sClass": "datatable-center"
 			}]
 		}));
 		

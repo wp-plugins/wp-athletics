@@ -115,10 +115,10 @@ if ( $this->has_permission_to_manage() ) {
 			// collect the data
 			var data = {
 				name: jQuery('#wpa_event_name_' + id).val(),
-				distance: jQuery('#wpa_event_distance_' + id).val(),
-				unit: jQuery('#wpa_event_unit_' + id).val(),
-				timeFormat: jQuery('#wpa_event_time_format_' + id).val(),
-				showRecords: jQuery('#wpa_event_show_records_' + id).is(':checked') ? 1 : 0,
+				distance: 1,
+				unit: '',
+				timeFormat: '',
+				showRecords: 1,
 				type: 'running' // TODO add more support for other event types in future (e.g javelin)
 			}
 
@@ -130,32 +130,6 @@ if ( $this->has_permission_to_manage() ) {
 			// validate name
 			if(data.name == '') {
 				errors.push(WPA.getProperty('admin_edit_event_cat_invalid_name'));
-			}
-
-			// validate distance
-			if(data.distance == '' || WPA.isPositiveNumber(data.distance) == false) {
-				errors.push(WPA.getProperty('admin_edit_event_cat_invalid_distance'));
-			}
-
-			// validate unit
-			var unitReg = /\b(mile|m|km)\b/;
-			if(data.unit == '' || unitReg.test(data.unit) == false) {
-				errors.push(WPA.getProperty('admin_edit_event_cat_invalid_unit'));
-			}
-
-			// validate time format
-			var validTimeFormat = true;
-			var timeFormatReg = /\b(h|m|s|ms)\b/;
-			var timeFormatArr = data.timeFormat.split(':');
-			jQuery.each(timeFormatArr, function(index, format) {
-				if(timeFormatReg.test(format) == false) {
-					validTimeFormat = false;
-					return;
-				}
-			});
-
-			if(!validTimeFormat) {
-				errors.push(WPA.getProperty('admin_edit_event_cat_invalid_time_format'));
 			}
 
 			// alert any errors
@@ -183,9 +157,6 @@ if ( $this->has_permission_to_manage() ) {
 						}
 					},
 					"aoColumns": [{
-						"mData": "distance_meters",
-						"bVisible": false
-					},{
 						"mData": "id",
 						"sWidth": "60px",
 						"mRender": function(data, type, full) {
@@ -203,28 +174,6 @@ if ( $this->has_permission_to_manage() ) {
 						},
 						"bSortable": false
 					},{
-						"mData": "distance",
-						"sWidth": "70px",
-						"bSortable": false,
-						"mRender": function(data, type, full) {
-							return '<input size="7" maxlength="10" disabled="disabled" class="wpa-admin-editable-disabled" value="' + data + '" event_id="' + full['id'] + '" type="text" id="wpa_event_distance_' + full['id'] + '"/>';
-						},
-					},{
-						"mData": "unit",
-						"sWidth": "70px",
-						"bSortable": false,
-						"sClass": "datatable-center",
-						"mRender": function(data, type, full) {
-							return '<input size="4" maxlength="6" disabled="disabled" class="wpa-admin-editable-disabled" value="' + data + '" event_id="' + full['id'] + '" type="text" id="wpa_event_unit_' + full['id'] + '"/>';
-						},
-					},{
-						"mData": "time_format",
-						"sWidth": "70px",
-						"bSortable": false,
-						"mRender": function(data, type, full) {
-							return '<input size="6" maxlength="6" disabled="disabled" class="wpa-admin-editable-disabled" value="' + data + '" event_id="' + full['id'] + '" type="text" id="wpa_event_time_format_' + full['id'] + '"/>';
-						},
-					},{
 						"mData": "show_records",
 						"sWidth": "60px",
 						"sClass": "datatable-center",
@@ -236,8 +185,7 @@ if ( $this->has_permission_to_manage() ) {
 								cancelFn = 'WPA.Admin.toggleAddEventCategory(false)';
 							}
 
-							return '<input type="checkbox" ' + (parseInt(data) == 1 ? 'checked="checked"' : '') + '" disabled="disabled" class="wpa-admin-editable-disabled" value="' + data + '" event_id="' + full['id'] + '" id="wpa_event_show_records_' + full['id'] + '"/>' +
-							'<span event_id="' + full['id'] + '" class="wpa-admin-editable-save-cancel">' +
+							return '<span event_id="' + full['id'] + '" class="wpa-admin-editable-save-cancel">' +
 								'<span onclick="WPA.Admin.saveEventCategory(' + full['id'] + ')">' + WPA.getProperty('save') + '</span>&nbsp;' +
 								'<span onclick="' + cancelFn + '">' + WPA.getProperty('cancel') + '</span>' +
 							'</span>';
@@ -289,12 +237,8 @@ if ( $this->has_permission_to_manage() ) {
 				<thead>
 					<tr>
 						<th></th>
-						<th></th>
 						<th><?php echo $this->get_property('admin_column_event_cat_name') ?></th>
-						<th><?php echo $this->get_property('admin_column_event_cat_distance') ?></th>
-						<th><?php echo $this->get_property('admin_column_event_cat_unit') ?><span class="column-help" title="<?php echo $this->get_property('admin_edit_event_cat_column_unit'); ?>"></span></th>
-						<th><?php echo $this->get_property('admin_column_event_cat_time_format') ?><span class="column-help" title="<?php echo $this->get_property('admin_edit_event_cat_column_time_format'); ?>"></span></th>
-						<th><?php echo $this->get_property('admin_column_event_cat_show_records') ?><span class="column-help" title="<?php echo $this->get_property('admin_edit_event_cat_column_show_records'); ?>"></span></th>
+						<th></th>
 					</tr>
 				</thead>
 				<tbody></tbody>

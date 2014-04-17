@@ -81,8 +81,9 @@ if(!class_exists('WP_Athletics_Demo')) {
 			for ( $i = 1; $i <= $this -> NUMBER_RESULTS; $i++) {
 				$user = $this -> users[ array_rand( $this -> users ) ];
 				$event = $this -> events[ array_rand( $this -> events ) ];
-				$position = $this -> trueOrFalse() ? ( rand( 1,2000 ) ) : '-';
-				$time = $this -> generate_random_time( $event['eventCategoryName'] );
+				$position = rand( 1,500 );
+				$score = rand( (int)$event['par']-20, (int)$event['par']+20 );
+				$total = (int)$event['par']-$score;
 
 				$data = array(
 					'eventId' => $event['id'],
@@ -92,7 +93,9 @@ if(!class_exists('WP_Athletics_Demo')) {
 					'position' => $position,
 					'garminId' => '',
 					'gender' => $user['gender'],
-					'time' => $time,
+					'time' => 0,
+					'score' => $score,
+					'total' => $total,
 					'isDemo' => true,
 					'isAdmin' => true
 				);
@@ -105,7 +108,7 @@ if(!class_exists('WP_Athletics_Demo')) {
 		 */
 		public function generate_random_events() {
 			$event_locations = array('Dublin', 'Waterford', 'San Francisco', 'London', 'Paris', 'Wexford', 'Enniscorthy', 'Can Tho', 'Bermuda', 'Caribbean', 'Edinburgh', 'Chicago', 'Japan', 'China', 'Louth', 'Stockholm', 'Malmo', 'Venice', 'Vientiane', 'Kilkenny');
-			$event_sub_names = array('Docklands', 'Warriers', 'Annual', 'Rock n Roll', 'Strawberry', 'Summer', 'Winter', 'Spring', 'Waterside', 'Coastal', 'Hillside', 'Mountain');
+			$event_sub_names = array('classic', '4 ball', 'scramble', 'winter league', 'summer league', 'cup');
 			$event_sub_types = $this -> wpa_db -> get_event_sub_types();
 			$event_cats = $this -> wpa_db -> get_event_categories();
 
@@ -113,8 +116,9 @@ if(!class_exists('WP_Athletics_Demo')) {
 				$location = $event_locations[ array_rand( $event_locations ) ];
 				$cat = $event_cats[ array_rand( $event_cats ) ];
 				$sub_type = $this -> generate_random_sub_type( $cat['name'] );
-				$name = $location . ' ' . $event_sub_names[ array_rand( $event_sub_names ) ] . ' ' . $cat['name'];
+				$name = $location . ' ' . $event_sub_names[ array_rand( $event_sub_names ) ];
 				$date = $this -> generate_random_date();
+				$par = rand( 68,74 );
 
 				$data = array(
 					'eventLocation' => $location,
@@ -122,7 +126,8 @@ if(!class_exists('WP_Athletics_Demo')) {
 					'eventCategoryName' => $cat['name'],
 					'eventName' => $name,
 					'eventDate' => $date,
-					'eventSubType' => $sub_type
+					'eventSubType' => '',
+					'par' => $par
 				);
 
 				$data['id'] =  $this -> wpa_db -> create_event( $data, true );

@@ -575,8 +575,21 @@ if( !class_exists( 'WPA_Base' ) ) {
 			}
 
 			// replace the event result token
-			if( isset( $data['time'] ) ) {
-				$content = str_replace( '{result}', $data['time'], $content );
+			if( isset( $data['score'] ) ) {
+				$content = str_replace( '{score}', $data['score'], $content );
+			}
+			
+			if( isset( $data['total'] ) ) {
+				$tot = (int) $data['total'];
+				
+				$val = $data['total'];
+				if( $tot == 0) {
+					$val = $this->get_property('golf_score_even');
+				}
+				else if( $tot > 0 ) {
+					$val = '+' . $val;
+				}
+				$content = str_replace( '{total}', $val, $content );
 			}
 
 			// replace the user name
@@ -786,10 +799,8 @@ if( !class_exists( 'WPA_Base' ) ) {
 					<input class="ui-widget ui-widget-content ui-state-default ui-corner-all add-result-required" size="25" maxlength=100 type="text" id="editEventLocation" />
 				</div>
 				<div class="wpa-add-result-field add-result-no-bg">
-					<label class="required"><?php echo $this->get_property('add_result_event_sub_type'); ?>:</label>
-					<select class="add-result-required" id="editEventSubType">
-						<option value="" selected="selected"></option>
-					</select>
+					<label class="required"><?php echo $this->get_property('add_result_par'); ?>:</label>
+					<input class="validate-num ui-widget ui-widget-content ui-state-default ui-corner-all add-result-required" size="25" maxlength=100 type="text" id="editEventPar" />
 				</div>
 				<div class="wpa-add-result-field add-result-no-bg">
 					<label class="required"><?php echo $this->get_property('add_result_event_date'); ?>:</label>
@@ -813,6 +824,7 @@ if( !class_exists( 'WPA_Base' ) ) {
 				<label class="required"><?php echo $this->get_property('column_athlete_username'); ?>:</label>
 				<input class="ui-widget ui-widget-content ui-state-default ui-corner-all add-result-required" size="30" maxlength=100 type="text" id="createAthleteUsername" />
 			</div>
+			<!--
 			<div class="wpa-add-result-field add-result-no-bg">
 				<label><?php echo $this->get_property('column_athlete_email'); ?>:</label>
 				<input class="ui-widget ui-widget-content ui-state-default ui-corner-all" size="20" type="text" id="createAthleteEmail"/>
@@ -822,6 +834,7 @@ if( !class_exists( 'WPA_Base' ) ) {
 				<input checked="checked" type="checkbox" id="createAthleteSendDetails"/>
 				<span><?php echo $this->get_property('email_details_text'); ?></span>
 			</div>
+			-->
 			<div class="wpa-add-result-field add-result-no-bg">
 				<label class="required"><?php echo $this->get_property('my_profile_gender'); ?>:</label>
 				<select id="createAthleteGender">
@@ -851,6 +864,7 @@ if( !class_exists( 'WPA_Base' ) ) {
 					<input type="hidden" id="addResultId" value=""/>
 					<input type="hidden" id="addResultEventId" value=""/>
 					<input type="hidden" id="addResultEventDate" value=""/>
+					<input type="hidden" id="addResultTotalRaw" value=""/>
 
 					<div class="wpa-add-result-field">
 						<label class="required"><?php echo $this->get_property('add_result_event_name'); ?>:</label>
@@ -869,11 +883,17 @@ if( !class_exists( 'WPA_Base' ) ) {
 						<input class="ui-widget ui-widget-content ui-state-default ui-corner-all add-result-required" size="25" maxlength=100 type="text" id="addResultEventLocation" />
 					</div>
 					<div class="wpa-add-result-field add-result-no-bg">
-						<label class="required"><?php echo $this->get_property('add_result_event_sub_type'); ?>:</label>
+						<label class="required"><?php echo $this->get_property('add_result_par'); ?>:</label>
+						<input class="validate-num ui-widget ui-widget-content ui-state-default ui-corner-all add-result-required" size="25" maxlength=100 type="text" id="addResultPar" />
+					</div>
+					<!--
+					<div class="wpa-add-result-field add-result-no-bg">
+						<label class="required"><?php //echo $this->get_property('add_result_event_sub_type'); ?>:</label>
 						<select class="add-result-required" id="addResultEventSubType">
 							<option value="" selected="selected"></option>
 						</select>
 					</div>
+					-->
 					<div class="wpa-add-result-field add-result-no-bg">
 						<label class="required"><?php echo $this->get_property('add_result_event_date'); ?>:</label>
 						<input readonly="readonly" style="position:relative; top:-2px" class="ui-widget ui-widget-content ui-state-default ui-corner-all add-result-required" size="20" type="text" id="addResultDate"/>
@@ -884,30 +904,17 @@ if( !class_exists( 'WPA_Base' ) ) {
 							<option value="" selected="selected"></option>
 						</select>
 					</div>
-					<div style="display:none;" time-format="h" class="wpa-add-result-field add-result-no-bg">
-						<label class="required"><?php echo $this->get_property('add_result_event_time_hours'); ?>:</label>
-						<input class="ui-widget ui-widget-content ui-state-default ui-corner-all" time-format="h" maxlength="2" size="3" type="text" id="addResultTimeHours" value="0">
+					<div class="wpa-add-result-field add-result-no-bg">
+						<label class="required"><?php echo $this->get_property('add_result_score'); ?>:</label>
+						<input class="validate-num ui-widget ui-widget-content ui-state-default ui-corner-all add-result-required" maxlength="3" size="3" type="text" id="addResultScore" value="0">
 					</div>
-					<div style="display:none;" time-format="m" class="wpa-add-result-field add-result-no-bg">
-						<label class="required"><?php echo $this->get_property('add_result_event_time_minutes'); ?>:</label>
-						<input class="ui-widget ui-widget-content ui-state-default ui-corner-all" time-format="m" maxlength="2" size="3" type="text" id="addResultTimeMinutes" value="0">
-					</div>
-					<div style="display:none;" time-format="s" class="wpa-add-result-field add-result-no-bg">
-						<label class="required"><?php echo $this->get_property('add_result_event_time_seconds'); ?>:</label>
-						<input class="ui-widget ui-widget-content ui-state-default ui-corner-all" time-format="s" maxlength="2" size="3" type="text" id="addResultTimeSeconds" value="0">
-					</div>
-					<div style="display:none;" time-format="ms" class="wpa-add-result-field add-result-no-bg">
-						<label class="required"><?php echo $this->get_property('add_result_event_time_milliseconds'); ?>:</label>
-						<input class="ui-widget ui-widget-content ui-state-default ui-corner-all" time-format="ms" maxlength="2" size="3" type="text" id="addResultTimeMilliSeconds" value="0">
+					<div class="wpa-add-result-field add-result-no-bg">
+						<label><?php echo $this->get_property('add_result_total'); ?>:</label>
+						<input readonly="readonly" class="ui-widget ui-widget-content ui-state-default ui-corner-all" maxlength="3" size="3" type="text" id="addResultTotal" value="0">
 					</div>
 					<div class="wpa-add-result-field add-result-no-bg">
 						<label><?php echo $this->get_property('add_result_event_position'); ?>:</label>
 						<input class="ui-widget ui-widget-content ui-state-default ui-corner-all" size="5" type="text" id="addResultPosition" value="">
-					</div>
-					<div class="wpa-add-result-field add-result-no-bg">
-						<label><?php echo $this->get_property('add_result_garmin_link'); ?>:</label>
-						<input class="ui-widget ui-widget-content ui-state-default ui-corner-all" size="30" type="text" id="addResultGarminId" value="">
-						<span class="wpa-help" title="<?php echo $this->get_property('help_add_result_garmin_id'); ?>"></span>
 					</div>
 				</form>
 			</div>
@@ -925,15 +932,12 @@ if( !class_exists( 'WPA_Base' ) ) {
 				<table cellpadding="0" cellspacing="0" border="0" class="display ui-state-default" style="border-bottom:none" id="<?php echo $tableId; ?>" width="100%">
 					<thead>
 						<tr>
-						<th></th>
-						<th></th>
-						<th></th>
-						<th><?php echo $this->get_property('column_athlete_name') ?></th>
-						<th><?php echo $this->get_property('column_time') ?></th>
-						<th><?php echo $this->get_property('column_pace') ?></th>
-						<th><?php echo $this->get_property('column_age_category') ?></th>
-						<th><?php echo $this->get_property('column_position') ?></th>
-						<th></th>
+							<th></th>
+							<th><?php echo $this->get_property('column_position') ?></th>
+							<th><?php echo $this->get_property('column_athlete_name') ?></th>
+							<th><?php echo $this->get_property('column_age_category') ?></th>
+							<th><?php echo $this->get_property('column_score') ?></th>
+							<th><?php echo $this->get_property('column_total') ?></th>
 						</tr>
 					</thead>
 				</table>
@@ -1012,11 +1016,6 @@ if( !class_exists( 'WPA_Base' ) ) {
 										<span id="wpa-profile-age-class"></span>
 									</div>
 
-									<!-- FAVOURITE EVENT -->
-									<div class="wpa-profile-field">
-										<label><?php echo $this->get_property('my_profile_fave_event'); ?>:</label>
-										<span id="wpa-profile-fave-event"></span>
-									</div>
 								</div>
 								<br style="clear:both"/>
 							</div>
@@ -1038,10 +1037,6 @@ if( !class_exists( 'WPA_Base' ) ) {
 									<option value="this_year"><?php echo $this->get_property('filter_period_option_this_year'); ?></option>
 								</select>
 
-								<select id="profileFilterType">
-									<option value="all" selected="selected"><?php echo $this->get_property('filter_type_option_all'); ?></option>
-								</select>
-
 								<select id="profileFilterAge">
 									<option value="all" selected="selected"><?php echo $this->get_property('filter_age_option_all'); ?></option>
 								</select>
@@ -1059,7 +1054,6 @@ if( !class_exists( 'WPA_Base' ) ) {
 						<div class="wpa-tabs wpa-results-tabs" id="results-tabs">
 						  <ul>
 						    <li><a href="#tabs-results"><?php echo $this->get_property('results_main_tab') ?></a></li>
-						    <li><a href="#tabs-personal-bests"><?php echo $this->get_property('results_personal_bests_tab') ?></a></li>
 							<?php
 							  if( defined( 'WPA_STATS_ENABLED' ) ) {
 							  	global $wpa;
@@ -1075,34 +1069,11 @@ if( !class_exists( 'WPA_Base' ) ) {
 										<th><?php echo $this->get_property('column_event_date') ?></th>
 										<th><?php echo $this->get_property('column_event_name') ?></th>
 										<th><?php echo $this->get_property('column_event_location') ?></th>
-										<th><?php echo $this->get_property('column_event_type') ?></th>
 										<th><?php echo $this->get_property('column_category') ?></th>
 										<th><?php echo $this->get_property('column_age_category') ?></th>
-										<th><?php echo $this->get_property('column_time') ?></th>
-										<th><?php echo $this->get_property('column_pace') ?></th>
 										<th><?php echo $this->get_property('column_position') ?></th>
-										<th></th>
-									</tr>
-								</thead>
-							</table>
-						  </div>
-						  <div id="tabs-personal-bests" wpa-tab-type="pb">
-							<table cellpadding="0" cellspacing="0" border="0" class="display ui-state-default" id="personal-bests-table" width="100%">
-								<thead>
-									<tr>
-										<th></th>
-										<th></th>
-										<th></th>
-										<th><?php echo $this->get_property('column_category') ?></th>
-										<th><?php echo $this->get_property('column_time') ?></th>
-										<th><?php echo $this->get_property('column_pace') ?></th>
-										<th><?php echo $this->get_property('column_event_name') ?></th>
-										<th><?php echo $this->get_property('column_event_location') ?></th>
-										<th><?php echo $this->get_property('column_event_type') ?></th>
-										<th><?php echo $this->get_property('column_age_category') ?></th>
-										<th><?php echo $this->get_property('column_event_date') ?></th>
-										<th><?php echo $this->get_property('column_club_rank') ?><span class="column-help" title="<?php echo $this->get_property('help_column_rank'); ?>"></span></th>
-										<th></th>
+										<th><?php echo $this->get_property('column_score') ?></th>
+										<th><?php echo $this->get_property('column_total') ?></th>
 									</tr>
 								</thead>
 							</table>
@@ -1130,6 +1101,7 @@ if( !class_exists( 'WPA_Base' ) ) {
 							</div>
 							<div>
 								<span id="eventInfoDate"></span>
+								<span id="eventInfoParDetail"><strong><?php echo $this->get_property('label_par') ?></strong>&nbsp;<span id="eventInfoPar"></span></span>
 								<span id="eventInfoDetail"></span>
 							</div>
 						  </div>

@@ -28,15 +28,15 @@ if(!class_exists('WP_Athletics_Admin')) {
 		 */
 		function admin_menu() {
 			if( $this->has_permission_to_manage( false ) ) {
-				add_menu_page('WP Athletics Settings', 'WP Athletics', 'manage_wp_athletics', 'wp-athletics-settings', array( $this, 'wpa_settings' ), WPA_PLUGIN_URL . '/resources/images/wp-athletics-icon.png' );
-				add_submenu_page( 'wp-athletics-settings', 'WP Athletics Add Results', 'Add Results', 'manage_wp_athletics', 'wp-athletics-add-results', array( $this, 'wpa_add_results') );
-				add_submenu_page( 'wp-athletics-settings', 'WP Athletics Results Mangager', 'Manage Results', 'manage_wp_athletics', 'wp-athletics-manage-results', array( $this, 'wpa_manage_results') );
-				add_submenu_page( 'wp-athletics-settings', 'WP Athletics Events Mangager', 'Manage Events', 'manage_wp_athletics', 'wp-athletics-manage-events', array( $this, 'wpa_manage_events') );
-				add_submenu_page( 'wp-athletics-settings', 'WP Athletics Athlete Mangager', 'Manage Athletes', 'manage_wp_athletics', 'wp-athletics-manage-athletes', array( $this, 'wpa_manage_athletes') );
-				add_submenu_page( 'wp-athletics-settings', 'WP Athletics Event Categories', 'Event Categories', 'manage_wp_athletics', 'wp-athletics-event-categories', array( $this, 'wpa_event_category_settings' ) );
-				add_submenu_page( 'wp-athletics-settings', 'WP Athletics Age Categories', 'Age Categories', 'manage_wp_athletics', 'wp-athletics-age-categories', array( $this, 'wpa_age_category_settings') );
-				add_submenu_page( 'wp-athletics-settings', 'WP Athletics Print Rankings', 'Print Rankings', 'manage_wp_athletics', 'wp-athletics-print-rankings', array( $this, 'wpa_print_rankings') );
-				add_submenu_page( 'wp-athletics-settings', 'WP Athletics Log', 'Log', 'manage_wp_athletics', 'wp-athletics-log', array( $this, 'wpa_log') );
+				add_menu_page('WP Football Golf', 'WP Football Golf', 'manage_wp_athletics', 'wp-athletics-settings', array( $this, 'wpa_settings' ), WPA_PLUGIN_URL . '/resources/images/wp-athletics-icon.png' );
+				add_submenu_page( 'wp-athletics-settings', 'WP Football Golf Add Results', 'Add Results', 'manage_wp_athletics', 'wp-athletics-add-results', array( $this, 'wpa_add_results') );
+				add_submenu_page( 'wp-athletics-settings', 'WP Football Golf Results Mangager', 'Manage Results', 'manage_wp_athletics', 'wp-athletics-manage-results', array( $this, 'wpa_manage_results') );
+				add_submenu_page( 'wp-athletics-settings', 'WP Football Golf Events Mangager', 'Manage Events', 'manage_wp_athletics', 'wp-athletics-manage-events', array( $this, 'wpa_manage_events') );
+				add_submenu_page( 'wp-athletics-settings', 'WP Football Golf User Mangager', 'Manage Athletes', 'manage_wp_athletics', 'wp-athletics-manage-athletes', array( $this, 'wpa_manage_athletes') );
+				add_submenu_page( 'wp-athletics-settings', 'WP Football Golf Event Categories', 'Event Categories', 'manage_wp_athletics', 'wp-athletics-event-categories', array( $this, 'wpa_event_category_settings' ) );
+				add_submenu_page( 'wp-athletics-settings', 'WP Football Golf Age Categories', 'Age Categories', 'manage_wp_athletics', 'wp-athletics-age-categories', array( $this, 'wpa_age_category_settings') );
+				//add_submenu_page( 'wp-athletics-settings', 'WP Football Golf Print Rankings', 'Print Rankings', 'manage_wp_athletics', 'wp-athletics-print-rankings', array( $this, 'wpa_print_rankings') );
+				add_submenu_page( 'wp-athletics-settings', 'WP Football Golf Log', 'Log', 'manage_wp_athletics', 'wp-athletics-log', array( $this, 'wpa_log') );
 			}
 		}
 

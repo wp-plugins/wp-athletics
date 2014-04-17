@@ -72,9 +72,9 @@ if( !class_exists('WP_Athletics_Stats') ) {
 			?>
 
 			<div id="tabs-stats<?php echo $suffix ?>" wpa-tab-type="stats">
-
+			<!--
 				<script type="text/javascript" src='https://www.google.com/jsapi?autoload={"modules":[{"name":"visualization","version":"1","packages":["corechart"]}]}'></script>
-
+			-->
 				<script type="text/javascript">
 
 					jQuery(document).ready(function() {
