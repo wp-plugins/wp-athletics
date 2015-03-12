@@ -71,12 +71,13 @@ if ( $this->has_permission_to_manage() ) {
 						<label><?php echo $this->get_property('admin_settings_label_language') ?>:</label>
 						<select id="setting-language">
 							<option value="en">English</option>
+							<option value="de">German</option>
 							<option value="it">Italian</option>
 							<option value="pt">Portuguese</option>
 							<!--
 							<option value="fr">French</option>
 							<option value="es">Spanish</option>
-							<option value="de">German</option>
+							
 							<option value="sw">Swedish</option>
 							-->
 						</select>
@@ -172,8 +173,9 @@ if ( $this->has_permission_to_manage() ) {
 		<h3>Thanks to...</h3>
 		<p>
 			<ul>
-				<li>Roberto Luceri for translating the plugin into Italian.
-				<li>Darrin Ormston for ongoing testing and feature development
+				<li>Roberto Luceri for translating the plugin into Italian.</li>
+				<li>Darrin Ormston for ongoing testing and feature development</li>
+				<li>Boris Ruth for the German translation</li>
 			</ul>
 		</p>
 	</div>
