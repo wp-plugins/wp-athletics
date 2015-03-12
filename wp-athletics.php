@@ -4,7 +4,7 @@ Plugin Name: WP Athletics
 Plugin URI: http://www.conormccauley.me/wordpress-athletics/
 Description: Allow your users to log, compare and analyse their athletic results. Generates a club records page to summarise athlete data for all to see.
 Author: Conor McCauley
-Version: 1.0.4
+Version: 1.0.5
 Author URI: http://www.conormccauley.me
 */
 
@@ -284,7 +284,7 @@ if(!class_exists('WP_Athletics')) {
 				define('WPA_DATE_FORMAT', '%d %b %Y');
 
 			if (!defined('WPA_VERSION_NUM') )
-				define('WPA_VERSION_NUM', '1.0.4');
+				define('WPA_VERSION_NUM', '1.0.5');
 
 			if (!defined('WPA_DB_VERSION') )
 				define('WPA_DB_VERSION', '1.0');

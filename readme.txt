@@ -161,3 +161,6 @@ Minor enhancements, Italian now supported and a fix for users having trouble cre
 = 1.0.4 =
 Layout changes and minor bug fixes. 
 Height of admin inputs, profile photo fix, embedded results fix, transparent chart backgrounds, admin area not translated.
+
+= 1.0.5 =
+German translation added
