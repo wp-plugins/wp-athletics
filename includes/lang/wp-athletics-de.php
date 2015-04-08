@@ -76,7 +76,7 @@ $common_lang = array(
 	'results_personal_bests_tab' => 'Bestzeiten',
 
 	// wpa search
-	'wpa_search_text' => 'Search athlete or event',
+	'wpa_search_text' => 'Suche Athlet oder Lauf',
 	'wpa_search_category_event' => 'L&aumlufe',
 	'wpa_search_category_athlete' => 'Athleten',
 
@@ -152,7 +152,7 @@ $common_lang = array(
 	'embedded_event_results_add_result_link' => 'Mein Ergebnis hinzuf&uumlgen',
 	'embedded_event_results_male_records_link' => 'Bestzeiten M&aumlnner',
 	'embedded_event_results_female_records_link' => 'Bestzeiten Frauen',
-	'embedded_event_results_error_no_id' => '[WPA Error: ID for the event was not supplied]',
+	'embedded_event_results_error_no_id' => '[WPA Fehler: Keine ID f&uumlr den Lauf]',
 	'time_invalid_text' => 'Ung&uumlltige Zeit',
 	'time_no_value_text' => 'Nicht verf&uumlgbar',
 	'time_days_label' => 'Tage',
@@ -202,7 +202,7 @@ $common_lang = array(
 	'records_page_title' => 'Bestzeiten',
 
 	// logs
-	'new_result' => '<user>{name}</user> life in einer Zeit von <time>{result}</time> im <event>{event-name}</event>',
+	'new_result' => '<user>{name}</user> lief in einer Zeit von <time>{result}</time> im <event>{event-name}</event>',
 	'new_result_position_addon' => ' und erreichte den {position} Platz gesamt',
 	'update_result' => '<user>{name}</user> aktualisierte das Ergebnis f&uumlr <event>{event-name}</event>',
 	'new_event' => '<user>{name}</user> hat den neuen Lauf <event>{event-name}</event> angelegt',

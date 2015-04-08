@@ -19,6 +19,7 @@ $common_lang = array(
 	'column_position' => 'Pos.',
 	'column_garmin' => 'Garmin',
 	'column_athlete_name' => 'Name',
+	'column_athlete_dob' => 'DOB',
 	'column_age_category' => 'Class',
 	'column_rankings' => 'Rankings',
 	'column_club_rank' => 'Rank',
@@ -124,7 +125,7 @@ $common_lang = array(
 	'error_problem_creating_event' => 'There was a problem creating the new event, please try again later',
 	'error_add_result_no_gender_dob' => 'You have not entered your gender and date of birth. Please fill in these details on the "Manage Results" page before you add a result, this way we can accurately classify your result against others',
 	'error_dialog_title' => 'Error',
-	'error_no_age_category' => 'It appears you weren\'t even born when this event took place! please check and try again',
+	'error_no_age_category' => 'Could not determine an age category. Please check and try again or manually select an age category below',
 	'error_event_already_entered' => 'Sorry, you have already recorded your result for this event',
 	'error_not_logged_in' => 'You must be logged in to perform this action. If you do not have an account, please register',
 
@@ -261,7 +262,6 @@ $admin_lang = array(
 	'admin_settings_record_label_combined' => 'Combined',
 	'admin_settings_help_disable_sql_view' => 'Choose this option if your hosting provider does not allow the creation of an SQL VIEW.',
 	'admin_settings_help_records_mode' => 'Choose \'Separate\' if you wish to use two separate pages for club records (male and female) or choose \'Combined\' if you would rather a single page with a dropdown menu allowing users to filter by gender',
-	
 
 	// column help
 	'admin_edit_event_cat_column_unit' => 'Valid units are \'m\' (meters), \'km\' (kilometers) and \'mile\' (miles)',
@@ -293,7 +293,8 @@ $admin_lang = array(
 		
 	// athlete manager
 	'admin_athlete_create_button' => 'Create Athlete',
-	'delete_athlete_text' => 'Are you sure you wish to remove this athlete and all associated records?',
+	'delete_athlete_text' => 'Are you sure you wish to remove this athlete and all associated results?',
+	'delete_athlete_title' => 'Delete Athlete?',
 	'delete_athlete_tooltip' => 'Delete this athlete (cannot be undone)',
 	'edit_athlete_tooltip' => 'Edit this athlete',
 	'email_details_text' => 'Send this athlete their login details',
@@ -346,7 +347,6 @@ $admin_lang = array(
 	'add_result_dob_text' => 'Please choose the athletes date of birth using the date picker below',
 	'add_result_set_dob_error' => 'You have not yet selected a date of birth',
 	'add_result_success_message' => 'The result has been entered successfully',
-	'add_result_create_user_dialog_title' => 'Create New Athlete',
 	'add_result_create_user_dob_help' => 'A date of birth is not required but will make life easier when adding results for this user as the age class for results is automatically determined using the athletes date of birth and the date of the event',
 	'add_result_create_user_success_dialog_title' => 'Athlete Create',
 	'add_result_create_user_success_text' => 'The athlete has been created successfully. The login details can be provided to this athlete to allow them manage their own results. Please make a note of username / password details below if you wish to allow this user log into the system.',
@@ -354,6 +354,8 @@ $admin_lang = array(
 
 	// misc
 	'select_unselect_all_tooltip' => 'Select/Deselect All',
+	'create_user_dialog_title_result_' => 'Create New Athlete',
+	'edit_user_dialog_title' => 'Edit Athlete',
 
 	// print rankings
 	'print_rankings_text' => 'rankings',

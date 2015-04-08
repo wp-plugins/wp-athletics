@@ -826,3 +826,19 @@ span.wpa-event-results-info-right {
 	float: right;
 	font-weight: normal !important;
 }
+
+.ui-autocomplete {
+	z-index: 99999 !important;
+}
+
+.ui-dialog {
+	z-index: 99998 !important;
+}
+
+.dataTables_empty {
+  height: 200px !important;
+}
+
+.ui-menu .ui-menu-item {
+  padding: 5px 1px 5px 0px;
+}

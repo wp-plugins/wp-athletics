@@ -164,6 +164,59 @@ WPA.Ajax = {
 	},
 	
 	/**
+	 * deletes an existing user
+	 */
+	deleteAthlete: function(userId, callbackFn) {
+		WPA.toggleLoading(true);
+		jQuery.ajax({
+			type: "post",
+			url: WPA.Ajax.url,
+			data: {
+				action: 'wpa_delete_user',
+				userId: userId
+			},
+			success: function(result) {
+				if(callbackFn) {
+					WPA.toggleLoading(false);
+					callbackFn(result);
+				}
+			}
+		});
+	},
+
+	/**
+	 * Edits an existing athlete record
+	 */
+	editAthlete: function(callbackFn) {
+		if(WPA.validateAddEditForm('edit-user-dialog')) {
+			WPA.toggleLoading(true);
+			jQuery.ajax({
+				type: "post",
+				url: WPA.Ajax.url,
+				data: {
+					action: 'wpa_edit_user',
+					name: jQuery('#editAthleteName').val(),
+					userId: jQuery('#editAthleteId').val(),
+					gender: jQuery('#editAthleteGender').val(),
+					email: jQuery('#editAthleteEmail').val(),
+					dob: jQuery('#editAthleteDob').val()
+				},
+				success: function(result) {
+					WPA.toggleLoading(false);
+					if(callbackFn) {
+						if(result.error) {
+							WPA.alertError(result.error);
+						}
+						else {
+							callbackFn(result);
+						}
+					}
+				}
+			});
+		}
+	},
+	
+	/**
 	 * Creates a new athlete from the new athlete dialog
 	 */
 	createAthlete: function(callbackFn) {
@@ -176,12 +229,39 @@ WPA.Ajax = {
 				data: {
 					action: 'wpa_create_user',
 					name: name,
+					username: jQuery('#createAthleteUsername').val(),
 					gender: jQuery('#createAthleteGender').val(),
+					email: jQuery('#createAthleteEmail').val(),
+					sendEmail: jQuery('#createAthleteSendDetails').is(':checked'),
 					dob: jQuery('#createAthleteDob').val()
 				},
 				success: function(result) {
+					WPA.toggleLoading(false);
 					if(callbackFn) {
-						callbackFn(result);
+						if(result.error) {
+							WPA.alertError(result.error);
+						}
+						else {
+							if(jQuery('#createAthleteSendDetails').is(':checked') == false || jQuery('#createAthleteEmail').val() == '') {
+								// show dialog with athlete info
+								jQuery('#create-user-success-dialog span').html(result.username + ' / ' + result.password);
+								jQuery('#create-user-success-dialog').dialog({
+									title: WPA.getProperty('add_result_create_user_success_dialog_title'),
+									autoOpen: true,
+									resizable: false,
+									modal: true,
+									height: 'auto',
+									width: 300,
+									buttons: [{
+								    	text: WPA.getProperty('ok'),
+								    	click: function() {
+								    		jQuery('#create-user-success-dialog').dialog('close');
+									    }
+								    }]
+								});
+							}
+							callbackFn(result);
+						}
 					}
 				}
 			});

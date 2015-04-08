@@ -4,7 +4,7 @@ Donate link: http://www.conormccauley.me/wordpress-athletics
 Tags: athletics, results, sports, track, running club, athlete, statistics, races, racing, events, athletic, jogging, club, charts, records, personal bests, pb, pr, personal records
 Requires at least: 3.5
 Tested up to: 3.8.1
-Stable tag: 1.0.5
+Stable tag: 1.0.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -106,8 +106,14 @@ There are 4 themes available for your convenience. The default is a gray theme b
 
 = Is there language support? =
 
-There is language support, but currently it's only available in English. I hope to add new languages as the plugin progressed but this is low priority for the moment.
-If you want to help translate to a particular language, please get in touch. 
+Yes there is language support, the plugin is currently availale in:
+1. English
+1. Italian
+1. Dutch
+1. German
+1. Portuguese
+
+If you feel you can help translate the plugin into a language not yet supported, please get in touch.
 
 = Can I have separate male/female records pages? =
 
@@ -164,3 +170,6 @@ Height of admin inputs, profile photo fix, embedded results fix, transparent cha
 
 = 1.0.5 =
 German translation added
+
+= 1.0.6 =
+Dutch translation added. Manage athletes tool added. Fix for invalid event date. Some other bug fixes and UI tweaks. 

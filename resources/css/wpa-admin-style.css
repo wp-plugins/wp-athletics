@@ -256,6 +256,10 @@
 	border: 1px solid red;
 }
 
-.custom-combobox .custom-combobox-input {
+.ui-dialog .custom-combobox .custom-combobox-input {
 	height: 27px !important;
+}
+
+.wpa-filters .custom-combobox .custom-combobox-input {
+	height: 25px !important;
 }

@@ -259,10 +259,10 @@ var WPA = {
 					autoOpen: false,
 					resizable: false,
 					modal: true,
-					maxWidth: jQuery(document).width()-50,
-					height: 'auto',
-					width: 'auto',
-					maxHeight: jQuery(window).height()-50
+					width: (jQuery(document).width() * .85),
+					height: (jQuery(window).height() * .85),
+					maxWidth: (jQuery(document).width() - 50),
+					maxHeight: (jQuery(window).height() - 50)
 				})
 			}
 			// get personal bests
@@ -1598,8 +1598,9 @@ var WPA = {
 		jQuery.each(requiredFields, function() {
 			var el = jQuery(this);
 
-			if(el.val() == '') {
+			if(!el.val() || el.val() == '' || el.val() == 'null') {
 				if(el.is("select")) {
+					el.addClass('ui-state-error');
 					el.combobox('addCls', 'ui-state-error');
 				}
 				else {
@@ -1694,7 +1695,7 @@ var WPA = {
 	    }
 	    else {
 	    	WPA.alertError(WPA.getProperty('error_no_age_category'));
-	    	jQuery('#addResultDate').val('');
+	    	//jQuery('#addResultDate').val('');
 	    	if(failCallbackFn) {
 	    		failCallbackFn();
 	    	}
@@ -1933,9 +1934,9 @@ var WPA = {
 	/**
 	 * Sets up the add new athlete dialog
 	 */
-	setupNewAthleteDialog: function(callbackFn) {
+	setupNewAthleteDialog: function(createCallbackFn, editCallbackFn) {
 		jQuery('#create-user-dialog').dialog({
-			title: WPA.getProperty('add_result_create_user_dialog_title'),
+			title: WPA.getProperty('create_user_dialog_title'),
 			autoOpen: false,
 			resizable: false,
 			modal: true,
@@ -1949,23 +1950,50 @@ var WPA = {
 			},{
 		    	text: WPA.getProperty('submit'),
 		    	click: function() {
-		    		WPA.Ajax.createAthlete(callbackFn);
+		    		WPA.Ajax.createAthlete(createCallbackFn);
 		    	}
 		    }]
 		});
+		
+		if(editCallbackFn) {
+			jQuery('#edit-user-dialog').dialog({
+				title: WPA.getProperty('edit_user_dialog_title'),
+				autoOpen: false,
+				resizable: false,
+				modal: true,
+				height: 'auto',
+				width: 'auto',
+				buttons: [{
+			    	text: WPA.getProperty('cancel'),
+			    	click: function() {
+			    		jQuery('#edit-user-dialog').dialog('close');
+				    }
+				},{
+			    	text: WPA.getProperty('submit'),
+			    	click: function() {
+			    		WPA.Ajax.editAthlete(editCallbackFn);
+			    	}
+			    }]
+			});
+		}
 		
 		// username field
 		jQuery('#createAthleteName').keyup(function() {
 			jQuery('#createAthleteUsername').val(jQuery(this).val().replace(/ /g,'').toLowerCase());
 		});
 		
-		// keyup on create user name field
-		jQuery('#createAthleteName').keyup(function() {
+		// keyup on create name field
+		jQuery('#createAthleteName, #editAthleteName').keyup(function() {
+			jQuery(this).removeClass('ui-state-error');
+		});
+		
+		// keyup on gender field
+		jQuery('#editAthleteGender, #createAthleteGender').change(function() {
 			jQuery(this).removeClass('ui-state-error');
 		});
 		
 		// date picker
-		jQuery('#createAthleteDob').datepicker({
+		jQuery('#createAthleteDob, #editAthleteDob').datepicker({
 	      showOn: "both",
 	      buttonImage: WPA.globals.pluginUrl + '/resources/images/date_picker.png',
 	      buttonImageOnly: true,
@@ -1982,7 +2010,7 @@ var WPA = {
 	 */
 	displayNewAthleteDialog: function() {
 		// reset fields
-		jQuery('#createUserName,#createUserDob').val('');
+		jQuery('#createAthleteName,#createAthleteUsername, #createUserDob, #createAthleteEmail').val('');
 		
 		// opens
 		jQuery('#create-user-dialog').dialog('open');
@@ -2379,7 +2407,7 @@ var WPA = {
 	
 	renderAdminDeleteEditAthleteColumn: function (data, type, full) {
 		return '<div class="datatable-icon delete" onclick="WPA.Admin.deleteAthlete(' + data + ')" title="' + WPA.getProperty('delete_athlete_tooltip') + '"></div>' +
-		'&nbsp;<div class="datatable-icon edit" onclick="WPA.Admin.editAthlete(' + data + ')" title="' + WPA.getProperty('edit_athlete_tooltip') + '"></div>';
+		'&nbsp;<div class="datatable-icon edit" onclick="WPA.Admin.displayEditAthlete(' + data + ',\'' + full['athlete_dob'] + '\',\'' + full['athlete_name'] + '\',\'' + full['athlete_gender'] + '\',\'' + full['user_email'] + '\')" title="' + WPA.getProperty('edit_athlete_tooltip') + '"></div>';
 	},
 	
 	renderAdminDeleteEditResultColumn: function (data, type, full) {

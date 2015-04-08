@@ -24,7 +24,26 @@ if ( $this->has_permission_to_manage() ) {
 	}
 
 	WPA.Admin.deleteAthlete = function(id) {
-		WPA.Admin.deleteAthlete(id);
+
+		jQuery("#delete-athlete-confirm-dialog").dialog({
+	      resizable: false,
+	      height:160,
+	      title: WPA.getProperty('delete_athlete_title'),
+	      modal: true,
+	      buttons: {
+	        "Delete": function() {
+	          	jQuery( this ).dialog("close");
+		  		WPA.Ajax.deleteAthlete(id, function(result) {
+					if(result.success) {
+						WPA.Admin.reloadAthletes();
+					}
+				});
+	        },
+	        Cancel: function() {
+	          jQuery( this ).dialog( "close" );
+	        }
+	      }
+		});
 	}
 
 	WPA.Admin.launchCustomUploader = function(userId) {
@@ -65,6 +84,10 @@ if ( $this->has_permission_to_manage() ) {
 			},{
 				"mData": "user_email"
 			},{
+				"mData": "athlete_dob",
+				"sWidth": "100px",
+				"bSortable": false
+			},{
 				"mData": "user_registered",
 				"sWidth": "100px",
 				"bSortable": false
@@ -91,6 +114,11 @@ if ( $this->has_permission_to_manage() ) {
 					jQuery('#create-user-dialog').dialog('close');
 
 					// reload the table
+					WPA.Admin.athletesTable.fnDraw();
+				}
+			}, function(result) {
+				if(result.success) {
+					jQuery('#edit-user-dialog').dialog('close');
 					WPA.Admin.athletesTable.fnDraw();
 				}
 			});
@@ -170,13 +198,14 @@ if ( $this->has_permission_to_manage() ) {
 					<th><?php echo $this->get_property('column_athlete_name') ?></th>
 					<th><?php echo $this->get_property('column_athlete_username') ?></th>
 					<th><?php echo $this->get_property('column_athlete_email') ?></th>
+					<th><?php echo $this->get_property('column_athlete_dob') ?></th>
 					<th><?php echo $this->get_property('column_athlete_registered') ?></th>
 				</tr>
 			  </thead>
 			</table>
 		</div>
 
-		<!-- DELETE EVENTS CONFIRM DIALOG -->
+		<!-- DELETE ATHLETE CONFIRM DIALOG -->
 		<div id="delete-athlete-confirm-dialog" style="display:none">
 			<p>
 				<?php echo $this->get_property('delete_athlete_text') ?>
@@ -184,7 +213,7 @@ if ( $this->has_permission_to_manage() ) {
 		</div>
 		
 		<!-- ADD ATHLETE DIALOG -->
-		<?php $this->create_new_athlete_dialog(); ?>
+		<?php $this->create_athlete_dialogs(); ?>
 
 		<!-- COMMON DIALOGS -->
 		<?php $this->create_common_dialogs(); ?>

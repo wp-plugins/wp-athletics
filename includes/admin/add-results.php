@@ -162,6 +162,7 @@ if ( $this->has_permission_to_manage() ) {
 			var paces = WPA.getResultPaces(timeMillis, WPA.Admin.eventDistanceMeters);
 
 			WPA.toggleLoading(true);
+			
 			WPA.Ajax.updateResult({
 				isAdmin: true,
 				userId: WPA.Admin.selectedAthleteId,
@@ -250,7 +251,6 @@ if ( $this->has_permission_to_manage() ) {
 
 			// set up new athlete dialog
 			WPA.setupNewAthleteDialog(function(result) {
-				WPA.toggleLoading(false);
 				if(parseInt(result.id) > 0) {
 					jQuery('#create-user-dialog').dialog('close');
 
@@ -258,23 +258,6 @@ if ( $this->has_permission_to_manage() ) {
 					jQuery('#athleteName').val(jQuery('#createAthleteName').val()).removeClass('wpa-search-disabled');
 					WPA.Admin.selectedAthleteId = result.id;
 					WPA.Admin.getAthleteInfo();
-
-					// show dialog with athlete info
-					jQuery('#create-user-success-dialog span').html(result.username + ' / ' + result.username);
-					jQuery('#create-user-success-dialog').dialog({
-						title: WPA.getProperty('add_result_create_user_success_dialog_title'),
-						autoOpen: true,
-						resizable: false,
-						modal: true,
-						height: 'auto',
-						width: 300,
-						buttons: [{
-					    	text: WPA.getProperty('ok'),
-					    	click: function() {
-					    		jQuery('#create-user-success-dialog').dialog('close');
-						    }
-					    }]
-					});
 				}
 			});
 
@@ -517,14 +500,6 @@ if ( $this->has_permission_to_manage() ) {
 			</div>
 
 		</div>
-		
-		<!-- CREATE USER SUCCESS DIALOG -->
-		<div id="create-user-success-dialog" style="display:none">
-			<p><?php echo $this->get_property('add_result_create_user_success_text'); ?></p>
-			<div>
-				<b><span></span></b>
-			</div>
-		</div>
 
 		<!-- GENDER DIALOG -->
 		<div id="add-result-gender-dialog" style="display:none">
@@ -544,7 +519,7 @@ if ( $this->has_permission_to_manage() ) {
 		</div>
 		
 		<!-- ADD ATHLETE DIALOG -->
-		<?php $this->create_new_athlete_dialog(); ?>
+		<?php $this->create_athlete_dialogs(); ?>
 
 		<!-- ADD/EDIT EVENT DIALOG -->
 		<?php $this->create_edit_event_dialog(); ?>

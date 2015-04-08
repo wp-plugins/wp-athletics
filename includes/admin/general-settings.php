@@ -39,8 +39,6 @@ if ( $this->has_permission_to_manage() ) {
 				jQuery('#wpa-admin-settings-tab').tabs();
 
 			}, true);
-
-
 		});
 	</script>
 	<div class="wpa-admin"></div>
@@ -73,11 +71,11 @@ if ( $this->has_permission_to_manage() ) {
 							<option value="en">English</option>
 							<option value="de">German</option>
 							<option value="it">Italian</option>
+							<option value="nl">Dutch</option>
 							<option value="pt">Portuguese</option>
 							<!--
 							<option value="fr">French</option>
 							<option value="es">Spanish</option>
-							
 							<option value="sw">Swedish</option>
 							-->
 						</select>
@@ -163,6 +161,12 @@ if ( $this->has_permission_to_manage() ) {
 		As with the event categories, there are also a number of typical age class categories already set up (e.g Junior, Senior, 35-39, etc). If you wish to add any new age classes or
 		remove default age classes, check out the <a href="<?php echo get_bloginfo('wpurl')?>/wp-admin/admin.php?page=wp-athletics-age-categories">age category settings</a>.
 		</p>
+		<h3>Manage Athletes</h3>
+		<p>
+		All registered users of your Wordpress site are considered athletes and are eligible to enter results. Additional information such as date of birth and gender can be entered by
+		the athlete themselves or by you the admin on our <a href="<?php echo get_bloginfo('wpurl')?>/wp-admin/admin.php?page=wp-athletics-manage-athletes">manage athletes</a> tool. Here you can
+		also delete a user or edit their personal information. 
+		</p>
 		<h3>Event/Result Management</h3>
 		<p>
 		As users add more and more events and results, you may wish to manage and control this data. For example, two users may enter the same event twice (this should not usually happen) but
@@ -173,9 +177,10 @@ if ( $this->has_permission_to_manage() ) {
 		<h3>Thanks to...</h3>
 		<p>
 			<ul>
-				<li>Roberto Luceri for translating the plugin into Italian.</li>
-				<li>Darrin Ormston for ongoing testing and feature development</li>
-				<li>Boris Ruth for the German translation</li>
+				<li><strong>Roberto Luceri</strong> for translating the plugin into Italian.</li>
+				<li><strong>Darrin Ormston</strong> for ongoing testing and feature development</li>
+				<li><strong>Boris Ruth</strong> for the German translation</li>
+				<li><strong>Piet Jonkers</strong> for the Dutch translation</li>
 			</ul>
 		</p>
 	</div>

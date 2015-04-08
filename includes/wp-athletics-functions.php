@@ -135,8 +135,6 @@ if( !class_exists( 'WPA_Base' ) ) {
 		 */
 		public function get_recent_results() {
 
-			wpa_log('getting list of recent results');
-
 			// perform the query
 			$result = $this->wpa_db->get_recent_results_by_date( $_POST );
 
@@ -800,10 +798,35 @@ if( !class_exists( 'WPA_Base' ) ) {
 		}
 	
 		/**
-		 * Creates a dialog to add a new athlete
+		 * Creates a dialog to add/edit an athlete
 		 */
-		public function create_new_athlete_dialog() {
+		public function create_athlete_dialogs() {
 		?>
+
+		<div id="edit-user-dialog" style="display:none">
+			<input type="hidden" id="editAthleteId"/>
+			<div class="wpa-add-result-field add-result-no-bg">
+				<label class="required"><?php echo $this->get_property('add_result_name'); ?>:</label>
+				<input class="ui-widget ui-widget-content ui-state-default ui-corner-all add-result-required" size="30" maxlength=100 type="text" id="editAthleteName" />
+			</div>
+			<div class="wpa-add-result-field add-result-no-bg">
+				<label><?php echo $this->get_property('column_athlete_email'); ?>:</label>
+				<input class="ui-widget ui-widget-content ui-state-default ui-corner-all" size="30" type="text" id="editAthleteEmail"/>
+			</div>
+			<div class="wpa-add-result-field add-result-no-bg">
+				<label class="required"><?php echo $this->get_property('my_profile_gender'); ?>:</label>
+				<select id="editAthleteGender" class="add-result-required">
+					<option value="M"><?php echo $this->get_property('gender_M'); ?></option>
+					<option value="F"><?php echo $this->get_property('gender_F'); ?></option>
+				</select>
+			</div>
+			<div class="wpa-add-result-field add-result-no-bg">
+				<label><?php echo $this->get_property('my_profile_dob'); ?>:</label>
+				<input readonly="readonly" class="ui-widget ui-widget-content ui-state-default ui-corner-all" size="20" type="text" id="editAthleteDob"/>
+				<span class="wpa-help" title="<?php echo $this->get_property('add_result_create_user_dob_help'); ?>"></span>
+			</div>
+		</div>
+		
 		<div id="create-user-dialog" style="display:none">
 			<div class="wpa-add-result-field add-result-no-bg">
 				<label class="required"><?php echo $this->get_property('add_result_name'); ?>:</label>
@@ -815,7 +838,7 @@ if( !class_exists( 'WPA_Base' ) ) {
 			</div>
 			<div class="wpa-add-result-field add-result-no-bg">
 				<label><?php echo $this->get_property('column_athlete_email'); ?>:</label>
-				<input class="ui-widget ui-widget-content ui-state-default ui-corner-all" size="20" type="text" id="createAthleteEmail"/>
+				<input class="ui-widget ui-widget-content ui-state-default ui-corner-all" size="30" type="text" id="createAthleteEmail"/>
 			</div>
 			<div class="wpa-add-result-field add-result-no-bg" style="position: relative; top: 7px;">
 				<label></label>
@@ -824,7 +847,7 @@ if( !class_exists( 'WPA_Base' ) ) {
 			</div>
 			<div class="wpa-add-result-field add-result-no-bg">
 				<label class="required"><?php echo $this->get_property('my_profile_gender'); ?>:</label>
-				<select id="createAthleteGender">
+				<select id="createAthleteGender" class="add-result-required">
 					<option value="M"><?php echo $this->get_property('gender_M'); ?></option>
 					<option value="F"><?php echo $this->get_property('gender_F'); ?></option>
 				</select>
@@ -1203,6 +1226,14 @@ if( !class_exists( 'WPA_Base' ) ) {
 						<div id="wpa-loading-animation"></div>
 						<div id="wpa-loading-text"><?php echo $this->get_property('loading_dialog_text'); ?></div>
 						<br style="clear:both;"/>
+					</div>
+				</div>
+
+				<!-- CREATE USER SUCCESS DIALOG -->
+				<div id="create-user-success-dialog" style="display:none">
+					<p><?php echo $this->get_property('add_result_create_user_success_text'); ?></p>
+					<div>
+						<b><span></span></b>
 					</div>
 				</div>
 

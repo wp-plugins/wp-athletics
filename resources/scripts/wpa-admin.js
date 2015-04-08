@@ -42,6 +42,18 @@ WPA.Admin = {
 	},
 	
 	/**
+	 * Show the edit athlete changes
+	 */
+	displayEditAthlete: function(id, dob, name, gender, email) {
+		jQuery('#editAthleteName').val(name);
+		jQuery('#editAthleteEmail').val(email);
+		jQuery('#editAthleteGender').val(gender);
+		jQuery('#editAthleteId').val(id);
+		jQuery('#editAthleteDob').val(dob != 'null' ? dob : '');
+		jQuery('#edit-user-dialog').dialog('open');
+	},
+	
+	/**
 	 * Listener for when an checkbox input on an admin datatable is checked/unchecked
 	 */
 	selectRecordToggle: function(obj) {

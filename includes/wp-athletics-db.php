@@ -670,8 +670,6 @@ if(!class_exists('WP_Athletics_DB')) {
 		public function get_personal_bests( $request ) {
 			global $wpdb;
 
-			wpa_log('getting event personal bests');
-
 			$user_id = $request['userId'];
 			$age_category = $request['ageCategory'];
 			$gender = $request['gender'];
@@ -792,8 +790,6 @@ if(!class_exists('WP_Athletics_DB')) {
 		public function get_event_categories() {
 			global $wpdb;
 
-			wpa_log('getting event categories');
-
 			$results = $wpdb->get_results(
 				"
 				SELECT id, name, distance, distance_meters, unit, show_records, time_format, type
@@ -908,7 +904,6 @@ if(!class_exists('WP_Athletics_DB')) {
 		 */
 		public function get_athletes( $term ) {
 			global $wpdb;
-			wpa_log('getting athletes for search term "' . $term . '"');
 			return $wpdb->get_results( "SELECT id AS value, display_name AS label FROM wp_users WHERE LOWER(display_name) LIKE '%$term%' ORDER BY display_name ASC LIMIT 10" );
 		}
 
@@ -917,7 +912,6 @@ if(!class_exists('WP_Athletics_DB')) {
 		 */
 		public function get_event( $id ) {
 			global $wpdb;
-			wpa_log('getting single event by ID "' . $id . '"');
 			return $wpdb->get_row( "SELECT id, name, event_cat_id, sub_type_id, location, date_format(date,'" . WPA_DATE_FORMAT . "') as date FROM $this->EVENT_TABLE WHERE id = $id"  );
 		}
 
@@ -1018,6 +1012,21 @@ if(!class_exists('WP_Athletics_DB')) {
 					),
 					array( '%d' )
 				);
+				
+				if($success) {
+					// update the log too
+					$user = null;
+					if($is_admin_update) {
+						global $current_user;
+						$user = $current_user;
+					}
+					else {
+						$user = get_user_by( 'id', $data['userId'] );
+					}
+					$log_content = $this->parent->process_log_content_user_provided( $user, 'new_result', $data );
+					wpa_log($log_content);
+					$this->update_log_result( $user->ID, $data['resultId'], $log_content );
+				}
 			}
 
 			// log event - do not log updated results when an admin manually adds them (too expensive)
@@ -1035,6 +1044,32 @@ if(!class_exists('WP_Athletics_DB')) {
 			return $success;
 		}
 
+		/**
+		 * Updates a result in the logs table
+		 *
+		 */
+		function update_log_result( $user_id, $result_id, $new_content ) {
+			global $wpdb;
+				
+			if($user_id == null) {
+				global $current_user;
+				$user_id = $current_user->ID;
+			}
+			
+			wpa_log("USER IS IS " . $user_id);
+			wpa_log("RESULT ID IS " . $result_id);
+			wpa_log("CONTENT IS " . $new_content);
+	
+			global $wpdb;
+			$success = $wpdb->update(
+				$this->LOG_TABLE,
+				array(
+					'content' => $new_content
+				),
+				array( 'type' => 'new_result', 'user_id' => $user_id, 'result_id' => $result_id )
+			);
+		}
+		
 		/**
 		 * deletes a result from the database based on ID
 		 */
@@ -1065,7 +1100,7 @@ if(!class_exists('WP_Athletics_DB')) {
 			$success = $wpdb->query("DELETE FROM $this->RESULT_TABLE WHERE id IN ($ids);");
 
 			if($success) {
-				$wpdb->query("DELETE FROM $this->LOG_TABLE WHERE result_id IN ($id)");
+				$wpdb->query("DELETE FROM $this->LOG_TABLE WHERE result_id IN ($ids)");
 				return array('success' => true);
 			}
 		}
@@ -1390,28 +1425,89 @@ if(!class_exists('WP_Athletics_DB')) {
 
 			return intval($result_count) == 0;
 		}
+		
+		/**
+		 * Deletes an existing user
+		 */
+		function delete_user( $data ) {
+			$id = $data['userId'];
+
+			return array(
+				'success' => wp_delete_user( $id )
+			);
+		}
+		
+		/**
+		 * Edits an existing user
+		 */
+		function update_user( $data ) {
+			$error = null;
+			$success = false;
+			
+			$name = $data['name'];
+			$gender = $data['gender'];
+			$dob = $data['dob'];
+			$email = $data['email'];
+			$user_id = $data['userId'];
+			
+			$user = get_user_by( 'id', $user_id );
+			if($user) {
+				$user_id = wp_update_user( 
+					array( 
+						'ID' => $user_id,
+						'display_name' => $name,
+						'user_email' => $email
+					)	
+				);
+				
+				if ( is_wp_error( $user_id ) ) {
+					$error = 'There was an error updating the athlete';
+				} else {
+					if( $dob != '' ) {
+						update_user_meta( $user_id, 'wp-athletics_dob', $dob );
+					}
+					if($gender != '') {
+						update_user_meta( $user_id, 'wp-athletics_gender', $gender );
+					}
+					$success = true;
+				}
+			}
+			else {
+				$error = "User with ID $user_id was not found";
+			}
+			
+			return array(
+				'success' => $success,
+				'error' => $error
+			);
+		}
 
 		/**
 		 * Creates a new user profile
 		 */
 		function create_user( $data ) {
 			global $wpdb;
+			$error = false;
 
 			$name = $data['name'];
 			$gender = $data['gender'];
 			$dob = $data['dob'];
-			$username = str_replace( ' ', '', strtolower( $name ) );
-			$email = $username . '@' . $username . '.com';
-
-			$user_id = wp_create_user( $username, $username, $email );
-			// unsuccessful, add a 1 to the username and try again
-			if( !$user_id ) {
-				$username = $username . '1';
-				$user_id = wp_create_user( $username, $username, $email );
+			$email = $data['email'];
+			$username = $data['username'];
+			$send_email = $data['sendEmail'];
+			$password = wp_generate_password();
+			
+			if( empty( $email ) ) {
+				'no@email.com';
 			}
 
-			// update user meta
-			if( $user_id ) {
+			$user_id = wp_create_user( $username, $password, $email );
+
+			if ( is_wp_error( $user_id ) ) {
+				$error = $user_id->get_error_message();
+			}
+			else {
+				// successs
 				$this->update_user_display_name( $user_id, $name );
 				if( $dob != '' ) {
 					update_user_meta( $user_id, 'wp-athletics_dob', $dob );
@@ -1421,8 +1517,11 @@ if(!class_exists('WP_Athletics_DB')) {
 
 			// return results
 			return array(
+				'error' => $error,
 				'id' => $user_id,
-				'username' => $username
+				'username' => $username,
+				'password' => $password,
+				'sendEmail' => $send_email
 			);
 		}
 
