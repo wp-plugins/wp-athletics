@@ -284,6 +284,13 @@ var WPA = {
 					jQuery('#wpa-profile-fave-event').closest('div').hide();
 				}
 				
+				if(result.hideDob == 'yes') {
+					jQuery('#wpa-profile-dob-container').hide();
+				}
+				else {
+					jQuery('#wpa-profile-dob-container').show();
+				}
+				
 				if(result.dob != '' && result.gender != '') {
 					jQuery('#wpa-profile-dob').html(result.dob);
 					//jQuery('#wpa-profile-dob').attr('title', result.dob);

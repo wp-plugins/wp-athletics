@@ -439,6 +439,7 @@ if( !class_exists( 'WPA_Base' ) ) {
 			$result = array(
 				'gender' => get_user_meta( $user_id, 'wp-athletics_gender', true ),
 				'dob' => get_user_meta( $user_id, 'wp-athletics_dob', true ),
+				'hideDob' => get_user_meta( $user_id, 'wp-athletics_hide_dob', true ),
 				'faveEvent' => get_user_meta( $user_id, 'wp-athletics_fave_event_category', true ),
 				'name' => $this->wpa_db->get_user_display_name( $user_id ),
 				'photo' => get_user_meta( $user_id, 'wp-athletics_profile_photo', true )
@@ -1018,16 +1019,10 @@ if( !class_exists( 'WPA_Base' ) ) {
 									</div>
 
 									<!-- DOB -->
-									<?php
-									if( get_user_meta( $current_user->ID, 'wp-athletics_hide_dob', true ) != 'yes' ) {
-									?>
-									<div class="wpa-profile-field">
+									<div id="wpa-profile-dob-container" class="wpa-profile-field">
 										<label><?php echo $this->get_property('my_profile_dob'); ?>:</label>
 										<span id="wpa-profile-dob"></span>
 									</div>
-									<?php
-									}
-									?>
 
 									<!-- AGE CLASS -->
 									<div class="wpa-profile-field">
