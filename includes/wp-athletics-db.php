@@ -23,6 +23,7 @@ if(!class_exists('WP_Athletics_DB')) {
 			global $wpdb;
 			$this->RESULT_TABLE = $wpdb->prefix . "wpa_result";
 			$this->EVENT_TABLE = $wpdb->prefix . "wpa_event";
+			$this->USER_TABLE = $wpdb->prefix . "users";
 			$this->EVENT_CAT_TABLE = $wpdb->prefix . "wpa_event_cat";
 			$this->LOG_TABLE = $wpdb->prefix . "wpa_log";
 			$this->RESULT_VIEW = "v_wpa_results";
@@ -193,7 +194,7 @@ if(!class_exists('WP_Athletics_DB')) {
 			$results = $wpdb->get_results(
 					"
 					SELECT @rank:=@rank+1 AS rank, r.id, r.user_id, r.time, r.age_category, r.garmin_id, r.gender, r.position, ec.id as event_cat, ec.time_format, ec.distance_meters,
-					(SELECT display_name FROM wp_users WHERE id = r.user_id) as athlete_name
+					(SELECT display_name FROM $this->USER_TABLE WHERE id = r.user_id) as athlete_name
 					FROM $this->RESULT_TABLE r
 					LEFT JOIN $this->EVENT_TABLE e ON r.event_id = e.id
 					LEFT JOIN $this->EVENT_CAT_TABLE ec ON e.event_cat_id = ec.id
@@ -210,15 +211,15 @@ if(!class_exists('WP_Athletics_DB')) {
 		public function search_results( $request ) {
 			global $wpdb;
 
-			$user_id = $request['userId'];
-			$age_category = $request['ageCat'];
-			$gender = $request['gender'];
-			$event_cat_id = $request['eventCat'];
-			$event_sub_type_id = $request['type'];
-			$date = $request['period'];
-			$show_wins = $request['showWins'];
-			$show_runner_up = $request['showRunnerUp'];
-			$show_top_10 = $request['showTop10'];
+			$user_id = isset($request['userId']) ? $request['userId'] : null;
+			$age_category = isset($request['ageCat']) ? $request['ageCat'] : null;
+			$gender = isset($request['gender']) ? $request['gender'] : null;
+			$event_cat_id = isset($request['eventCat']) ? $request['eventCat'] : null;
+			$event_sub_type_id = isset($request['type']) ? $request['type'] : null;
+			$date = isset($request['period']) ? $request['period'] : null;
+			$show_wins = isset($request['showWins']) ? $request['showWins'] : null;
+			$show_runner_up = isset($request['showRunnerUp']) ? $request['showRunnerUp'] : null;
+			$show_top_10 = isset($request['showTop10']) ? $request['showTop10'] : null;
 
 			$where = '';
 
@@ -284,7 +285,7 @@ if(!class_exists('WP_Athletics_DB')) {
 					"
 					SELECT r.id, user_id, u.display_name as athlete_name, time, age_category, gender, garmin_id, position, event_id,
 					event_name, event_location, event_sub_type_id, date_format(date,'" . WPA_DATE_FORMAT . "') as event_date, category, distance_meters, time_format, event_cat_id AS event_cat
-					FROM $this->RESULT_VIEW r LEFT JOIN wp_users u ON user_id = u.id
+					FROM $this->RESULT_VIEW r LEFT JOIN $this->USER_TABLE u ON user_id = u.id
 					$where ORDER BY date ASC
 					"
 				);
@@ -297,7 +298,7 @@ if(!class_exists('WP_Athletics_DB')) {
 					FROM $this->RESULT_TABLE r
 					LEFT JOIN $this->EVENT_TABLE e ON r.event_id = e.id
 					LEFT JOIN $this->EVENT_CAT_TABLE ec ON e.event_cat_id = ec.id
-					LEFT JOIN wp_users u ON r.user_id = u.id
+					LEFT JOIN $this->USER_TABLE u ON r.user_id = u.id
 					$where ORDER BY date ASC
 					"
 				);
@@ -359,7 +360,7 @@ if(!class_exists('WP_Athletics_DB')) {
 		
 			// get the result count for the datatable
 			$result_display_count = $wpdb->get_var(
-				"SELECT count(u.id) FROM wp_users u $where"
+				"SELECT count(u.id) FROM $this->USER_TABLE u $where"
 			);
 		
 			// ge the actual results
@@ -369,7 +370,7 @@ if(!class_exists('WP_Athletics_DB')) {
 					(SELECT meta_value FROM wp_usermeta um WHERE um.user_id = u.id AND um.meta_key = 'wp-athletics_profile_photo') as athlete_photo,
 					(SELECT meta_value FROM wp_usermeta um WHERE um.user_id = u.id AND um.meta_key = 'wp-athletics_dob') as athlete_dob,
 					(SELECT meta_value FROM wp_usermeta um WHERE um.user_id = u.id AND um.meta_key = 'wp-athletics_gender') as athlete_gender
-					FROM wp_users u $where ORDER BY $sortCol $sortDir LIMIT $offset,$limit
+					FROM $this->USER_TABLE u $where ORDER BY $sortCol $sortDir LIMIT $offset,$limit
 					"
 			);
 		
@@ -580,7 +581,7 @@ if(!class_exists('WP_Athletics_DB')) {
 					"
 					SELECT r.id, user_id, u.display_name as athlete_name, time, age_category, gender, date_created as result_date, garmin_id, position, event_id,
 					event_name, event_location, event_sub_type_id, date_format(date,'" . WPA_DATE_FORMAT . "') as event_date, category, distance_meters, time_format, event_cat_id AS event_cat
-					FROM $this->RESULT_VIEW r LEFT JOIN wp_users u ON user_id = u.id
+					FROM $this->RESULT_VIEW r LEFT JOIN $this->USER_TABLE u ON user_id = u.id
 					$where $extra_where ORDER BY $sortCol $sortDir LIMIT $offset, $limit
 					"
 				);
@@ -593,7 +594,7 @@ if(!class_exists('WP_Athletics_DB')) {
 					SELECT count(r.id) FROM $this->RESULT_TABLE r
 					LEFT JOIN $this->EVENT_TABLE e ON r.event_id = e.id
 					LEFT JOIN $this->EVENT_CAT_TABLE ec ON e.event_cat_id = ec.id
-					LEFT JOIN wp_users u ON r.user_id = u.id
+					LEFT JOIN $this->USER_TABLE u ON r.user_id = u.id
 					$where $extra_where
 					"
 				);
@@ -605,7 +606,7 @@ if(!class_exists('WP_Athletics_DB')) {
 					FROM $this->RESULT_TABLE r
 					LEFT JOIN $this->EVENT_TABLE e ON r.event_id = e.id
 					LEFT JOIN $this->EVENT_CAT_TABLE ec ON e.event_cat_id = ec.id
-					LEFT JOIN wp_users u ON r.user_id = u.id
+					LEFT JOIN $this->USER_TABLE u ON r.user_id = u.id
 					$where $extra_where ORDER BY $sortCol $sortDir LIMIT $offset,$limit
 					"
 				);
@@ -615,7 +616,7 @@ if(!class_exists('WP_Athletics_DB')) {
 			/*
 			$tmp = "SELECT r.id, user_id, u.display_name as athlete_name, time, age_category, gender, date_created as result_date, garmin_id, position, event_id,
 			event_name, event_location, event_sub_type_id, date_format(date,'" . WPA_DATE_FORMAT . "') as event_date, category, distance_meters, time_format, event_cat_id AS event_cat 
-			FROM " . $this->RESULT_VIEW . " r LEFT JOIN wp_users u ON user_id = u.id " . $where . " " . $extra_where . " ORDER BY " . $sortCol . " " .  $sortDir . " LIMIT " . $offset . ", " . $limit;
+			FROM " . $this->RESULT_VIEW . " r LEFT JOIN $this->USER_TABLE u ON user_id = u.id " . $where . " " . $extra_where . " ORDER BY " . $sortCol . " " .  $sortDir . " LIMIT " . $offset . ", " . $limit;
 
 			$this->write_to_log( 'SQL', $tmp, 0, 0 );
 			 */
@@ -670,21 +671,21 @@ if(!class_exists('WP_Athletics_DB')) {
 		public function get_personal_bests( $request ) {
 			global $wpdb;
 
-			$user_id = $request['userId'];
-			$age_category = $request['ageCategory'];
-			$gender = $request['gender'];
-			$event_cat_id = $request['eventCategoryId'];
-			$event_sub_type_id = $request['eventSubTypeId'];
-			$date = $request['eventDate'];
-			$rankings_display = $request['rankingDisplay'];
-			$show_all_categories = $request['showAllCats'];
+			$user_id = isset($request['userId']) ? $request['userId'] : null;
+			$age_category = isset($request['ageCategory']) ? $request['ageCategory'] : null;
+			$gender = isset($request['gender']) ? $request['gender'] : null;
+			$event_cat_id = isset($request['eventCategoryId']) ? $request['eventCategoryId'] : null;
+			$event_sub_type_id = isset($request['eventSubTypeId']) ? $request['eventSubTypeId'] : null;
+			$date = isset($request['eventDate']) ? $request['eventDate'] : null;
+			$rankings_display = isset($request['rankingDisplay']) ? $request['rankingDisplay'] : null;
+			$show_all_categories = isset($request['showAllCats']) ? $request['showAllCats'] : null;
 
 			$where = '';
 			$rank = '';
 			$show_all_records = 'AND ec.show_records = 1';
 			$order_by = 'event_cat_id,time';
 			$group_by_and_order = 'GROUP BY event_cat_id';
-			$select_display_name = "(SELECT display_name FROM wp_users WHERE id = r.user_id) as athlete_name";
+			$select_display_name = "(SELECT display_name FROM $this->USER_TABLE WHERE id = r.user_id) as athlete_name";
 
 			if( isset( $show_all_categories ) && $show_all_categories == 'true' ) {
 				$show_all_records = '';
@@ -904,7 +905,7 @@ if(!class_exists('WP_Athletics_DB')) {
 		 */
 		public function get_athletes( $term ) {
 			global $wpdb;
-			return $wpdb->get_results( "SELECT id AS value, display_name AS label FROM wp_users WHERE LOWER(display_name) LIKE '%$term%' ORDER BY display_name ASC LIMIT 10" );
+			return $wpdb->get_results( "SELECT id AS value, display_name AS label FROM $this->USER_TABLE WHERE LOWER(display_name) LIKE '%$term%' ORDER BY display_name ASC LIMIT 10" );
 		}
 
 		/**
@@ -920,7 +921,7 @@ if(!class_exists('WP_Athletics_DB')) {
 		 */
 		public function get_user_display_name( $user_id ) {
 			global $wpdb;
-			return $wpdb->get_var( "SELECT display_name FROM wp_users WHERE id = $user_id" );
+			return $wpdb->get_var( "SELECT display_name FROM $this->USER_TABLE WHERE id = $user_id" );
 		}
 
 		/**
@@ -1138,7 +1139,7 @@ if(!class_exists('WP_Athletics_DB')) {
 		function update_user_display_name( $user_id, $display_name ) {
 			global $wpdb;
 			$success = $wpdb->update(
-				'wp_users',
+				$this->USER_TABLE,
 				array(
 					'display_name' => $display_name
 				),
@@ -1276,8 +1277,8 @@ if(!class_exists('WP_Athletics_DB')) {
 		 */
 		public function clear_sample_data() {
 			global $wpdb;
-			$wpdb->query("delete from wp_usermeta where user_id in (select id from wp_users where user_login like 'sample_user_%' )");
-			$wpdb->query("delete from wp_users where user_login like 'sample_user_%'");
+			$wpdb->query("delete from wp_usermeta where user_id in (select id from $this->USER_TABLE where user_login like 'sample_user_%' )");
+			$wpdb->query("delete from $this->USER_TABLE where user_login like 'sample_user_%'");
 			$wpdb->query("delete from $this->EVENT_TABLE");
 			$wpdb->query("delete from $this->RESULT_TABLE");
 		}
@@ -1530,13 +1531,13 @@ if(!class_exists('WP_Athletics_DB')) {
 		 */
 		function get_statistics( $request ) {
 			$where = '';
-			$user_id = $request['userId'];
-			$age_category = $request['ageCat'];
-			$event_cat_id = $request['eventCat'];
-			$event_sub_type_id = $request['type'];
-			$date = $request['period'];
-			$stat = $request['stat'];
-			$mode = $request['mode'];
+			$user_id = isset($request['userId']) ? $request['userId'] : null;
+			$age_category = isset($request['ageCat']) ? $request['ageCat'] : null;
+			$event_cat_id = isset($request['eventCat']) ? $request['eventCat'] : null;
+			$event_sub_type_id = isset($request['type']) ? $request['type'] : null;
+			$date = isset($request['period']) ? $request['period'] : null;
+			$stat = isset($request['stat']) ? $request['stat'] : null;
+			$mode = isset($request['mode']) ? $request['mode'] : null;
 
 			if( isset( $mode ) && $mode != '' ) {
 				if( $mode == 'user' ) {
@@ -1597,11 +1598,11 @@ if(!class_exists('WP_Athletics_DB')) {
 
 				if( WPA_DB_DISABLE_SQL_VIEW ) {
 					// OVERALL STATS
-					$sql = 'SELECT SUM(ec.distance_meters) AS total_distance, SUM(r.time) AS total_time, COUNT(r.id) AS count,
-					(select COUNT(id) FROM wp_users) as athletes
-					FROM ' . $this->RESULT_TABLE . ' r 
-					LEFT JOIN ' . $this->EVENT_TABLE . ' e ON r.event_id = e.id 
-					LEFT JOIN ' . $this->EVENT_CAT_TABLE . ' ec ON e.event_cat_id = ec.id WHERE ' . $where;
+					$sql = "SELECT SUM(ec.distance_meters) AS total_distance, SUM(r.time) AS total_time, COUNT(r.id) AS count,
+					(select COUNT(id) FROM $this->USER_TABLE) as athletes
+					FROM " . $this->RESULT_TABLE .  " r 
+					LEFT JOIN " . $this->EVENT_TABLE . " e ON r.event_id = e.id 
+					LEFT JOIN " . $this->EVENT_CAT_TABLE . " ec ON e.event_cat_id = ec.id WHERE " . $where;
 	
 					$overall = $wpdb->get_results( $sql );
 	
@@ -1630,7 +1631,7 @@ if(!class_exists('WP_Athletics_DB')) {
 					(select COUNT(id) FROM ' . $this->RESULT_VIEW  . ' r WHERE r.position=1 AND ' . $where . ') AS wins,
 					(select COUNT(id) FROM ' . $this->RESULT_VIEW . ' r WHERE (r.position=2 OR r.position=3) AND ' . $where . ') AS runner_up,
 					(select COUNT(id) FROM ' . $this->RESULT_VIEW . ' r WHERE (r.position > 0 AND r.position < 11) AND ' . $where . ') AS top_tens,
-					(select COUNT(id) FROM wp_users) as athletes
+					(select COUNT(id) FROM ' . $this->USER_TABLE . ') as athletes
 					FROM ' . $this->RESULT_VIEW . ' r WHERE ' . $where;
 					
 					$overall = $wpdb->get_results( $sql );
@@ -1661,7 +1662,7 @@ if(!class_exists('WP_Athletics_DB')) {
 					date_format(e.date,'%M %d, %Y %k:%i:%s') AS date_js FROM " . $this->RESULT_TABLE . " r 
 					LEFT JOIN " . $this->EVENT_TABLE . " e ON r.event_id = e.id 
 					LEFT JOIN " . $this->EVENT_CAT_TABLE . " ec ON e.event_cat_id = ec.id 
-					LEFT JOIN wp_users u ON r.user_id = u.id WHERE " . $where . " ORDER BY e.date ASC";
+					LEFT JOIN $this->USER_TABLE u ON r.user_id = u.id WHERE " . $where . " ORDER BY e.date ASC";
 				}
 				else {
 					$sql = "SELECT event_id, distance_meters, position, event_sub_type_id, event_name, event_cat_id, time, event_location, date_format(date,'" . WPA_DATE_FORMAT . "') AS event_date,
@@ -1678,11 +1679,11 @@ if(!class_exists('WP_Athletics_DB')) {
 					$sql = "SELECT u.id, display_name AS name, COUNT(r.id) count FROM " . $this->RESULT_TABLE . " r 
 					LEFT JOIN " . $this->EVENT_TABLE . " e ON r.event_id = e.id 
 					LEFT JOIN " . $this->EVENT_CAT_TABLE . " ec ON e.event_cat_id = ec.id
-					LEFT JOIN wp_users u ON r.user_id = u.id WHERE " . $where .
+					LEFT JOIN $this->USER_TABLE u ON r.user_id = u.id WHERE " . $where .
 					" GROUP BY u.display_name ORDER BY count DESC LIMIT 10;";
 				}
 				else {
-					$sql = "SELECT u.id, display_name AS name, COUNT(r.id) count FROM wp_users u LEFT JOIN " . $this->RESULT_VIEW . " r ON u.id = r.user_id WHERE " . $where .
+					$sql = "SELECT u.id, display_name AS name, COUNT(r.id) count FROM $this->USER_TABLE u LEFT JOIN " . $this->RESULT_VIEW . " r ON u.id = r.user_id WHERE " . $where .
 					" GROUP BY display_name ORDER BY count DESC LIMIT 10;";
 				}
 
