@@ -1,0 +1,968 @@
+.wpa {
+	margin-top: 10px;
+}
+
+.hide {
+	display: none;
+}
+
+.wpa-border-bottom {
+	border-bottom: 1px solid #eee;
+}
+
+.wpa-content {
+	background: none !important;
+	background-image: none !important;
+	width: 100% !important;
+}
+	
+.wpa-tabs a, #tabs a {
+	border: 0 !important;
+}
+
+.wpa-dialog-no-title .ui-dialog-titlebar {
+	display:none;
+}
+
+.wpa-loading div  {
+	float: left;	
+}
+
+.ui-autocomplete-loading {
+    background: white url('../images/spinner.gif') right center no-repeat !important;
+}
+
+.wpa-page-loading {
+	min-height: 100px;
+	padding-left: 30px;
+	width: 100px;
+	margin-left: auto;
+	margin-right: auto;
+	color: gray;
+	margin-top: 100px;
+	background-repeat: no-repeat;
+	background-image: url('../images/spinner.gif');
+}
+
+.wpa-my-event {
+	background-repeat: no-repeat;
+	background-image: url('../images/yellow-star.gif');
+	padding-left: 20px;
+	height: 16px;
+	display: inline-block;
+	color: #178B0A !important;
+	font-weight: bold;
+}
+
+.wpa-loading #wpa-loading-animation {
+	background: url(../images/loading-man.gif) no-repeat;
+	width: 60px;
+	height: 75px;
+}
+
+.wpa-loading #wpa-loading-text {
+	color: rgba(128, 128, 128, 0.64);
+	font-size: 13px;
+	margin: 25px 10px 0px 0px;
+}
+
+.wpa-table-bottom {
+	border-bottom: 1px solid #CCCCCC;
+}
+
+.wpa a:hover {
+	color: #000;
+	text-decoration: none !important;
+}
+
+.wpa-tabs ul, #tabs ul {
+	margin: 0px !important;
+	padding: 0px !important;
+	border: none !important;
+}
+
+.wpa-tabs ul li, #tabs ul li {
+	width: auto !important;
+	line-height: 1em !important;
+	padding: 0px !important;
+}
+
+.entry-content th, .comment-content th {
+    text-transform: none;
+    font-size: 1em;
+    text-align: center;
+}
+
+.wpa-my-profile {
+    border-bottom: 1px solid #EEEEEE;
+    font-size: 12px;
+    height: 122px;
+}
+
+.wpa-my-profile .wpa-profile-field label {
+	width: 85px;
+	text-align: right;
+}
+
+.wpa-profile {
+    font-size: 12px;
+}
+
+.wpa-menu {
+	height: 25px;
+	margin: 4px 0 4px;
+}
+
+#wpa-profile-name {
+	font-size: 30px;
+}
+
+.wpa-profile-info {
+	float: left;
+	padding: 5px 0px;
+}
+
+.wpa-profile-info-fieldset {
+	float: left;
+	width: 290px;
+	margin-left: 10px;
+}
+
+.wpa-profile-info .custom-combobox-input {
+	width: 120px !important;
+}
+
+.wpa-field-noborder {
+	border: 0px !important;
+}
+
+.wpa-profile-photo {
+	height: 100px;
+	width: 100px;
+	float: left;
+	border-radius: 50px;
+	border: 1px solid #aaa;
+	background-repeat: no-repeat;
+	background-size: 100px 100px;
+	cursor: pointer;
+}
+
+.wpa-profile-photo-small {
+	height: 50px;
+	width: 50px;
+	float: left;
+	border: 1px solid gray;
+	background-repeat: no-repeat;
+	background-size: 50px 50px;
+	cursor: pointer;
+	margin-right: 10px;
+}
+
+#wpa-error-dialog div {
+	font-size: 13px;
+	line-height: 1.5em;
+}
+
+.wpa-profile-photo-default {
+	background-image: url(../images/profile-blank.jpg) !important;	
+}
+
+.wpa-profile-photo-default-small {
+	background-image: url(../images/profile-blank-small.jpg) !important;	
+}
+
+#wpaProfilePhoto:hover {
+	border: 1px solid blue;
+}
+
+#wpa-profile-add-result {
+	float: right;
+}
+
+#wpa-profile-add-result button, .wpa-event-info-actions button  {
+	font-size: 11px !important;
+	height: 25px;
+}
+
+#wpa-event-info-add-result {
+	margin-top: 20px;
+}
+
+.wpa-profile-field {
+	padding-top: 7px;
+	text-align: left;
+}
+
+.wpa-profile-field label {
+    display: inline-block;
+    font-size: 11px;
+    margin: 0;
+    white-space: nowrap;
+}
+
+.wpa-link {
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.wpa-link-blue {
+	color: #3494D5;
+	cursor: pointer;
+}
+
+.wpa-link-blue:hover {
+	color: #0060A2;
+	text-decoration: underline;
+}
+
+#recent-results {
+	min-height: 300px;
+}
+
+.wpa .recent-result span { 
+	display: block;
+}
+
+.wpa .recent-result {
+  height: 51px;
+  margin: 0px 0px 5px 0px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #eee;
+}
+
+.wpa-link-small {
+	font-size: 11px;
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.wpa input[type=checkbox] {
+	height: 15px !important;
+	width: 15px !important;
+}
+
+.wpa input {
+	height: 19px;
+	padding: 2px 2px 2px 4px;
+	display: inline-block !important;
+}
+
+.wpa-filters input {
+	background: none repeat scroll 0 0 #FFFFFF;
+	font-size: 12px;
+}
+
+.wpa-result-content,.wpa-event-content {
+	margin-top: 4px;
+	padding-top: 6px;
+}
+
+.wpa-result-date {
+	color: #A79F9F;
+}
+
+.wpa-profile-field input[type=text] {
+	width: 150px;
+	background: none repeat scroll 0 0 #FFFFFF !important;
+}
+
+.wpa-add-result-field {
+	height: 30px;
+	padding-top: 5px;
+}
+
+.wpa-add-result-field label {
+	width: 125px;
+	display: inline-block;
+	text-align: right;
+	margin: 0px 5px 0px 0px;	
+}
+
+.wpa-add-result-field label.required {
+	font-weight: bold;
+	color: #000;
+}
+
+.add-result-no-bg input {
+	background: none repeat scroll 0 0 #FFFFFF !important;
+}
+
+.wpa-add-result-field input {
+	padding: 4px;
+	height: 17px;
+}
+
+.wpa-add-result-field .custom-combobox {
+	height: 27px;
+	margin-left: 2px;
+}
+
+.wpa-event-info {
+	margin: 5px 0px 5px 0px;
+	float: left;
+	min-width: 300px;
+}
+
+.wpa-event-info-actions {
+	width: 150px;
+	float: right;
+	text-align: right;
+}
+
+.wpa-event-info-title {
+	padding: 0px 0px 4px 0px;
+}
+
+.wpa-event-info div {
+	line-height: 1.5em;
+}
+
+.wpa-event-info div span {
+	display: inline-block;
+	margin-right: 6px;
+}
+
+#eventInfoName {
+	font-size: 14px;
+	font-weight: bold;
+	color: #787878;
+}
+
+#eventInfoDate {
+	font-size: 14px;
+	color: #a3a3a3;
+}
+
+#eventInfoDetail {
+	font-size: 14px;
+	color: #afafaf;
+}
+
+#user-profile-dialog label {
+	color: #aaa;
+}
+
+.wpa-add-result-field select {
+	padding: 4px 4px 4px 4px !important;
+	padding-bottom: 4px !important;
+	width: 200px;
+}
+
+.records-highlight-my-result {
+	background-color: rgb(241, 234, 148) !important;
+}
+
+.records-highlight-my-result .sorting_1 {
+	background-color: rgb(235, 220, 40) !important;
+}
+
+.wpa-rank {
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    height: 19px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-right: 1px;
+    padding-top: 4px;
+    width: 20px;
+    cursor: pointer;
+}
+
+.wpa-rank.rank-first {
+	background-image: url(../images/circle-green.png);
+	color: white;
+}
+
+.wpa-rank.rank-top-10 {
+	background-image: url(../images/circle-blue.png);
+	color: white;
+}
+
+.records-top-10-seperator {
+	border-bottom: 0px solid #c0c0c0;
+}
+
+.ui-datepicker-trigger {
+    cursor: pointer;
+    left: -25px;
+    position: relative;
+    top: 4px;
+}
+
+.wpa-help {
+	height: 15px;
+	width: 15px;
+	display: inline-block;
+	position: relative;
+	cursor: pointer;
+	top: 5px;
+	background: url(../images/help-icon.png) no-repeat;
+}
+
+.column-help {
+	height: 20px;
+	width: 20px;
+	display: inline-block;
+	position: relative;
+	cursor: pointer;
+	top: 4px;
+	background: url("../images/question.png") no-repeat scroll 2px 0 transparent;
+}
+
+.add-result-cancel-event {
+	height: 20px;
+	width: 20px;
+	display: inline-block;
+	position: relative;
+	cursor: pointer;
+	top: 5px;
+	left: -55px;
+	background: url(../images/grayx.png) no-repeat;
+}
+
+.filter-name-remove {
+    background: url("../images/grayx.png") no-repeat scroll 0 0 transparent;
+    cursor: pointer;
+    display: inline-block;
+    height: 16px;
+    left: -29px;
+    position: relative;
+    top: 1px;
+    width: 20px;
+}
+
+.ui-tabs-panel {
+	padding: 0px !important;
+}
+
+.wpa-tabs, #tabs {
+	border: none !important;
+}
+
+#tabs ul.ui-tabs-nav {
+	border-bottom-right-radius: 0px !important;
+	border-bottom-left-radius: 0px !important;
+}
+
+.wpa-alert {
+	line-height: 1.5em;
+}
+
+#wpa-error-dialog-text ul {
+	list-style-type: circle;
+}
+
+#wpa-error-dialog-text {
+	color: rgb(214, 16, 16);
+	margin-left: 15px;
+}
+
+.wpa-filters {
+	float: left;
+
+}
+
+.wpa-filters div {
+	display: inline-block;
+}
+
+.wpa-filters #filterEventName, .wpa-filters #profileFilterEventName, .wpa-filters #filterAthleteName {
+	width: 190px;
+}
+
+.wpa-search-image {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	position: relative;
+	top: 3px;
+	left: 27px;
+	background: url(../images/search.png) no-repeat;
+}
+
+#wpa-profile-right {
+	float:right;
+}
+
+.wpa-records-search {
+	float: right;
+	margin-top: -6px;
+}
+
+.wpa-ac-search input {
+    font-size: 13px;
+    padding: 5px 0 5px 28px;
+    width: 180px;
+}
+
+.wpa-search-disabled {
+	color: #CCCCCC !important;
+}
+
+/** DATATABLE STYLES **/
+
+.datatable-image {
+	border: 1px solid #c0c0c0;
+}
+
+.datatable-bold-right-gray {
+	font-weight:bold; 
+	text-align: right;
+	color: gray;
+}
+
+.datatable-right {
+	text-align: right;
+}
+
+.datatable-center {
+	text-align: center;
+}
+
+.datatable-bold {
+	font-weight:bold; 
+}
+
+table.display tr td, table.display th {
+	white-space: nowrap;
+	height: 22px;
+    line-height: 1;
+    vertical-align: middle;
+}
+
+table.display th {
+    text-align: center;
+}
+
+table.display {
+	margin: 0px !important;
+}
+
+.datatable-checkbox {
+	display: inline-block;
+	height: 12px;
+	width: 20px;
+}
+
+.datatable-checkbox input {
+	position: relative;
+	top: -3px;
+	height: 12px;
+}
+
+.datatable-icon {
+	width: 20px;
+	height: 20px;
+	background-repeat: no-repeat;
+	display: inline-block;
+	background-position: 0 4px;
+	cursor: pointer;
+	text-decoration: none !important;
+	border: none !important;
+}
+
+.datatable-icon.garmin {
+	background-image: url(../images/garmin.png)
+}
+
+.datatable-icon.strava {
+	background-image: url(../images/strava.png)
+}
+
+.datatable-icon.runkeeper {
+	background-image: url(../images/runkeeper.png)
+}
+
+.datatable-icon.web {
+	background-image: url(../images/web.png)
+}
+
+.datatable-icon.mapmyrun {
+	background-image: url(../images/mapmyrun.png)
+}
+
+.datatable-icon.rankings {
+	background-image: url(../images/rankings.png)
+}
+
+.datatable-icon.delete {
+	background-image: url(../images/delete.png)
+}
+
+.datatable-icon.edit {
+	background-image: url(../images/edit.png)
+}
+
+.ui-widget-content {
+	font-size: 12px;
+}
+
+#rankingsDisplayOptions {
+	margin: 3px 0px;
+}
+
+/** CUSTOM WIDGETS **/
+
+.wpa-filters .custom-combobox {
+	width: 140px;
+}
+
+.wpa-filter-records {
+
+}
+
+.custom-combobox {
+    position: relative;
+    display: inline-block;
+    height: 25px;
+}
+  
+.custom-combobox-toggle {
+  position: absolute !important;
+  top: 0;
+  bottom: 0;
+  margin-left: -1px;
+  padding: 0;
+  /* support: IE7 */
+  *height: 1.7em;
+  *top: 0.1em;
+}
+
+.filter-highlight {
+	background: #FAF8DD !important;
+	font-weight: bold;
+}
+
+.custom-combobox-input {
+  width: 97px;
+  margin: 0;
+  cursor: pointer;
+}
+
+input.ui-state-default {
+  background: none repeat scroll 0 0 #FFFFFF;
+}
+
+.ui-autocomplete-category {
+  font-weight: bold;
+  padding: .2em .4em;
+  margin: .8em 0 .2em;
+  line-height: 1.5;
+}
+
+.ui-tabs {
+    padding: 0;
+}
+
+.wpa-select-options {
+	display: none;
+	margin: 2px 0px 2px 0px;
+}
+
+.wpa-select-options a {
+	margin-right: 5px;
+}
+
+.success-message {
+	background: #d0f3d0;
+	border: 1px solid #4e9a4e;
+	padding: 10px;
+	border-radius: 5px;
+	font-size: 12px;
+}
+
+#wpa-embedded-results-bottom {
+	height: 20px;
+	font-size: 11px;
+	color: #000 !important;
+}
+
+#wpa-embedded-results-top .wpa-event-results-info div {
+	float: right;
+	font-size: 12px;
+}
+
+#wpa-embedded-results-options {
+	margin-top: 3px;
+	float: right;
+}
+
+#wpa-embedded-results-bottom div span:hover {
+	color: gray;
+}
+
+#wpa-embedded-results-bottom span {
+	display: inline-block;
+	cursor: pointer;
+	text-decoration: underline;
+	font-weight: normal;
+}
+
+#wpa-embedded-results-options span {
+	float: right;
+}
+
+#wpa-embedded-results-actions span {
+	float: left;
+}
+
+.wpa-event-results-info span {
+	float: left;
+}
+
+span.wpa-event-results-info-right {
+	float: right;
+	margin-left: 5px;
+}
+
+.tip {
+    background-color: white;
+    display:block;
+}
+
+.wpa-stats {
+	position: relative;
+	clear: both;
+	padding: 10px;
+	border: 1px solid #d3d3d3;
+}
+
+.wpa-stats .custom-combobox-input {
+	width: 130px !important;
+}
+
+.wpa-stats-event, .wpa-stats-type {
+	float: left;
+	width: 225px;
+}
+
+#wpa-stats-type-note {
+	float: left;
+	display: inline-block;
+	margin: 3px 0px;
+}
+
+.wpa-stats-content {
+	margin-top: 10px;
+	min-height: 200px;
+}
+
+.wpa-stats .ui-accordion .ui-accordion-content {
+	margin-bottom: 5px;
+	height: auto !important;
+}
+
+.wpa-stats h3 {
+	font-size: 12px !important;
+	padding-left: 25px !important;
+	margin: 5px 0 0 0 !important;
+	padding-top: 8px !important;
+	width: auto !important;
+}
+
+.wpa-stats-item {
+	font-size: 12px;
+	padding: 5px 0px;
+}
+
+.wpa-stats-item span {
+	
+}
+
+.wpa-stats-item label {
+	width: 115px;
+	text-align: right !important;
+	margin-right: 4px !important;
+	font-weight: bold;
+	display: inline-block;
+}
+
+.wpa-summary-left {
+	width: 280px;
+	float: left;
+}
+
+.wpa-summary-right {
+	width: 580px;
+	float: left;
+}
+
+.wpa-summary-right div {
+	float: left;
+}
+
+#wpa-log table {
+	border-spacing: 0px;
+	display: inline-table;
+	margin: 10px 10px 0px 0px;
+	border-top: 1px solid #eee;
+	border-right: 1px solid #eee;
+	width: 98%;
+}
+
+#wpa-log table thead th {
+	padding: 3px;
+ 	font-weight: normal;
+}
+
+#wpa-log table thead {
+	background: #eeeeee;
+	text-align: left;
+}
+
+#wpa-log table td {
+	padding: 3px;
+	border-left: 1px solid #eee;
+	border-bottom: 1px solid #eee;
+}
+
+#wpa-log .new_result {
+	background-color: rgb(234, 255, 229);
+}
+
+#wpa-log .user_login {
+	background-color: rgb(231, 255, 254);
+}
+
+#wpa-log .new_event {
+	background-color: rgb(255, 231, 195);
+}
+
+#wpa-log .update_result {
+	background-color: rgb(213, 235, 208);
+}
+
+#wpa-log .profile_update {
+	background-color: rgb(249, 231, 255);
+}
+
+#log-max-note {
+	font-size: 11px;
+}
+
+table.wpa-widget {
+	font-size: 11px;
+	line-height: 1.2em;
+	width: 100%;
+}
+
+table.wpa-widget td {
+	padding: 3px;
+}
+
+.wpa-widget-date {
+	width: 55px;
+}
+
+.wpa-widget-content {
+	color: gray;
+}
+
+.wpa-widget-event-count {
+  width: 45px;
+  text-align: right;
+}
+
+#wpa-widget-recent-results-links {
+	margin-top: 10px;
+	text-align: right;
+}
+
+#wpa-widget-recent-results-links span:hover {
+	background: #716F02;
+	color: white;
+}
+
+#wpa-widget-recent-results-links span {
+  display: inline-block;
+  margin-right: 3px;
+  cursor: pointer;
+  color: white;
+  background: #9D9D9D;
+  padding: 3px 2px;
+  min-width: 150px;
+  border-radius: 5px;
+  font-size: 12px;
+  text-align: center;
+  font-weight: normal !important;
+}
+
+.ui-autocomplete {
+	z-index: 300 !important;
+}
+
+.ui-dialog {
+	z-index: 200;
+}
+
+.ui-widget-overlay {
+	z-index: 10;
+}
+
+.dataTables_empty {
+  height: 50px !important;
+}
+
+.ui-menu .ui-menu-item {
+  padding: 5px 1px 5px 0px;
+}
+		
+.feed-content-empty {
+	text-align: center;
+	display: none;
+}
+
+.feed-content-empty p {
+	color: #CFCFCF !important;
+	font-size: 30px;
+	margin: 50px 0px;
+}
+
+#event-results-dialog {
+	min-width: 300px;
+}
+
+#event-dialog-future-info {
+	display: block;
+	border-radius: 10px;
+	color: #777;
+	font-size: 12px;
+	text-align: center;
+	background-color: #FFF7E6;
+	padding: 5px;
+}
+
+.wpa-alert-count {
+	background-color: #F4B939;
+	color: black;
+	font-weight: bold;
+	padding: 1px 4px;
+	border-radius: 5px;
+	margin: 0px 2px;
+}
+
+.future-event, .future-event .sorting_1 {
+	background-color: #ECFFE1 !important;
+}
+
+.result-pending-event, .result-pending-event .sorting_1 {
+	background-color: #FFF5DA !important;
+}
+		
+.wpa-legend {
+	border: 1px solid gray;
+	width: 20px;
+	height: 20px;
+	display: inline-block;
+	margin-right: 5px;
+}
+
+.wpa-legend-key {
+	position: relative;
+	top: -6px;
+	font-weight: bold;
+}
+
+.event-not-going {
+	background: #FFC4C4 !important;
+}
