@@ -55,6 +55,7 @@ WPA.Records = {
 			"bPaginate": false,
 			"sScrollX": "100%",
 			"bScrollCollapse": true,
+			"autoWidth": true,
 			"aaSorting": [[ 1, "asc" ]],
 			"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 				// highlight the row if it is one of my results

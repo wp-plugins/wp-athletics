@@ -1,44 +1,45 @@
 <?php
 
 /**
- * WPA recent results widget
+ * WPA upcoming events widget
  */
-class WPA_Recent_Results extends WP_Widget {
+class WPA_Upcoming_Events extends WP_Widget {
 
-	public $nonce = '2345676543';
+	public $nonce = '574738362';
 
 	/**
 	 * Register widget with WordPress.
 	 */
 	function __construct() {
 		parent::__construct(
-			'wpa_recent_results_widget', // Base ID
-			__('Recent Athletic Results', 'recent_results'), // Name
-			array( 'description' => __( 'Displays recent athletics results', 'recent_results' ), ) // Args
+			'wpa_upcoming_events_widget', // Base ID
+			__('Upcoming Athletic Events ', 'upcoming_events'), // Name
+			array( 'description' => __( 'Displays upcoming athletic events', 'upcoming_events' ), ) // Args
 		);
 	}
 
 	/**
-	 * Writes out the last X recent results
+	 * Writes out the next X upcoming events
 	 */
-	public function display_recent_results( $num = 5 ) {
+	public function display_upcoming_events( $num = 5 ) {
 	?>
-		<table class="wpa-widget" style="display:none" id="wpa-widget-recent-results-table">
+		<table class="wpa-widget" style="display:none" id="wpa-widget-upcoming-events-table">
 			<tbody>
 	<?php
 			global $wpa;
-			$results = $wpa->wpa_common->wpa_db->get_recent_results( $num );
+			$events = $wpa->wpa_common->wpa_db->get_upcoming_events( $num );
 
-			if(!empty($results)) {
-				foreach ( $results as $result ) {
-					echo '<tr user-id="' . $result->user_id . '" event-id="' . $result->event_id . '">
-							<td class="wpa-widget-date">' . $result->display_date . '</td>
-							<td class="wpa-widget-content">' . $result->content . '</td>
+			if(!empty($events)) {
+				foreach ( $events as $event ) {
+					echo '<tr event-id="' . $event->event_id . '">
+							<td class="wpa-widget-date">' . $event->display_date . '</td>
+							<td class="wpa-widget-content"><event future="1">' . $event->name . ($event->location ? (', ' . $event->location ) : '' ) . '</event></td>
+							<td class="wpa-widget-event-count"><event future="1">' . $event->count . ' ' . $wpa->wpa_common->get_property('event_runners_going') . '</event></td>
 						</tr>';
 				}
 			}
 			else {
-				echo '<tr><td style="text-align:center; color:#aaa" colspan="2" class="widget-no-results">' . $wpa->wpa_common->get_property('widget_recent_results_no_results') . '</tr>';
+				echo '<tr><td style="text-align:center; color:#aaa" colspan="2" class="widget-no-results">' . $wpa->wpa_common->get_property('widget_no_upcoming_events') . '</tr>';
 			}
 	?>
 			</tbody>
@@ -71,28 +72,28 @@ class WPA_Recent_Results extends WP_Widget {
 			echo $args['before_title'] . $title . $args['after_title'];
 		}
 
-		if ( isset( $instance[ 'wpa_number_results' ] ) ) {
-			$num = $instance[ 'wpa_number_results' ];
+		if ( isset( $instance[ 'wpa_number_events' ] ) ) {
+			$num = $instance[ 'wpa_number_events' ];
 		}
 		else {
 			$num = 5;
 		}
 
 		// write the results
-		$this->display_recent_results( $num );
+		$this->display_upcoming_events( $num );
 
 		?>
 
 		<div id="wpa-widget-recent-results-links">
-			<span onclick="window.location='<?php echo get_permalink(get_option('wp-athletics_recent_results_page_id')); ?>'">
-				<?php echo $wpa->wpa_common->get_property('results_widget_recent_results_link')?>
+			<span onclick="window.location='<?php echo get_permalink(get_option('wp-athletics_events_page_id')); ?>'">
+				<?php echo $wpa->wpa_common->get_property('events_widget_upcoming_events_link') ?>
 			</span>
 		</div>
 
 		<script type='text/javascript'>
 			jQuery(document).ready(function() {
-				WPA.processLogContent('wpa-widget-recent-results-table', false, false);
-				jQuery('#wpa-widget-recent-results-table').show();
+				WPA.processLogContent('wpa-widget-upcoming-events-table', false, false);
+				jQuery('#wpa-widget-upcoming-events-table').show();
 			});
 		</script>
 		<?php
@@ -112,11 +113,11 @@ class WPA_Recent_Results extends WP_Widget {
 			$title = $instance[ 'title' ];
 		}
 		else {
-			$title = __( 'Recent Athletic Results', 'text_domain' );
+			$title = __( 'Upcoming Athletic Events', 'text_domain' );
 		}
 
-		if ( isset( $instance[ 'wpa_number_results' ] ) ) {
-			$num = $instance[ 'wpa_number_results' ];
+		if ( isset( $instance[ 'wpa_number_events' ] ) ) {
+			$num = $instance[ 'wpa_number_events' ];
 		}
 		else {
 			$num = __( '5', 'text_domain' );
@@ -129,8 +130,8 @@ class WPA_Recent_Results extends WP_Widget {
 		</p>
 
 		<p>
-			<label for="<?php echo $this->get_field_id( 'wpa_number_results' ); ?>"><?php _e( 'Number of results:' ); ?></label>
-			<input class="widefat" id="<?php echo $this->get_field_id( 'wpa_number_results' ); ?>" name="<?php echo $this->get_field_name( 'wpa_number_results' ); ?>" type="text" value="<?php echo esc_attr( $num ); ?>" />
+			<label for="<?php echo $this->get_field_id( 'wpa_number_events' ); ?>"><?php _e( 'Number of events:' ); ?></label>
+			<input class="widefat" id="<?php echo $this->get_field_id( 'wpa_number_events' ); ?>" name="<?php echo $this->get_field_name( 'wpa_number_events' ); ?>" type="text" value="<?php echo esc_attr( $num ); ?>" />
 		</p>
 
 		<?php
@@ -149,7 +150,7 @@ class WPA_Recent_Results extends WP_Widget {
 	public function update( $new_instance, $old_instance ) {
 		$instance = array();
 		$instance['title'] = ( ! empty( $new_instance['title'] ) ) ? strip_tags( $new_instance['title'] ) : '';
-		$instance['wpa_number_results'] = ( ! empty( $new_instance['wpa_number_results'] ) ) ? strip_tags( $new_instance['wpa_number_results'] ) : '';
+		$instance['wpa_number_events'] = ( ! empty( $new_instance['wpa_number_events'] ) ) ? strip_tags( $new_instance['wpa_number_events'] ) : '';
 
 		return $instance;
 	}

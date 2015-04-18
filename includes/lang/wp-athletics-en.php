@@ -2,7 +2,7 @@
 
 $common_lang = array(
 	// results/records tables
-    'garmin_link_text' => 'Explore activity on Garmin Connect',
+	'activity_link_text' => 'View activity',
 	'rankings_link_text' => 'View club rankings for this event',
 	'column_event_date' => 'Event Date',
 	'column_result_date' => 'Date Entered',
@@ -17,7 +17,7 @@ $common_lang = array(
 	'column_time' => 'Time',
 	'column_pace' => 'Pace',
 	'column_position' => 'Pos.',
-	'column_garmin' => 'Garmin',
+	'column_garmin' => 'Activity',
 	'column_athlete_name' => 'Name',
 	'column_athlete_dob' => 'DOB',
 	'column_age_category' => 'Class',
@@ -43,9 +43,11 @@ $common_lang = array(
 	// filters
 	'filter_events_option_all' => 'All Events',
 	'filter_period_option_all' => 'All Time',
+	'filter_period_future_events' => 'Future Events',
 	'filter_month_all' => 'All Months',
 	'filter_period_option_this_month' => 'This Month',
 	'filter_period_option_this_year' => 'This Year',
+	'filter_period_option_next_year' => 'Next Year',
 	'filter_type_option_all' => 'All Terrains',
 	'filter_age_option_all' => 'All Age Classes',
 	'filter_event_name_input_text' => 'Filter event name',
@@ -58,6 +60,11 @@ $common_lang = array(
 
 	// event results dialog
 	'event_results_dialog_title' => 'Event Results',
+	'future_event_dialog_title' => "Upcoming Event Details",
+	'event_dialog_future_event_info' => 'This event is in the future. The following athletes are attending',
+		
+	// create user dialog
+	'create_user_dialog_title' => 'Add New Athlete',
 
 	// generic results dialog
 	'generic_results_dialog_title' => 'Results Viewer',
@@ -71,6 +78,7 @@ $common_lang = array(
 	// my results - tabs
 	'my_results_main_tab' => 'My Results',
 	'my_results_personal_bests_tab' => 'My Personal Bests',
+	'my_results_upcoming_events_tab' => 'Upcoming Events',
 
 	// results - tabs
 	'results_main_tab' => 'Results',
@@ -93,11 +101,12 @@ $common_lang = array(
 	'add_result_event_time_minutes' => 'Minutes',
 	'add_result_event_time_seconds' => 'Seconds',
 	'add_result_event_time_milliseconds' => 'Milliseconds',
-	'add_result_garmin_link' => 'Garmin ID',
+	'add_result_activity_link' => 'Activity URL',
 	'add_result_select_event' => 'Select Event Category',
 	'add_result_optional' => 'optional',
 	'add_result_event_sub_type' => 'Terrain',
 	'add_result_title' => 'Add Event Result',
+	'add_my_result_text' => 'Add My Result',
 	'add_result_title_event_dialog' => 'Add My Result',
 	'edit_result_title' => 'Edit Event Result',
 
@@ -109,8 +118,8 @@ $common_lang = array(
 	'confirm_result_delete' => 'Are you sure you wish to delete this result? This cannot be undone',
 
 	// help texts
+	'help_add_result_activity_url' => 'If you have the activity recorded on an external website (e.g Garmin, Strava, RunKeeper etc), copy and paste the full link here',
 	'help_add_result_event_name' => 'The event may already exist in our database, start typing the event name and select if it appears in the drop down menu. Otherwise a new event will be created, in this case please try to record the event details as accurately possible.',
-	'help_add_result_garmin_id' => 'If you have the activity recorded on Garmin Connect, copy and paste the activity ID in to this field.<br/><br/>For example if the web address of your activity is <strong>http://connect.garmin.com/activity/317262142</strong>, the ID is <strong>317262142</strong>',
 	'help_add_result_cancel_event' => 'Remove chosen event',
 	'help_column_rank' => 'Represents an all-time club ranking for this result based on gender, event category and age class',
 
@@ -126,7 +135,7 @@ $common_lang = array(
 	'error_add_result_no_gender_dob' => 'You have not entered your gender and date of birth. Please fill in these details on the "Manage Results" page before you add a result, this way we can accurately classify your result against others',
 	'error_dialog_title' => 'Error',
 	'error_no_age_category' => 'Could not determine an age category. Please check and try again or manually select an age category below',
-	'error_event_already_entered' => 'Sorry, you have already recorded your result for this event',
+	'error_event_already_entered' => 'You have already recorded your result or registered participation for this event',
 	'error_not_logged_in' => 'You must be logged in to perform this action. If you do not have an account, please register',
 
 	// records page
@@ -149,14 +158,43 @@ $common_lang = array(
 	'edit_event_dialog_title' => 'Edit Event',
 	'create_event_dialog_title' => 'Create Event',
 	'embedded_event_results_club_records_link' => 'View all Club Records',
-	'results_widget_recent_results_link' => 'View all Recent Results',
 	'embedded_event_results_add_result_link' => 'Add My Result',
 	'embedded_event_results_male_records_link' => 'View Male Records',
 	'embedded_event_results_female_records_link' => 'View Female Records',
+	'embedded_event_results_recent_results_link' => 'Recent Results',
+	'embedded_event_results_events_link' => 'View Events',
+	'embedded_event_results_manage_link' => 'Manage My Results',
+	'embeded_event_results_link_select' => 'Jump to...',
 	'embedded_event_results_error_no_id' => '[WPA Error: ID for the event was not supplied]',
 	'time_invalid_text' => 'Invalid Time',
 	'time_no_value_text' => 'Unavavilable',
+	'time_pending_value_text' => 'Pending',
 	'time_days_label' => 'days',
+	'page_loading_text' => 'Content loading...',
+	'recent_results_empty_text' => 'No results to display right now',
+	'events_empty_text' => 'No events available',
+	'recent_results_empty_add_result' => 'Why not add your own race results?',
+	'events_empty_submit_event' => 'Why not submit an upcoming event?',
+	'event_runners_going' => 'going',
+	'event_results_count' => 'members ran this',
+	'event_result_count' => 'member ran this',
+	'event_youre_going_text' => "You're going",
+	'event_im_going_text' => "I'm going",	
+	'event_im_not_going_text' => "I'm not going",
+	'event_you_ran_this_text' => 'You ran this',
+	'event_i_ran_this_text' => 'I ran this',
+	'event_i_didnt_go_text' => "I didn't go",
+	'event_you_ran_this_pending_text' => 'You ran this, add your result',
+	'legend_future_events' => 'Future Events',
+	'submit_event_button' => 'Submit an Event',
+	'yes' => 'Yes',
+	'no' => 'No',
+	
+	// widgets
+	'results_widget_recent_results_link' => 'View all Recent Results',
+	'events_widget_upcoming_events_link' => 'View all Events',
+	'widget_recent_results_no_results' => 'No results right now. Register and add your results!',
+	'widget_no_upcoming_events' => 'No upcoming events right now',
 
 	// stats
 	'stats_tab' => 'Statistics',
@@ -201,6 +239,7 @@ $common_lang = array(
 	'records_male_page_title' => 'Male Club Records',
 	'records_female_page_title' => 'Female Club Records',
 	'records_page_title' => 'Club Records',
+	'events_page_title' => 'Events',
 
 	// logs
 	'new_result' => '<user>{name}</user> ran a time of <time>{result}</time> at the <event>{event-name}</event>',
@@ -218,6 +257,10 @@ $common_lang = array(
 	'filter_log_type_option_new_event' => 'Events Created',
 	'filter_log_type_option_profile_update' => 'Profile Update',
 	'filter_log_type_option_SQL' => 'SQL',
+		
+	'filter_events_all' => 'All Events',
+	'filter_events_my_events' => 'My Events',
+	'filter_events_future_events' => 'Future Events',
 
 	// date & time
 	'month_1' => 'January',
@@ -258,11 +301,13 @@ $admin_lang = array(
 	'admin_settings_label_unit' => 'Default Unit',
 	'admin_settings_label_disable_sql_view' => 'Disable SQL View',
 	'admin_settings_label_records_mode' => 'Records Mode',
+	'admin_settings_submit_events_label' => 'Users can submit events',
 	'admin_settings_record_label_separate' => 'Separate',
 	'admin_settings_record_label_combined' => 'Combined',
 	'admin_settings_help_disable_sql_view' => 'Choose this option if your hosting provider does not allow the creation of an SQL VIEW.',
 	'admin_settings_help_records_mode' => 'Choose \'Separate\' if you wish to use two separate pages for club records (male and female) or choose \'Combined\' if you would rather a single page with a dropdown menu allowing users to filter by gender',
-
+	'admin_settings_help_submit_events' => 'Allow your athletes to submit both past and future events on the events page. By default this is allowed',
+		
 	// column help
 	'admin_edit_event_cat_column_unit' => 'Valid units are \'m\' (meters), \'km\' (kilometers) and \'mile\' (miles)',
 	'admin_edit_event_cat_column_time_format' => 'Enter the time display format for this event category. The values should be separated by a colon and valid parameters are \'h\' (hours), \'m\' (minutes) \'s\' (seconds) and \'ms\' (milliseconds). This field also determines what inputs are displayed when entering a time for this event category on the dialog for adding results. Example: \'h:m:s\'',
@@ -292,7 +337,7 @@ $admin_lang = array(
 	'admin_print_rankings_title' => 'Print Rankings',
 		
 	// athlete manager
-	'admin_athlete_create_button' => 'Create Athlete',
+	'admin_athlete_create_button' => 'Add New Athlete',
 	'delete_athlete_text' => 'Are you sure you wish to remove this athlete and all associated results?',
 	'delete_athlete_title' => 'Delete Athlete?',
 	'delete_athlete_tooltip' => 'Delete this athlete (cannot be undone)',

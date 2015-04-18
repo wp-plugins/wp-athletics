@@ -81,7 +81,7 @@ if(!class_exists('WP_Athletics_Records')) {
 		public function create_pages( $mode = 'combined' ) {
 			$pages_created = get_option( 'wp-athletics_pages_created', array() );
 
-			if( !get_option( 'wp-athletics_records_female_page_id' ) && !get_option( 'wp-athletics_records_male_page_id' ) ) {
+			if( !get_option( 'wp-athletics_records_female_page_id' ) && !get_option( 'wp-athletics_records_male_page_id' ) && !get_option( 'wp-athletics_records_page_id' ) ) {
 
 				// generate pages for male and female records
 				if( $mode == 'separate' ) {
@@ -100,6 +100,7 @@ if(!class_exists('WP_Athletics_Records')) {
 						array_push( $pages_created, $male_page_id );
 					}
 				}
+				
 				else if( $mode == 'combined' ) {
 					// by default the records page for both genders is disabled
 					$page_id = $this->generate_page( $this->get_property('records_page_title') );
@@ -211,8 +212,10 @@ if(!class_exists('WP_Athletics_Records')) {
 					});
 				</script>
 
-				<div class="wpa">
+				<?php $this->display_page_loading(); ?>
 
+				<div class="wpa">
+					
 					<div class="wpa-menu">
 
 						<!-- FILTERS -->

@@ -11,8 +11,8 @@ if(!class_exists('WP_Athletics_Demo')) {
 		public $nonce = 'wpathleticsdemo';
 
 		public $NUMBER_USERS = 200;
-		public $NUMBER_RESULTS = 5000;
-		public $NUMBER_EVENTS = 500;
+		public $NUMBER_RESULTS = 1000;
+		public $NUMBER_EVENTS = 200;
 
 		public $users = array();
 		public $events = array();

@@ -31,7 +31,7 @@ return array(
 		'B' => 'Beach'
 	),
 
-	'table_max_event_name_length' => 25,
+	'table_max_event_name_length' => 50,
 	'table_max_location_length' => 25
 );
 

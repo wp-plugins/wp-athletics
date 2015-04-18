@@ -114,9 +114,11 @@ if(!class_exists('WP_Athletics_Recent_Results')) {
 				});
 			</script>
 
-			<div class="wpa">
+			<?php $this->display_page_loading(); ?>
 
-				<div class="wpa-menu">
+			<div class="wpa hide">
+
+				<div style="height:35px" class="wpa-menu wpa-border-bottom">
 
 					<!-- FILTERS -->
 					<div class="wpa-filters ui-corner-all">
@@ -151,6 +153,13 @@ if(!class_exists('WP_Athletics_Recent_Results')) {
 					</div>
 
 					<br style="clear:both"/>
+				</div>
+				
+				<div class="feed-content-empty" id="recent-results-empty">
+					<p><?= $this->get_property('recent_results_empty_text'); ?></p>
+					<a href="<?= get_permalink(get_option('wp-athletics_my_results_page_id')); ?>">
+					<?= $this->get_property('recent_results_empty_add_result'); ?>
+					</a>
 				</div>
 
 				<!-- RECENT RESULTS -->

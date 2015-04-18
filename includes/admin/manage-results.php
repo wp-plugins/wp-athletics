@@ -130,7 +130,8 @@ if ( $this->has_permission_to_manage() ) {
 			"fnServerParams": function ( aoData ) {
 			    aoData.push(
 			    	{name : 'action', value : 'wpa_get_all_results' },
-			    	{name : 'security', value : WPA.Ajax.nonce }
+			    	{name : 'security', value : WPA.Ajax.nonce },
+			    	{name : 'pending', value: '0' }
 			    );
 			},
 			"aaSorting": [[ 3, "desc" ]],

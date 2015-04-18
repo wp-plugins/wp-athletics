@@ -28,22 +28,29 @@ WPA.RecentResults = {
 	 */
 	printResults: function(results) {
 
+		
 		// clear old results (if any)
+		jQuery('.feed-content-empty').hide();
 		jQuery('#recent-results').children().remove();
 		
-		// now loops results and output each 
-		jQuery(results).each(function(index, result) {
-			var html = WPA.RecentResults.generateResultHTML(result);
-			jQuery('#recent-results').append(html);
-		})
-		
-		// set profile photos
-		jQuery.each(WPA.RecentResults.userPhotos, function(userId, photo) {
-			jQuery('.wpa-profile-photo-' + userId).removeClass('wpa-profile-photo-default-small').css('background-image', 'url(' + photo + ')');
-		})
-		
-		// process content (time, links)
-		WPA.RecentResults.processResultContent();
+		if(results.length) {
+			// now loops results and output each 
+			jQuery(results).each(function(index, result) {
+				var html = WPA.RecentResults.generateResultHTML(result);
+				jQuery('#recent-results').append(html);
+			})
+			
+			// set profile photos
+			jQuery.each(WPA.RecentResults.userPhotos, function(userId, photo) {
+				jQuery('.wpa-profile-photo-' + userId).removeClass('wpa-profile-photo-default-small').css('background-image', 'url(' + photo + ')');
+			})
+			
+			// process content (time, links)
+			WPA.RecentResults.processResultContent();
+		}
+		else {
+			jQuery('.feed-content-empty').show();
+		}
 	},
 	
 	/**

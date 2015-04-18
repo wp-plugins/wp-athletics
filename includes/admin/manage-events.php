@@ -143,6 +143,15 @@ if ( $this->has_permission_to_manage() ) {
 			"sAjaxSource": WPA.Ajax.url,
 			"fnDrawCallback": function() {
 				jQuery('.datatable-checkbox input').change(WPA.Admin.selectRecordToggleWrapper);
+				jQuery('input.highlight-on-focus').click(function() {
+					jQuery(this).select();
+				});
+			},
+			"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+				// highlight the row if it is one of my results
+				if(aData['is_future'] == '1') {
+					jQuery(nRow).addClass('future-event');
+				}
 			},
 			"iDisplayLength": 25,
 			"sServerMethod": "POST",
@@ -152,7 +161,7 @@ if ( $this->has_permission_to_manage() ) {
 			    	{name : 'security', value : WPA.Ajax.nonce }
 			    );
 			},
-			"aaSorting": [[ 1, "desc" ]],
+			"aaSorting": [[ 2, "desc" ]],
 			"aoColumns": [{
 				"mData": "event_id",
 				"sTitle": "<input title='" + WPA.getProperty('select_unselect_all_tooltip') + "' id='datatable-select-all' type='checkbox'/>",
@@ -180,7 +189,8 @@ if ( $this->has_permission_to_manage() ) {
 			},{
 				"mData": "result_count",
 				"sWidth": "20px",
-				"sClass": "datatable-center"
+				"sClass": "datatable-center",
+				"mRender" : WPA.renderResultCountColumn
 			}]
 		}));
 	}
@@ -277,6 +287,7 @@ if ( $this->has_permission_to_manage() ) {
 
 				<select id="filterPeriod">
 					<option value="all" selected="selected"><?php echo $this->get_property('filter_period_option_all'); ?></option>
+					<option value="future"><?php echo $this->get_property('filter_period_future_events'); ?></option>
 					<option value="this_month"><?php echo $this->get_property('filter_period_option_this_month'); ?></option>
 					<option value="this_year"><?php echo $this->get_property('filter_period_option_this_year'); ?></option>
 				</select>
@@ -321,6 +332,10 @@ if ( $this->has_permission_to_manage() ) {
 					</tr>
 				</thead>
 			</table>
+		</div>
+		
+		<div style="margin-top: 10px">
+			<span class="wpa-legend future-event"></span><span class="wpa-legend-key"><?= $this->get_property('legend_future_events')?></span>
 		</div>
 
 		<!-- DELETE EVENTS CONFIRM DIALOG -->

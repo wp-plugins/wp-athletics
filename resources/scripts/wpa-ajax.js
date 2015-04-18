@@ -9,6 +9,7 @@ WPA.Ajax = {
 	 */
 	setup: function(url, nonce, pluginUrl, userId, callbackFn, skipLoadGlobals) {
 		if(!WPA.ajaxSetup) {
+
 			// create custom widgets
 			initWpaCustom();
 			
@@ -25,7 +26,7 @@ WPA.Ajax = {
 			}
 		}
 		else {
-			alert('Ajax setup function already called');
+			console.error('Ajax setup function already called');
 		}
 	},
 	
@@ -102,6 +103,10 @@ WPA.Ajax = {
 				WPA.isLoggedIn = result.isLoggedIn;
 				WPA.isAdmin = result.isAdmin;
 				WPA.defaultUnit = result.defaultUnit;
+				
+				if(parseInt(result.pendingResults) > 0) {
+					jQuery('.wpa-alert-count').html(result.pendingResults).show();
+				}
 				
 				if(callbackFn) {
 					callbackFn();
@@ -609,6 +614,45 @@ WPA.Ajax = {
 	getRecentResults: function(params, callbackFn) {
 		WPA.toggleLoading(true);
 		params.action = 'wpa_get_recent_results';
+		
+		jQuery.ajax({
+			type: "post",
+			url: WPA.Ajax.url,
+			data: params,
+			success: function(result) {
+				WPA.toggleLoading(false);
+				callbackFn(result);
+			}
+		});
+	},
+	
+	/**
+	 * Adds a pending result record to an event for a given user
+	 */
+	goingToEvent: function(eventId, callbackFn) {
+		WPA.toggleLoading(true);
+		var params = {
+			'eventId': eventId,
+			'userId': WPA.userId,
+			'action': 'wpa_going_to_event'
+		}
+		jQuery.ajax({
+			type: "post",
+			url: WPA.Ajax.url,
+			data: params,
+			success: function(result) {
+				WPA.toggleLoading(false);
+				callbackFn(result);
+			}
+		});
+	},
+	 
+	/**
+	 * Retrieves a list of events for a given year
+	 */
+	getEvents: function(params, callbackFn) {
+		WPA.toggleLoading(true);
+		params.action = 'wpa_get_events_for_year';
 		
 		jQuery.ajax({
 			type: "post",

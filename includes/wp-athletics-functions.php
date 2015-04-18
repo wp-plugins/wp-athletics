@@ -7,9 +7,9 @@
 function wpa_log( $message ) {
 	if (WP_DEBUG === true) {
 		if (is_array( $message ) || is_object( $message ) ) {
-			error_log( '[WPA]:' . print_r( $message, true ) );
+			error_log( "[WPA]: " . date('Y-m-d h:i:s') . " : " . print_r( $message, true ) . "\n",  3, "/var/tmp/wp-log.log");
 		} else {
-			error_log( '[WPA]:' . $message );
+			error_log( "[WPA]: " . date('Y-m-d h:i:s') . " : " . $message . "\n" , 3, "/var/tmp/wp-log.log");
 		}
 	}
 }
@@ -66,14 +66,17 @@ if( !class_exists( 'WPA_Base' ) ) {
 			add_action( 'wp_ajax_wpa_create_event', array( $this, 'create_event' ) );
 			add_action( 'wp_ajax_wpa_get_logs', array( $this, 'get_logs' ) );
 			add_action( 'wp_ajax_wpa_get_recent_results', array( $this, 'get_recent_results' ) );
+			add_action( 'wp_ajax_wpa_get_events_for_year', array( $this, 'get_events_for_year' ) );
 			add_action( 'wp_ajax_wpa_get_generic_results', array( $this, 'get_generic_results' ) );
 			add_action( 'wp_ajax_wpa_save_profile_photo', array ( $this, 'save_profile_photo') );
+			add_action( 'wp_ajax_wpa_going_to_event', array ( $this, 'going_to_event') );
 
 			// no priv actions (for users not logged in)
 			add_action( 'wp_ajax_nopriv_wpa_get_personal_bests', array ( $this, 'get_personal_bests') );
 			add_action( 'wp_ajax_nopriv_wpa_load_global_data', array ( $this, 'load_global_data') );
 			add_action( 'wp_ajax_nopriv_wpa_get_results', array ( $this, 'get_results') );
 			add_action( 'wp_ajax_nopriv_wpa_get_event', array ( $this, 'get_event') );
+			add_action( 'wp_ajax_nopriv_wpa_get_events_for_year', array( $this, 'get_events_for_year' ) );
 			add_action( 'wp_ajax_nopriv_wpa_get_event_results', array ( $this, 'get_event_results') );
 			add_action( 'wp_ajax_nopriv_wpa_get_user_profile', array ( $this, 'get_user_profile') );
 			add_action( 'wp_ajax_nopriv_wpa_search_autocomplete', array ( $this, 'search_autocomplete') );
@@ -142,6 +145,19 @@ if( !class_exists( 'WPA_Base' ) ) {
 			wp_send_json($result);
 			die();
 		}
+		
+		/**
+		 * [AJAX] Retrieves a list of events for a given year
+		 */
+		public function get_events_for_year() {
+		
+			// perform the query
+			$result = $this->wpa_db->get_events_for_year( $_POST );
+		
+			// return as json
+			wp_send_json($result);
+			die();
+		}
 
 		/**
 		 * [AJAX] Retrieves useful info such as event types and age categories
@@ -169,6 +185,7 @@ if( !class_exists( 'WPA_Base' ) ) {
 					'userGender' => get_user_meta( $current_user->ID, 'wp-athletics_gender', true ),
 					'defaultUnit' => get_option( 'wp-athletics_default-unit', 'm' ),
 					'isLoggedIn' => is_user_logged_in(),
+					'pendingResults' => $current_user ? $this->wpa_db->get_pending_result_count() : 0,
 					'isAdmin' => is_admin()
 				));
 				$global_data_loaded = true;
@@ -553,6 +570,20 @@ if( !class_exists( 'WPA_Base' ) ) {
 			wp_send_json($results);
 			die();
 		}
+		
+		/**
+		 * [AJAX[ Registers event participation for a user
+		 */
+		public function going_to_event() {
+			$event_id = (integer) $_POST['eventId'];
+			
+			// perform the query
+			$result = $this->wpa_db->register_user_for_event( $event_id );
+			
+			// return as json
+			wp_send_json( $result );
+			die();
+		}
 
 		/**
 		 * processes a log message before writing to the db
@@ -594,7 +625,54 @@ if( !class_exists( 'WPA_Base' ) ) {
 
 			return $content;
 		}
+		
+		/**
+		 * For content filtering, ensures the content is only displayed in the WP loop
+		 */
+		public function init_common_filter( $content ) {
+			if( !in_the_loop() || has_shortcode( $content, 'wpa-event') ) return $content;
+			
+			$this->init_common();
+		}
 
+		/**
+		 * Outputs common dialogs for WPA functionality
+		 */
+		public function init_common() {
+			global $current_user;
+			global $wpa_settings;
+		
+			// enqueue scripts
+			wp_enqueue_script( 'jquery' );
+			$this->enqueue_common_scripts_and_styles();
+			$nonce = wp_create_nonce( $this->nonce );
+		
+			?>
+			<script type='text/javascript'>
+				jQuery(document).ready(function() {
+
+					// set up ajax and retrieve my results
+					WPA.Ajax.setup('<?php echo admin_url( 'admin-ajax.php' ); ?>', '<?php echo $nonce; ?>', '<?php echo WPA_PLUGIN_URL; ?>', '<?php echo $current_user->ID; ?>',  function() {
+						// common setup function
+						WPA.setupCommon();
+
+						// setup results dialog
+						WPA.setupEditResultDialog(WPA.reloadEventResults);
+					});
+				});
+			</script>
+
+			<div class="wpa">
+			
+				<!-- ADD/EDIT RESULTS DIALOG -->
+				<?php $this->create_edit_result_dialog(); ?>
+			
+				<!-- COMMON DIALOGS -->
+				<?php $this->create_common_dialogs(); ?>
+			</div>
+			<?php
+		}
+		
 		/**
 		 * Formats a position into a readable value, e.g 2 becomes 2nd, 103 becomes 103rd
 		 */
@@ -678,13 +756,13 @@ if( !class_exists( 'WPA_Base' ) ) {
 		 */
 		public function generate_page( $title, $status = 'publish') {
 			$page = array(
-					'post_title' => $title,
-					'post_content' => '',
-					'post_status' => $status,
-					'post_type' => 'page',
-					'comment_status' => 'closed',
-					'ping_status' => 'closed',
-					'post_category' => array(1)
+				'post_title' => $title,
+				'post_content' => '',
+				'post_status' => $status,
+				'post_type' => 'page',
+				'comment_status' => 'closed',
+				'ping_status' => 'closed',
+				'post_category' => array(1)
 			);
 			return wp_insert_post( $page );
 		}
@@ -873,6 +951,7 @@ if( !class_exists( 'WPA_Base' ) ) {
 			<div style="display:none" id="add-result-dialog">
 				<form>
 					<input type="hidden" id="addResultId" value=""/>
+					<input type="hidden" id="isPendingResult" value=""/>
 					<input type="hidden" id="addResultEventId" value=""/>
 					<input type="hidden" id="addResultEventDate" value=""/>
 
@@ -929,9 +1008,9 @@ if( !class_exists( 'WPA_Base' ) ) {
 						<input class="ui-widget ui-widget-content ui-state-default ui-corner-all" size="5" type="text" id="addResultPosition" value="">
 					</div>
 					<div class="wpa-add-result-field add-result-no-bg">
-						<label><?php echo $this->get_property('add_result_garmin_link'); ?>:</label>
+						<label><?php echo $this->get_property('add_result_activity_link'); ?>:</label>
 						<input class="ui-widget ui-widget-content ui-state-default ui-corner-all" size="30" type="text" id="addResultGarminId" value="">
-						<span class="wpa-help" title="<?php echo $this->get_property('help_add_result_garmin_id'); ?>"></span>
+						<span class="wpa-help" title="<?php echo $this->get_property('help_add_result_activity_url'); ?>"></span>
 					</div>
 				</form>
 			</div>
@@ -991,6 +1070,15 @@ if( !class_exists( 'WPA_Base' ) ) {
 			  </div>
 		<?php
 		}
+		
+		/**
+		 * Writes HTML for the page loading div
+		 */
+		public function display_page_loading() {
+		?>
+			<div class="wpa-page-loading"><?= $this->get_property('page_loading_text') ?></div>
+		<?php
+		}
 
 		/**
 		 * Writes HTML to generate a dialogs for user profile and event results
@@ -1003,7 +1091,7 @@ if( !class_exists( 'WPA_Base' ) ) {
 		?>
 				<!-- USER PROFILE DIALOG -->
 				<div style="display:none" id="user-profile-dialog">
-					<div class="wpa">
+					<div style="margin-top:0px" class="wpa">
 						<div class="wpa-profile">
 							<!-- ATHLETE INFO -->
 							<div class="wpa-profile-info">
@@ -1014,7 +1102,7 @@ if( !class_exists( 'WPA_Base' ) ) {
 								<div class="wpa-profile-info-fieldset">
 									<!-- DISPLAY NAME -->
 									<div class="wpa-profile-field">
-										<label><?php echo $this->get_property('my_profile_display_name_label'); ?>:</label>
+										
 										<span id="wpa-profile-name"></span>
 									</div>
 
@@ -1038,6 +1126,7 @@ if( !class_exists( 'WPA_Base' ) ) {
 								</div>
 								<br style="clear:both"/>
 							</div>
+							<br style="clear:both"/>
 						</div>
 
 						<div class="wpa-menu">
@@ -1153,10 +1242,14 @@ if( !class_exists( 'WPA_Base' ) ) {
 						  </div>
 						  <!-- add result button -->
 						 <div class="wpa-event-info-actions">
-						 	<button id="wpa-event-info-add-result"><?php echo $this->get_property('add_result_title_event_dialog') ?></button>
+						 	<button style="display:none" id="wpa-event-info-add-result"><?php echo $this->get_property('add_result_title_event_dialog') ?></button>
+						 	<button style="display:none" id="wpa-event-im-going-button"><?php echo $this->get_property('event_im_going_text') ?></button>
+						 	<button style="display:none" id="wpa-event-im-not-going-button"><?php echo $this->get_property('event_im_not_going_text') ?></button>
 						 </div>
 						 <br style="clear:both;"/>
 					 </div>
+					 
+					 <p style="display:none" id="event-dialog-future-info"><?= $this->get_property('event_dialog_future_event_info') ?></p>
 
 					 <?php $this->create_event_results_table(); ?>
 				  </div>

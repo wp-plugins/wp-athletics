@@ -311,6 +311,9 @@ if(!class_exists('WP_Athletics_Admin')) {
 			if( isset( $_POST['defaultUnit'] ) ) {
 				update_option('wp-athletics_default-unit', $_POST['defaultUnit'] );
 			}
+			if( isset( $_POST['submitEvents'] ) ) {
+				update_option('wp-athletics-allow-users-submit-events', $_POST['submitEvents'] );
+			}
 
 			$result = array('success'=>true);
 

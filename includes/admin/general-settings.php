@@ -15,7 +15,8 @@ if ( $this->has_permission_to_manage() ) {
 				jQuery('#setting-theme').val('<?php echo strtolower(get_option( 'wp-athletics_theme', 'default') ); ?>');
 				jQuery('#setting-records-mode').val('<?php echo strtolower(get_option( 'wp-athletics_records_mode', 'combined') ); ?>');
 				jQuery('#setting-disable-sql-view').attr('checked', '<?php echo strtolower(get_option( 'wp-athletics-disable-sql-view', 'no') ); ?>' == 'yes');
-
+				jQuery('#setting-allow-submit-events').val('<?php echo strtolower(get_option( 'wp-athletics-allow-users-submit-events', 'yes') ); ?>');
+				
 				// save settings button
 				jQuery('#wpa-save-settings button').button({
 					icons: {
@@ -79,6 +80,14 @@ if ( $this->has_permission_to_manage() ) {
 							<option value="sw">Swedish</option>
 							-->
 						</select>
+					</div>
+					<div class="wpa-admin-setting">
+						<label><?= $this->get_property('admin_settings_submit_events_label') ?>:</label>
+						<select id="setting-allow-submit-events">
+							<option value="yes"><?php echo $this->get_property('yes') ?></option>
+							<option value="no"><?php echo $this->get_property('no') ?></option>
+						</select>
+						<span class="wpa-help" title="<?php echo $this->get_property('admin_settings_help_submit_events') ?>"></span>
 					</div>
 					<div class="wpa-admin-setting">
 						<label><?php echo $this->get_property('admin_settings_label_unit') ?>:</label>

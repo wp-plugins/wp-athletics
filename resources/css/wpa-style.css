@@ -2,6 +2,14 @@
 	margin-top: 10px;
 }
 
+.hide {
+	display: none;
+}
+
+.wpa-border-bottom {
+	border-bottom: 1px solid #eee;
+}
+
 .wpa-content {
 	background: none !important;
 	background-image: none !important;
@@ -22,6 +30,28 @@
 
 .ui-autocomplete-loading {
     background: white url('../images/spinner.gif') right center no-repeat !important;
+}
+
+.wpa-page-loading {
+	min-height: 100px;
+	padding-left: 30px;
+	width: 100px;
+	margin-left: auto;
+	margin-right: auto;
+	color: gray;
+	margin-top: 100px;
+	background-repeat: no-repeat;
+	background-image: url('../images/spinner.gif');
+}
+
+.wpa-my-event {
+	background-repeat: no-repeat;
+	background-image: url('../images/yellow-star.gif');
+	padding-left: 20px;
+	height: 16px;
+	display: inline-block;
+	color: #178B0A !important;
+	font-weight: bold;
 }
 
 .wpa-loading #wpa-loading-animation {
@@ -69,14 +99,22 @@
     height: 122px;
 }
 
+.wpa-my-profile .wpa-profile-field label {
+	width: 85px;
+	text-align: right;
+}
+
 .wpa-profile {
     font-size: 12px;
-    height: 130px;
 }
 
 .wpa-menu {
 	height: 25px;
 	margin: 4px 0 4px;
+}
+
+#wpa-profile-name {
+	font-size: 30px;
 }
 
 .wpa-profile-info {
@@ -87,6 +125,7 @@
 .wpa-profile-info-fieldset {
 	float: left;
 	width: 290px;
+	margin-left: 10px;
 }
 
 .wpa-profile-info .custom-combobox-input {
@@ -98,12 +137,13 @@
 }
 
 .wpa-profile-photo {
-	height: 120px;
-	width: 120px;
+	height: 100px;
+	width: 100px;
 	float: left;
-	border: 1px solid gray;
+	border-radius: 50px;
+	border: 1px solid #aaa;
 	background-repeat: no-repeat;
-	background-size: 120px 120px;
+	background-size: 100px 100px;
 	cursor: pointer;
 }
 
@@ -149,8 +189,7 @@
 }
 
 .wpa-profile-field {
-	height: 25px;
-	padding-top: 5px;
+	padding-top: 7px;
 	text-align: left;
 }
 
@@ -158,9 +197,7 @@
     display: inline-block;
     font-size: 11px;
     margin: 0;
-    text-align: right;
     white-space: nowrap;
-    width: 100px;
 }
 
 .wpa-link {
@@ -187,9 +224,10 @@
 }
 
 .wpa .recent-result {
-	height: 51px;
-	margin: 10px 0px 10px 0px;
-	border-bottom: 1px solid #eee;
+  height: 51px;
+  margin: 0px 0px 5px 0px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #eee;
 }
 
 .wpa-link-small {
@@ -214,7 +252,7 @@
 	font-size: 12px;
 }
 
-.wpa-result-content {
+.wpa-result-content,.wpa-event-content {
 	margin-top: 4px;
 	padding-top: 6px;
 }
@@ -262,6 +300,7 @@
 .wpa-event-info {
 	margin: 5px 0px 5px 0px;
 	float: left;
+	min-width: 300px;
 }
 
 .wpa-event-info-actions {
@@ -300,8 +339,7 @@
 }
 
 #user-profile-dialog label {
-	width: 120px;
-	color: gray;
+	color: #aaa;
 }
 
 .wpa-add-result-field select {
@@ -527,6 +565,22 @@ table.display {
 	background-image: url(../images/garmin.png)
 }
 
+.datatable-icon.strava {
+	background-image: url(../images/strava.png)
+}
+
+.datatable-icon.runkeeper {
+	background-image: url(../images/runkeeper.png)
+}
+
+.datatable-icon.web {
+	background-image: url(../images/web.png)
+}
+
+.datatable-icon.mapmyrun {
+	background-image: url(../images/mapmyrun.png)
+}
+
 .datatable-icon.rankings {
 	background-image: url(../images/rankings.png)
 }
@@ -575,7 +629,8 @@ table.display {
 }
 
 .filter-highlight {
-	background: #BDF79C !important;
+	background: #FAF8DD !important;
+	font-weight: bold;
 }
 
 .custom-combobox-input {
@@ -608,10 +663,6 @@ input.ui-state-default {
 	margin-right: 5px;
 }
 
-.ui-autocomplete {
-	z-index: 99999 !important;
-}
-
 .success-message {
 	background: #d0f3d0;
 	border: 1px solid #4e9a4e;
@@ -632,6 +683,7 @@ input.ui-state-default {
 }
 
 #wpa-embedded-results-options {
+	margin-top: 3px;
 	float: right;
 }
 
@@ -731,7 +783,7 @@ span.wpa-event-results-info-right {
 }
 
 .wpa-summary-right {
-	width: 600px;
+	width: 580px;
 	float: left;
 }
 
@@ -788,57 +840,129 @@ span.wpa-event-results-info-right {
 	font-size: 11px;
 }
 
-#wpa-widget-recent-results-table {
+table.wpa-widget {
 	font-size: 11px;
 	line-height: 1.2em;
+	width: 100%;
 }
 
-#wpa-widget-recent-results-table td {
+table.wpa-widget td {
 	padding: 3px;
 }
 
 .wpa-widget-date {
-	width: 35px;
+	width: 55px;
 }
 
 .wpa-widget-content {
 	color: gray;
 }
 
+.wpa-widget-event-count {
+  width: 45px;
+  text-align: right;
+}
+
 #wpa-widget-recent-results-links {
 	margin-top: 10px;
-	float: right;
-	color: black;
-	font-size: 11px;
+	text-align: right;
 }
 
 #wpa-widget-recent-results-links span:hover {
-	color: black;
+	background: #716F02;
+	color: white;
 }
 
 #wpa-widget-recent-results-links span {
-	display: inline-block;
-	margin-right: 3px;
-	cursor: pointer;
-	color: gray;
-	size: 11px;
-	text-decoration: underline;
-	float: right;
-	font-weight: normal !important;
+  display: inline-block;
+  margin-right: 3px;
+  cursor: pointer;
+  color: white;
+  background: #9D9D9D;
+  padding: 3px 2px;
+  min-width: 150px;
+  border-radius: 5px;
+  font-size: 12px;
+  text-align: center;
+  font-weight: normal !important;
 }
 
 .ui-autocomplete {
-	z-index: 99999 !important;
+	z-index: 300 !important;
 }
 
 .ui-dialog {
-	z-index: 99998 !important;
+	z-index: 200;
+}
+
+.ui-widget-overlay {
+	z-index: 10;
 }
 
 .dataTables_empty {
-  height: 200px !important;
+  height: 50px !important;
 }
 
 .ui-menu .ui-menu-item {
   padding: 5px 1px 5px 0px;
+}
+		
+.feed-content-empty {
+	text-align: center;
+	display: none;
+}
+
+.feed-content-empty p {
+	color: #CFCFCF !important;
+	font-size: 30px;
+	margin: 50px 0px;
+}
+
+#event-results-dialog {
+	min-width: 300px;
+}
+
+#event-dialog-future-info {
+	display: block;
+	border-radius: 10px;
+	color: #777;
+	font-size: 12px;
+	text-align: center;
+	background-color: #FFF7E6;
+	padding: 5px;
+}
+
+.wpa-alert-count {
+	background-color: #F4B939;
+	color: black;
+	font-weight: bold;
+	padding: 1px 4px;
+	border-radius: 5px;
+	margin: 0px 2px;
+}
+
+.future-event, .future-event .sorting_1 {
+	background-color: #ECFFE1 !important;
+}
+
+.result-pending-event, .result-pending-event .sorting_1 {
+	background-color: #FFF5DA !important;
+}
+		
+.wpa-legend {
+	border: 1px solid gray;
+	width: 20px;
+	height: 20px;
+	display: inline-block;
+	margin-right: 5px;
+}
+
+.wpa-legend-key {
+	position: relative;
+	top: -6px;
+	font-weight: bold;
+}
+
+.event-not-going {
+	background: #FFC4C4 !important;
 }

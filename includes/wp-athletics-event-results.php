@@ -33,7 +33,7 @@ if( !class_exists( 'WP_Athletics_Event_Results' ) ) {
 
 				$id = $atts['id'];
 				
-				wpa_log('enqueing');
+				wpa_log('enqueing scripts for embedded result ' . $id);
 
 				// enqueue scripts
 				wp_enqueue_script( 'jquery' );
@@ -59,10 +59,18 @@ if( !class_exists( 'WP_Athletics_Event_Results' ) ) {
 							// load the event results
 							WPA.loadEmbeddedEventResults(<?php echo $id?>);
 						});
+
+						jQuery('#embedded-results-jump').change(function() {
+							if(jQuery(this).val() != '') {
+								window.location = jQuery(this).val();
+							}
+						});
 					});
 				</script>
 
-				<div class="wpa">
+				<?php $this->display_page_loading(); ?>
+
+				<div class="wpa hide">
 
 					<!-- RESULTS TABLE -->
 					<div id="wpa-embedded-results-top">
@@ -80,24 +88,41 @@ if( !class_exists( 'WP_Athletics_Event_Results' ) ) {
 							<span onclick="WPA.launchAddResultDialog(<?php echo $id ?>, true)"><?php echo $this->get_property('embedded_event_results_add_result_link')?></span>
 						</div>
 						<div id="wpa-embedded-results-options">
-							<?php
-							if(get_option('wp-athletics_records_mode') == 'combined') {
-							?>
-								<span onclick="window.location='<?php echo get_permalink(get_option('wp-athletics_records_page_id')); ?>'">
-									<?php echo $this->get_property('embedded_event_results_club_records_link')?>
-								</span>
-							<?php
-							} else {
-							?>
-								<span onclick="window.location='<?php echo get_permalink(get_option('wp-athletics_records_male_page_id')); ?>'">
-									<?php echo $this->get_property('embedded_event_results_male_records_link')?>
-								</span>
-								<span onclick="window.location='<?php echo get_permalink(get_option('wp-athletics_records_female_page_id')); ?>'">
-									<?php echo $this->get_property('embedded_event_results_female_records_link')?>
-								</span>
-							<?php
-							}
-							?>
+						
+							<select id="embedded-results-jump">
+							
+								<option value=""><?= $this->get_property('embeded_event_results_link_select')?></option>
+								<option value="<?= get_permalink(get_option('wp-athletics_recent_results_page_id')); ?>">
+									<?= $this->get_property('embedded_event_results_recent_results_link')?>
+								</option>
+								<option value="<?= get_permalink(get_option('wp-athletics_my_results_page_id')); ?>">
+									<?= $this->get_property('embedded_event_results_manage_link')?>
+								</option>
+								<option value="<?= get_permalink(get_option('wp-athletics_events_page_id')); ?>">
+									<?= $this->get_property('embedded_event_results_events_link')?>
+								</option>
+								<?php
+								if(get_option('wp-athletics_records_mode') == 'combined') {
+								?>
+									<option value="<?= get_permalink(get_option('wp-athletics_records_page_id')); ?>">
+										<?= $this->get_property('embedded_event_results_club_records_link')?>
+									</option>
+								<?php
+								} else {
+								?>
+									<option value="<?= get_permalink(get_option('wp-athletics_records_male_page_id')); ?>">
+										<?= $this->get_property('embedded_event_results_male_records_link')?>
+									</option>
+									<option value="<?= get_permalink(get_option('wp-athletics_records_female_page_id')); ?>">
+										<?= $this->get_property('embedded_event_results_female_records_link')?>
+									</option>
+								<?php
+								}
+								?>
+							
+							</select>
+
+
 						</div>
 						<br style="clear:both;"/>
 					</div>

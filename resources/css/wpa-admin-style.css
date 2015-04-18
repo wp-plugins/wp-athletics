@@ -32,6 +32,7 @@
 }
 
 #wpa-save-settings {
+	margin-top: 5px;
 	float: right;
 	font-size: 12px;
 }
@@ -46,7 +47,7 @@
 
 .wpa-admin-setting label {
 	text-align: right;
-	width: 120px;
+	width: 160px;
 	display: inline-block;
 }
 
@@ -250,6 +251,7 @@
 
 .wpa-admin-profile-img {
 	cursor: pointer;
+	border-radius: 25px;
 }
 
 .wpa-admin-profile-img:hover {

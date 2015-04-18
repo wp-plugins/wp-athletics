@@ -164,8 +164,16 @@ if(!class_exists('WP_Athletics_Manage_Results')) {
 									// determines which suffix for filters to use, if we are viewing dialog or not
 									var suffix = WPA.userProfileDialog && WPA.userProfileDialog.dialog("isOpen") ? '-dialog' : '';
 
+									jQuery('.wpa-filters').show();
+									
 									if(WPA.MyResults.currentTab == 'pb' || WPA.MyResults.currentTab == 'stats') {
 										jQuery('.filter-ignore-for-pb' + suffix).hide();
+									}
+									else if(WPA.MyResults.currentTab == 'events') {
+										jQuery('.wpa-filters').hide();
+										if(WPA.MyResults.myEventsTable) {
+											WPA.MyResults.myEventsTable.fnAdjustColumnSizing();
+										}
 									}
 									else {
 										jQuery('.filter-ignore-for-pb' + suffix).show();
@@ -280,6 +288,10 @@ if(!class_exists('WP_Athletics_Manage_Results')) {
 							            multiple: false
 							        });
 
+							        WPA.customUploader.on('open', function() {
+										jQuery('.media-modal-icon span').html('');
+									});
+							        
 							        WPA.customUploader.on('close', function() {
 							            // remove edit privileges
 							    		jQuery.ajax({
@@ -307,8 +319,16 @@ if(!class_exists('WP_Athletics_Manage_Results')) {
 						});
 					});
 				</script>
+				
+				<style>
+				table button {
+					font-size: 10px !important;
+				}
+				</style>
 
-				<div class="wpa">
+				<?php $this->display_page_loading(); ?>
+
+				<div class="wpa hide">
 
 					<!-- ATHLETE PROFILE -->
 					<div class="wpa-my-profile">
@@ -425,6 +445,7 @@ if(!class_exists('WP_Athletics_Manage_Results')) {
 					  <ul>
 					    <li><a href="#tabs-my-results"><?php echo $this->get_property('my_results_main_tab') ?></a></li>
 					    <li><a href="#tabs-my-personal-bests"><?php echo $this->get_property('my_results_personal_bests_tab') ?></a></li>
+					    <li><a href="#tabs-upcoming-events"><?php echo $this->get_property('my_results_upcoming_events_tab') ?><span style="display:none; margin-left:4px" id="pending-results-count" class="wpa-alert-count"></span></a></li>
 						<?php
 						  if( defined( 'WPA_STATS_ENABLED' ) ) {
 						  	global $wpa;
@@ -469,6 +490,20 @@ if(!class_exists('WP_Athletics_Manage_Results')) {
 									<th><?php echo $this->get_property('column_age_category') ?></th>
 									<th><?php echo $this->get_property('column_event_date') ?></th>
 									<th><?php echo $this->get_property('column_club_rank') ?><span class="column-help" title="<?php echo $this->get_property('help_column_rank'); ?>"></span></th>
+									<th></th>
+								</tr>
+							</thead>
+						</table>
+					  </div>
+					  <div id="tabs-upcoming-events" wpa-tab-type="events">
+						<table cellpadding="0" cellspacing="0" border="0" class="display ui-state-default" style="border-bottom:none" id="my-events-table" width="100%">
+							<thead>
+								<tr>
+									<th><?php echo $this->get_property('column_event_date') ?></th>
+									<th><?php echo $this->get_property('column_event_name') ?></th>
+									<th><?php echo $this->get_property('column_event_location') ?></th>
+									<th><?php echo $this->get_property('column_event_type') ?></th>
+									<th><?php echo $this->get_property('column_category') ?></th>
 									<th></th>
 								</tr>
 							</thead>

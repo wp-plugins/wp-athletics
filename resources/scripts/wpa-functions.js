@@ -353,7 +353,7 @@ var WPA = {
 		}
 	},
 	
-	/**Äÿ
+	/**
 	 * Opens the add result dialog
 	 */
 	openAddResultDialog: function(id) {
@@ -371,7 +371,9 @@ var WPA = {
 			if(WPA.userGender != '' && WPA.userDOB != '') {
 				if(eventId) {
 					WPA.Ajax.validateEventEntry(eventId, function() {
-						WPA.globals.embeddedResultTableId = eventId;
+						if(isEmbedded) {
+							WPA.globals.embeddedResultTableId = eventId;
+						}
 						WPA.openAddResultDialog();
 						if(eventId) {
 							WPA.Ajax.getEventInfo(eventId, WPA.loadEventInfoCallback);
@@ -395,36 +397,94 @@ var WPA = {
 	/**
 	 * Displays the event results dialog
 	 */
-	displayEventResultsDialog: function(eventId) {
+	displayEventResultsDialog: function(eventId, isFuture) {
 		
+		var hideFutureCols = [2,4,5,6,7,8];
+
 		WPA.globals.currentEventResultsId = eventId;
+		WPA.eventResultIsFuture = isFuture;
+		
+		jQuery('#event-dialog-future-info').hide();
 		
 		if(!WPA.eventResultsDialog) {
 			this.createEventResultsDatatables();
 			
-			WPA.eventResultsDialog = jQuery('#event-results-dialog').dialog({
-				title: this.getProperty('event_results_dialog_title'),
-				autoOpen: false,
-				resizable: false,
-				modal: true,
-				width: 'auto',
-				height: 'auto',
-				resizable: false,
-				maxHeight: 600
-			})
-			
-			// add new result button
-			if(WPA.isLoggedIn && !WPA.isAdminScreen) {
-				jQuery('#wpa-event-info-add-result').button({
-					icons: {
-		              primary: 'ui-icon-circle-plus'
-		            }
-				}).click(function() {
-					WPA.launchAddResultDialog(WPA.globals.currentEventResultsId);
+			jQuery('#wpa-event-im-going-button').button({
+				icons: {
+	              primary: 'ui-icon-star'
+	            }
+			}).click(function() {
+				var eventId = jQuery(this).attr('event-id');
+				WPA.Ajax.goingToEvent(eventId, function(result) {
+					if(result.success) {
+						WPA.loadEventResults();
+						if(WPA.Events) {
+							WPA.Events.displayResults();
+						}
+					}
 				});
-			}
-			else {
-				jQuery('#wpa-event-info-add-result').hide();
+			});
+			
+			jQuery('#wpa-event-im-not-going-button').button({
+				icons: {
+					primary: 'ui-icon-closethick'
+				}
+			}).click(function() {
+				var resultId = jQuery(this).attr('result-id');
+				WPA.Ajax.deleteResult(resultId, function() {
+					jQuery('#wpa-event-im-not-going-button').hide();
+					jQuery('#wpa-event-im-going-button').show();
+					WPA.loadEventResults();
+					if(WPA.Events) {
+						WPA.Events.displayResults();
+					}
+				});
+			});
+			
+			jQuery('#wpa-event-info-add-result').button({
+				icons: {
+	              primary: 'ui-icon-circle-plus'
+	            }
+			}).click(function() {
+				WPA.launchAddResultDialog(WPA.globals.currentEventResultsId);
+			});
+			
+
+		}
+			
+		var title = isFuture ? this.getProperty('future_event_dialog_title') : this.getProperty('event_results_dialog_title')
+		
+		WPA.eventResultsDialog = jQuery('#event-results-dialog').dialog({
+			title: title,
+			autoOpen: false,
+			resizable: false,
+			modal: true,
+			width: 'auto',
+			height: 'auto',
+			resizable: false,
+			maxHeight: 600
+		})
+		
+		// add new result button
+		if(WPA.isLoggedIn && !WPA.isAdminScreen && !isFuture) {
+			jQuery('#wpa-event-info-add-result').show();
+		}
+		else {
+			jQuery('#wpa-event-info-add-result').hide();
+		}
+		
+		// show/hide columns based on mode (future or past event)
+		jQuery(hideFutureCols).each(function(i, col) {
+			WPA.eventResultsTable.fnSetColumnVis( col, !isFuture );
+		});
+		
+		jQuery('#wpa-event-im-going-button').hide();
+		jQuery('#wpa-event-im-not-going-button').hide();		
+		
+		if(isFuture) {
+			jQuery('#event-dialog-future-info').show();
+			if(WPA.isLoggedIn) {
+				jQuery('#wpa-event-im-going-button').attr('event-id', eventId).show();
 			}
 		}
 		
@@ -549,6 +609,11 @@ var WPA = {
 				// highlight the row if it is one of my results
 				if(aData['user_id'] == WPA.userId) {
 					jQuery(nRow).addClass('records-highlight-my-result');
+					jQuery('#wpa-event-info-add-result').hide();
+					jQuery('#wpa-event-im-going-button').hide();
+					if(WPA.eventResultIsFuture) {
+						jQuery('#wpa-event-im-not-going-button').attr('result-id', aData['id']).show();
+					}
 				}
 			},
 			"oLanguage": {
@@ -568,7 +633,7 @@ var WPA = {
 			},{ 
 				"mData": "athlete_name",
 				"mRender" : WPA.renderProfileLinkColumn,
-				"sClass": "datatable-right",
+				//"sClass": "datatable-right",
 				"bSortable": false
 			},{ 
 				"mData": "time",
@@ -1323,10 +1388,14 @@ var WPA = {
 			// setup dialogs
 			WPA.setupDialogs();
 			
+			// show the content
+			jQuery('.wpa-page-loading').hide();
+			jQuery('.wpa').fadeIn();
+			
 			WPA.commonSetup = true;
 		}
 	},
-	
+
 	/**
 	 * performs filtering of event name on the user profile dialog
 	 */
@@ -1664,13 +1733,20 @@ var WPA = {
 			WPA.loadEventInfoCallback(_result);
 			var time = WPA.millisecondsToTime(result.time);
 			jQuery("#addResultId").val(result.id);
-			jQuery('#addResultAgeCat').combobox('setValue', result.age_category);
+			jQuery("#isPendingResult").val(result.pending);
 			jQuery('#addResultPosition').val(result.position);
 			jQuery('#addResultGarminId').val(result.garmin_id);
 			jQuery('#addResultTimeHours').val(time.hours);
 			jQuery('#addResultTimeMinutes').val(time.minutes);
 			jQuery('#addResultTimeSeconds').val(time.seconds);
 			jQuery('#addResultTimeMilliSeconds').val(time.milliseconds);
+			
+			if(!result.age_category) {
+				WPA.setAddResultAgeCategory();
+			}
+			else {
+				jQuery('#addResultAgeCat').combobox('setValue', result.age_category);
+			}
 			
 			WPA.toggleLoading(false);
 			jQuery("#add-result-dialog").dialog("open");
@@ -1782,7 +1858,6 @@ var WPA = {
 			
 			// incase anyone ignore the instructions ;)
 			var garminLink = jQuery('#addResultGarminId').val();
-			garminLink = garminLink.replace('http://connect.garmin.com/activity/', '');
 			
 			var timeMillis = WPA.timeToMilliseconds(
 				jQuery('#addResultTimeHours').val(),
@@ -1808,7 +1883,8 @@ var WPA = {
 				eventLocation: jQuery('#addResultEventLocation').val(),
 				gender: WPA.userGender,
 				paceKm: paces.km,
-				paceMiles: paces.miles
+				paceMiles: paces.miles,
+				isPending: jQuery('#isPendingResult').val()
 			}, function() {
 				WPA.toggleLoading(false);
 				
@@ -2154,7 +2230,8 @@ var WPA = {
 			jQuery("#add-result-dialog").dialog({
 				autoOpen: false,
 				height: 'auto',
-				width: 500,
+				minWidth: 500,
+				width: 'auto',
 				modal: true,
 				buttons: [{
 					text: WPA.getProperty('submit'),
@@ -2366,7 +2443,13 @@ var WPA = {
 			if(!skipLinks) {
 				jQuery(event).addClass('wpa-link').click(function() {
 					var eventId = jQuery(event).closest('tr').attr('event-id');
-					WPA.displayEventResultsDialog(eventId);
+					
+					if(jQuery(event).attr('future') == '1') {
+						WPA.displayEventResultsDialog(eventId, true);
+					}
+					else {
+						WPA.displayEventResultsDialog(eventId);
+					}
 				});
 			}
 			
@@ -2379,6 +2462,8 @@ var WPA = {
 	
 	/** DATATABLE COLUMN RENDERERS **/
 	renderTimeColumn: function(data, type, full) {
+		if(full['pending'] == '1') return WPA.getProperty('time_pending_value_text');
+		
 		var pace = '<div>';
 		pace+= '<p>' + WPA.timeToPace(data, full['distance_meters'], 'm', true) + '</p>';
 		pace+= '<p>' + WPA.timeToPace(data, full['distance_meters'], 'km', true) + '</p>';
@@ -2387,7 +2472,8 @@ var WPA = {
 	},
 	
 	renderPaceMilesColumn: function(data, type, full) {
-		console.log('default unit is ' + WPA.defaultUnit);
+		if(full['pending'] == '1') return WPA.getProperty('time_pending_value_text');
+		
 		if(parseInt(data) > 0) {
 			
 			var title = WPA.timeToPace(data, full['distance_meters'], (WPA.defaultUnit == 'km' ? 'm' : 'km'), true);
@@ -2401,7 +2487,34 @@ var WPA = {
 	},
 	
 	renderGarminColumn: function (data, type, full) {
-		return data ? '<a target="new" href="http://connect.garmin.com/activity/' + data + '" class="datatable-icon garmin" title="' + WPA.getProperty('garmin_link_text') + '">&nbsp;</a>' : '';
+
+		var icon = '';
+		
+		if(data) {
+			data = data.toLowerCase();
+			
+			if(data.indexOf('garmin.com') > -1) {
+				icon = 'garmin';
+			}
+			else if(data.indexOf('strava.com') > -1) {
+				icon = 'strava';
+			}
+			else if(data.indexOf('runkeeper.com') > -1) {
+				icon = 'runkeeper';
+			}
+			else if(data.indexOf('mapmyrun.com') > -1) {
+				icon = 'mapmyrun';
+			}
+			else {
+				icon = 'web';
+			}
+			
+			if(data.indexOf('http://') == -1) {
+				data = "http://" + data;
+			}
+		}
+		
+		return data ? '<a target="new" href="' + data + '" class="datatable-icon ' + icon + '" title="' + WPA.getProperty('activity_link_text') + '">&nbsp;</a>' : '';
 	},
 	
 	renderCategoryAndTerrainColumn: function(data, type, full) {
@@ -2455,11 +2568,12 @@ var WPA = {
 	},
 	
 	renderEventLinkColumn: function(data, type, full) {
+		var future = (full['is_future'] == '1');
 		var max = WPA.getSetting('table_max_event_name_length');
 		if(data.length > max) {
 			data = data.substring(0,max) + '...';
 		}
-		return '<div class="wpa-link" title="' + full['event_name'] + '" onclick="WPA.displayEventResultsDialog(' + full['event_id'] + ')">' + data + '</div>';
+		return '<div class="wpa-link" title="' + full['event_name'] + '" onclick="WPA.displayEventResultsDialog(' + full['event_id'] + ', ' + future + ')">' + data + '</div>';
 	},
 	
 	renderEventLinkColumnNoStrip: function(data, type, full) {
@@ -2480,8 +2594,9 @@ var WPA = {
 		return '<a class="datatable-icon rankings" title="' + WPA.getProperty('rankings_link_text') + '" href="javascript:WPA.displayRecordsEventRankingsDialog(' + data + ')"></a>';
 	},
 	
-	renderEventShorcode: function(data) {
-		return '[wpa-event id=' + data + ']';
+	renderEventShorcode: function(data, type, full) {
+		if(full['is_future'] == '1') return '-';
+		return '<input style="cursor:pointer" class="highlight-on-focus" type="text" value="[wpa-event id=' + data + ']"/>';
 	},
 	
 	renderClubRankColumnNoLink: function(data, type, full) {
@@ -2528,4 +2643,20 @@ var WPA = {
 	renderAdminAthleteLinkColumn: function(data, type, full) {
 		return '<div class="wpa-link" onclick="WPA.displayUserProfileDialog(' + full['id'] + ')">' + data + '</div>';
 	},
+	
+	renderResultCountColumn: function(data, type, full) {
+		if(full['is_future'] == '1') return "-";
+		return data;
+	},
+	
+	renderMyEventActionColumn: function(data, type, full) {
+		if(data == '1') {
+			return '<button result-id="' + full['id'] + '" class="event-not-going">' + WPA.getProperty('event_im_not_going_text') + '</button>';
+		}
+		else {
+			return '<button result-id="' + full['id'] + '" class="event-add-pending-result">' + WPA.getProperty('add_my_result_text') + '</button>' + 
+			'&nbsp;<button result-id="' + full['id'] + '" class="event-not-going">' + WPA.getProperty('event_i_didnt_go_text') + '</button>'
+		}
+		return data;
+	}
 };

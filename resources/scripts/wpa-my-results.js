@@ -8,7 +8,6 @@ WPA.MyResults = {
 	 * reloads all results
 	 */
 	reloadResults: function() {
-		console.log('reloading results function');
 		// redraw the table
 		if(WPA.MyResults.currentTab == 'results') {
 			WPA.MyResults.myResultsTable.fnDraw();
@@ -16,6 +15,14 @@ WPA.MyResults = {
 		else if(WPA.MyResults.currentTab == 'pb') {
 			// load personal bests
 			WPA.MyResults.getPersonalBests();
+		}
+		else if(WPA.MyResults.currentTab == 'events') {
+			if(!WPA.MyResults.myEventsTable) {
+				WPA.MyResults.createMyEventsTable();
+			}
+			else {
+				WPA.MyResults.myEventsTable.fnDraw();
+			}
 		}
 		
 		// reload an event dialog if it is open
@@ -37,6 +44,75 @@ WPA.MyResults = {
 			showAllCats: true
 		}, disableLoading);
 	},
+
+	/**
+	 * Creates and loads the events table
+	 */
+	createMyEventsTable: function() {
+		WPA.MyResults.pendingResults = 0;
+		WPA.MyResults.myEventsTable = jQuery('#my-events-table').dataTable(WPA.createTableConfig({
+			"bServerSide": true,
+			"sAjaxSource": WPA.Ajax.url,
+			"sServerMethod": "POST",
+			"sScrollX": "100%",
+			"bScrollCollapse": true,
+			"fnServerParams": function ( aoData ) {
+			    aoData.push( 
+			    	{name : 'action', value : 'wpa_get_results' },
+			    	{name : 'pending', value : '1' },
+			    	{name : 'security', value : WPA.Ajax.nonce }
+			    );
+			},
+			"fnDrawCallback": function() {
+				jQuery('.wpa-alert-count').hide();
+				// pending result, add the time
+				jQuery('button.event-add-pending-result').button().click(function() {
+					var resultId = jQuery(this).attr('result-id');
+					WPA.editResult(resultId, WPA.userId);
+				});
+				
+				jQuery('button.event-not-going').button().click(function() {
+					var resultId = jQuery(this).attr('result-id');
+					WPA.Ajax.deleteResult(resultId, function() {
+						WPA.MyResults.reloadResults();
+					});
+				});
+				
+				if(WPA.MyResults.pendingResults > 0) {
+					jQuery('.wpa-alert-count').html(WPA.MyResults.pendingResults).show();
+				}
+				WPA.MyResults.pendingResults = 0;
+			},
+			"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+				// highlight the row if it is one of my results
+				if(aData['is_future'] == '0') {
+					jQuery(nRow).addClass('result-pending-event');
+					WPA.MyResults.pendingResults++;
+				}
+			},
+			"aaSorting": [[ 0, "desc" ]],
+			"aoColumns": [{
+				"mData": "event_date"
+			},{
+				"mData": "event_name",
+				"mRender" : WPA.renderEventLinkColumn
+			},{
+				"mData": "event_location",
+				"mRender": WPA.renderEventLocationColumn
+			},{
+				"mData": "event_sub_type_id",
+				"mRender" : WPA.renderEventTypeColumn
+			},{
+				"mData": "category",
+				"mRender" : WPA.renderCategoryColumn
+			},{
+				"mData": "is_future",
+				"mRender": WPA.renderMyEventActionColumn,
+				"bSortable": false,
+				"sWidth": '100px'
+			}]
+		}));
+	},
 	
 	/** 
 	 * Creates my results tables
@@ -53,6 +129,7 @@ WPA.MyResults = {
 			"fnServerParams": function ( aoData ) {
 			    aoData.push( 
 			    	{name : 'action', value : 'wpa_get_results' },
+			    	{name : 'pending', value : '0' },
 			    	{name : 'security', value : WPA.Ajax.nonce }
 			    );
 			},
@@ -102,7 +179,7 @@ WPA.MyResults = {
 				"bSortable": false
 			}]
 		}));
-		
+
 		// Create the personal bests table
 		WPA.MyResults.pbTable = jQuery('#my-personal-bests-table').dataTable(WPA.createTableConfig({
 			"sDom": 'rt',
@@ -162,7 +239,6 @@ WPA.MyResults = {
 				"bSortable": false
 			}]
 		}));
-
 	},
 	
 	/**
