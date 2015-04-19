@@ -1161,7 +1161,7 @@ if(!class_exists('WP_Athletics_DB')) {
 		/**
 		 * inserts a new event into the database
 		 */
-		function create_event( $data, $is_admin_update ) {
+		function create_event( $data, $is_admin_update = false ) {
 			global $wpdb;
 			$success = $wpdb->query( $wpdb->prepare(
 				"
