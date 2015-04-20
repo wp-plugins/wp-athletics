@@ -91,8 +91,10 @@ class WPA_Upcoming_Events extends WP_Widget {
 		</div>
 
 		<script type='text/javascript'>
+			var wpaEnabled = <?= WPA_ENABLE_ON_NON_WPA_PAGES ? 'true' : 'false' ?>;
+		
 			jQuery(document).ready(function() {
-				WPA.processLogContent('wpa-widget-upcoming-events-table', false, false);
+				WPA.processLogContent('wpa-widget-upcoming-events-table', !wpaEnabled, false);
 				jQuery('#wpa-widget-upcoming-events-table').show();
 			});
 		</script>

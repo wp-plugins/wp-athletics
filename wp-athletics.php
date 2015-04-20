@@ -4,7 +4,7 @@ Plugin Name: WP Athletics
 Plugin URI: http://www.conormccauley.me/wordpress-athletics/
 Description: Record, compare and analyse your athletic results. Plan events, track personal bests, compare age graded leaderboards and more.
 Author: Conor McCauley
-Version: 1.1.2
+Version: 1.1.3
 Author URI: http://www.conormccauley.me
 */
 
@@ -200,7 +200,7 @@ if(!class_exists('WP_Athletics')) {
 				}
 			}
 			
-			if( !is_admin() && !isset($filter) ) {
+			if( !is_admin() && !isset($filter) &&  WPA_ENABLE_ON_NON_WPA_PAGES) {
 				// It's a non WPA page, use core functionality only
 				if( is_front_page() ) {
 					add_filter('wp_footer', array( $this->wpa_common, 'init_common' ), 1);
@@ -309,13 +309,22 @@ if(!class_exists('WP_Athletics')) {
 				define('WPA_DATE_FORMAT', '%d %b %Y');
 
 			if (!defined('WPA_VERSION_NUM') )
-				define('WPA_VERSION_NUM', '1.1.2');
+				define('WPA_VERSION_NUM', '1.1.3');
 
 			if (!defined('WPA_DB_VERSION') )
 				define('WPA_DB_VERSION', '1.4');
 			
 			if (!defined('WPA_DB_DISABLE_SQL_VIEW') )
 				define('WPA_DB_DISABLE_SQL_VIEW', get_option( 'wp-athletics-disable-sql-view', 'no' ) == 'yes');
+			
+			if(WPA_DB_DISABLE_SQL_VIEW) {
+				wpa_log('SQL IS DISABLED');
+			}
+			
+			if (!defined('WPA_ENABLE_ON_NON_WPA_PAGES') )
+				define('WPA_ENABLE_ON_NON_WPA_PAGES', get_option( 'wp-athletics-enable_on_non_wpa_pages', 'no' ) == 'yes');
+				
+			
 
 			// store plugin version number
 			add_option('wp-athletics_version', WPA_VERSION_NUM );

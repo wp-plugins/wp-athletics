@@ -327,6 +327,9 @@ if(!class_exists('WP_Athletics_Admin')) {
 			if( isset( $_POST['submitEvents'] ) ) {
 				update_option('wp-athletics-allow-users-submit-events', $_POST['submitEvents'] );
 			}
+			if( isset( $_POST['enableNonWPA'] ) ) {
+				update_option('wp-athletics-enable_on_non_wpa_pages', $_POST['enableNonWPA'] );
+			}
 
 			$result = array('success'=>true);
 

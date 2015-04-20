@@ -661,7 +661,7 @@ if( !class_exists( 'WPA_Base' ) ) {
 				});
 			</script>
 
-			<div class="wpa">
+			<div style="margin:0px !important" class="wpa">
 			
 				<!-- ADD/EDIT RESULTS DIALOG -->
 				<?php $this->create_edit_result_dialog(); ?>
@@ -769,7 +769,7 @@ if( !class_exists( 'WPA_Base' ) ) {
 		/**
 		 * enqueues the common required JS scripts for front end or admin pages
 		 */
-		public function enqueue_common_scripts_and_styles() {
+		public function enqueue_common_scripts_and_styles( $load_wp_media = false ) {
 			$theme = strtolower(get_option( 'wp-athletics_theme', 'default') );
 
 			// common scripts
@@ -794,7 +794,9 @@ if( !class_exists( 'WPA_Base' ) ) {
 				wp_enqueue_script( 'jquery-ui-tooltip' );
 				wp_enqueue_script( 'jquery-effects-highlight' );
 				wp_enqueue_script( 'jquery-ui-datepicker' );
-				wp_enqueue_media();
+				if($load_wp_media) {
+					wp_enqueue_media();
+				}
 
 				// stats scripts
 				if( defined( 'WPA_STATS_ENABLED' ) ) {

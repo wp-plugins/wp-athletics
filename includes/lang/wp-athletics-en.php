@@ -309,9 +309,11 @@ $admin_lang = array(
 	'admin_settings_submit_events_label' => 'Users can submit events',
 	'admin_settings_record_label_separate' => 'Separate',
 	'admin_settings_record_label_combined' => 'Combined',
+	'admin_settings_label_enable_non_wpa' => 'Enable on non-WPA pages',
 	'admin_settings_help_disable_sql_view' => 'Choose this option if your hosting provider does not allow the creation of an SQL VIEW.',
 	'admin_settings_help_records_mode' => 'Choose \'Separate\' if you wish to use two separate pages for club records (male and female) or choose \'Combined\' if you would rather a single page with a dropdown menu allowing users to filter by gender',
 	'admin_settings_help_submit_events' => 'Allow your athletes to submit both past and future events on the events page. By default this is allowed',
+	'admin_settings_help_non_wpa' => 'If set to yes, loads the WPA plugin on all pages throughout your site. This allows WPA interactivity (loading user/event dialogs) with widgets if you have them enabled. This has been known to cause issues on some sites',
 		
 	// column help
 	'admin_edit_event_cat_column_unit' => 'Valid units are \'m\' (meters), \'km\' (kilometers) and \'mile\' (miles)',

@@ -90,10 +90,13 @@ class WPA_Recent_Results extends WP_Widget {
 		</div>
 
 		<script type='text/javascript'>
+			var wpaEnabled = <?= WPA_ENABLE_ON_NON_WPA_PAGES ? 'true' : 'false' ?>;
+
 			jQuery(document).ready(function() {
-				WPA.processLogContent('wpa-widget-recent-results-table', false, false);
+				WPA.processLogContent('wpa-widget-recent-results-table', !wpaEnabled, false);
 				jQuery('#wpa-widget-recent-results-table').show();
 			});
+		 
 		</script>
 		<?php
 

@@ -14,7 +14,8 @@ if ( $this->has_permission_to_manage() ) {
 				jQuery('#setting-default-unit').val('<?php echo strtolower(get_option( 'wp-athletics_default-unit', 'm') ); ?>');
 				jQuery('#setting-theme').val('<?php echo strtolower(get_option( 'wp-athletics_theme', 'default') ); ?>');
 				jQuery('#setting-records-mode').val('<?php echo strtolower(get_option( 'wp-athletics_records_mode', 'combined') ); ?>');
-				jQuery('#setting-disable-sql-view').attr('checked', '<?php echo strtolower(get_option( 'wp-athletics-disable-sql-view', 'no') ); ?>' == 'yes');
+				jQuery('#setting-disable-sql-view').val('<?php echo strtolower(get_option( 'wp-athletics-disable-sql-view', 'no') ); ?>');
+				jQuery('#setting-non-wpa-pages').val('<?php echo strtolower(get_option( 'wp-athletics-enable_on_non_wpa_pages', 'no') ); ?>');
 				jQuery('#setting-allow-submit-events').val('<?php echo strtolower(get_option( 'wp-athletics-allow-users-submit-events', 'yes') ); ?>');
 				
 				// save settings button
@@ -116,8 +117,19 @@ if ( $this->has_permission_to_manage() ) {
 				<div id="wpa-admin-settings-advanced">
 					<div class="wpa-admin-setting">
 						<label><?php echo $this->get_property('admin_settings_label_disable_sql_view') ?>:</label>
-						<input type="checkbox" id="setting-disable-sql-view"/>
+						<select id="setting-disable-sql-view">
+							<option value="yes"><?php echo $this->get_property('yes') ?></option>
+							<option value="no"><?php echo $this->get_property('no') ?></option>
+						</select>
 						<span class="wpa-help" title="<?php echo $this->get_property('admin_settings_help_disable_sql_view') ?>"></span>
+					</div>
+					<div class="wpa-admin-setting">
+						<label><?php echo $this->get_property('admin_settings_label_enable_non_wpa') ?>:</label>
+						<select id="setting-non-wpa-pages">
+							<option value="yes"><?php echo $this->get_property('yes') ?></option>
+							<option value="no"><?php echo $this->get_property('no') ?></option>
+						</select>
+						<span class="wpa-help" title="<?php echo $this->get_property('admin_settings_help_non_wpa') ?>"></span>
 					</div>
 					<div class="wpa-admin-setting">
 						<label><?php echo $this->get_property('admin_settings_label_update_db') ?>:</label>
@@ -149,7 +161,8 @@ if ( $this->has_permission_to_manage() ) {
 				<li>Analyse their race history and track their personal bests using powerful filters</li>
 				<li>See how they rank against fellow members in the club rankings</li>
 				<li>View the club records categorised by age category and filter using a variety of parameters</li>
-				<li>Use the smart search tool to find other athletes and past events
+				<li>Use the smart search tool to find other athletes and past events</li>
+				<li>Plan future events and view historic results from past events</li>
 			</ul>
 			<b>Administrator features:</b>
 			<ul>
@@ -163,6 +176,11 @@ if ( $this->has_permission_to_manage() ) {
 			<p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
 			<strong>Important! </strong>Please ensure that all of the WP Athletics pages are modified to use a full width page template in order to display the data correctly</p>
 		</div>
+		<h3>Event Management</h3>
+		<p>
+		The latest version (1.1.x) allows you to create events in the future. Users can log their future participation in the event, see who else is going and when the 
+		event has passed they can enter their results. A new "Events" page is automatically created which allows you to view past and future events. 
+		</p>
 		<h3>Embedding results in a post</h3>
 		<p>
 		There is a useful shortcode available in the plugin allowing you to embed an interactive table of results into a a news post, this shortcode is used as follows:

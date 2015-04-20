@@ -12,12 +12,13 @@ WPA.Admin = {
 		
 		var data = {
 			language: jQuery('#setting-language').val(),
-			disableSqlView: jQuery('#setting-disable-sql-view').attr('checked') ? 'yes' : 'no',
+			disableSqlView: jQuery('#setting-disable-sql-view').val(),
 			theme: jQuery('#setting-theme').val(),
 			recordsMode: jQuery('#setting-records-mode').val(),
 			clubName: jQuery('#club-name').val(),
 			defaultUnit: jQuery('#setting-default-unit').val(),
 			submitEvents: jQuery('#setting-allow-submit-events').val(),
+			enableNonWPA: jQuery('#setting-non-wpa-pages').val(),
 			action: 'wpa_admin_save_settings'
 		}
 		

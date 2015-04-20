@@ -58,7 +58,7 @@ if(!class_exists('WP_Athletics_Manage_Results')) {
 		 */
 		public function enqueue_scripts_and_styles() {
 			// common scripts and styles
-			$this->enqueue_common_scripts_and_styles();
+			$this->enqueue_common_scripts_and_styles( true );
 
 			wp_enqueue_script( 'wpa-my-results' );
 		}

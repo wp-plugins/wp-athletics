@@ -578,15 +578,6 @@ if(!class_exists('WP_Athletics_DB')) {
 				$extra_where .= " AND lower(display_name) like '%" . strtolower( $search_athlete ) . "%'";
 			}
 			
-			wpa_log("SELECT COUNT(id) FROM $this->RESULT_VIEW $where $extra_where");
-
-			wpa_log("
-				SELECT r.id, user_id, pending, u.display_name as athlete_name, time, age_category, gender, date_created as result_date, garmin_id, position, event_id,
-				event_name, event_location, event_sub_type_id, date_format(date,'" . WPA_DATE_FORMAT . "') as event_date, category, distance_meters, time_format, event_cat_id AS event_cat,
-				(CASE WHEN (date > DATE(NOW())) THEN 1 ELSE 0 END) AS is_future FROM $this->RESULT_VIEW r LEFT JOIN $this->USER_TABLE u ON user_id = u.id
-				$where $extra_where ORDER BY $sortCol $sortDir LIMIT $offset, $limit
-			");
-			
 			// using SQL results view
 			if( !WPA_DB_DISABLE_SQL_VIEW ) {
 				$result_display_count = $wpdb->get_var(
