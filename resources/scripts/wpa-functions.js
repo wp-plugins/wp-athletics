@@ -299,6 +299,20 @@ var WPA = {
 						jQuery('#wpa-profile-age-class').html(WPA.getProperty('gender_' + result.gender) + ' ' + ageCat.name);
 					}
 				}
+				jQuery('.wpa-profile-upcoming-events').hide();
+				if(result.upcomingEvents) {
+					jQuery('.wpa-profile-upcoming-events').show();
+					jQuery('#wpa-profie-upcoming-events-table tbody tr').remove();
+					jQuery(result.upcomingEvents).each(function(i, event) {
+						jQuery('#wpa-profie-upcoming-events-table tbody').append(
+							'<tr>' + 
+								'<td class="wpa-widget-date">' + event.display_date + '</td>' + 
+								'<td onclick="WPA.displayEventResultsDialog(' + event.event_id + ', true)" class="wpa-widget-content"><event class="wpa-link">' + event.name + '</event></td>' + 
+							'</tr>'
+						);
+					});
+				}
+				
 				
 				if(result.photo) {
 					jQuery('#wpaUserProfilePhoto').removeClass('wpa-profile-photo-default').css('background-image', 'url(' + result.photo + ')');
@@ -480,22 +494,19 @@ var WPA = {
 		jQuery(hideFutureCols).each(function(i, col) {
 			WPA.eventResultsTable.fnSetColumnVis( col, !isFuture );
 		});
-		
-		if(isFuture) {
-			jQuery('#event-results-table name').html(WPA.getProperty('column_members_attending'));
-		}
-		else {
-			jQuery('#event-results-table name').html(WPA.getProperty('column_athlete_name'));
-		}
 
 		jQuery('#wpa-event-im-going-button').hide();
 		jQuery('#wpa-event-im-not-going-button').hide();		
 		
 		if(isFuture) {
-			jQuery('#event-dialog-future-info').show();
+			//jQuery('#event-dialog-future-info').show();
 			if(WPA.isLoggedIn) {
 				jQuery('#wpa-event-im-going-button').attr('event-id', eventId).show();
 			}
+			jQuery('#event-results-table name').html(WPA.getProperty('column_members_attending'));
+		}
+		else {
+			jQuery('#event-results-table name').html(WPA.getProperty('column_athlete_name'));
 		}
 		
 		WPA.Ajax.getEventInfo(eventId, function(result) {
@@ -1700,13 +1711,23 @@ var WPA = {
 	},
 	
 	/**
+	 * Opens the dialog to edit a result and focuses on the time fields
+	 */
+	editPendingResult: function(id, userId) {
+		WPA.editResult(id, userId, function() {
+			jQuery('#add-result-dialog div[time-format] input').val("");
+			jQuery('#add-result-dialog div[time-format]:first input').focus();
+		});
+	},
+	
+	/**
 	 * Opens the dialog to edit an event result
 	 */
-	editResult: function(id, userId) {
+	editResult: function(id, userId, onShowFn) {
 		WPA.globals.currentEditUserId = userId;
 		WPA.toggleLoading(true);
 		jQuery("#add-result-dialog").dialog("option", "title", WPA.getProperty('edit_result_title'));
-		WPA.Ajax.loadResultInfo(id);
+		WPA.Ajax.loadResultInfo(id, onShowFn);
 	},
 	
 	/**
@@ -1737,7 +1758,7 @@ var WPA = {
 	/**
 	 * loads the result information onto the update fields
 	 */
-	setResultUpdateInfo: function(result) {
+	setResultUpdateInfo: function(result, onShowFn) {
 		// load the event info
 		WPA.Ajax.getEventInfo(result.event_id, function(_result) {
 			WPA.loadEventInfoCallback(_result);
@@ -1760,6 +1781,10 @@ var WPA = {
 			
 			WPA.toggleLoading(false);
 			jQuery("#add-result-dialog").dialog("open");
+			
+			if(onShowFn) {
+				onShowFn();
+			}
 		});
 	},
 	

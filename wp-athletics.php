@@ -4,7 +4,7 @@ Plugin Name: WP Athletics
 Plugin URI: http://www.conormccauley.me/wordpress-athletics/
 Description: Record, compare and analyse your athletic results. Plan events, track personal bests, compare age graded leaderboards and more.
 Author: Conor McCauley
-Version: 1.1.1
+Version: 1.1.2
 Author URI: http://www.conormccauley.me
 */
 
@@ -59,7 +59,7 @@ if(!class_exists('WP_Athletics')) {
 			}
 			
 			// update db on plugin update
-			add_action( 'plugins_loaded', $this->wpa_db, 'create_db' );
+			add_action( 'admin', array( $this->wpa_db, 'create_db' ) );
 
 			global $wpa_lang;
 			global $wpa_settings;
@@ -309,10 +309,10 @@ if(!class_exists('WP_Athletics')) {
 				define('WPA_DATE_FORMAT', '%d %b %Y');
 
 			if (!defined('WPA_VERSION_NUM') )
-				define('WPA_VERSION_NUM', '1.1.1');
+				define('WPA_VERSION_NUM', '1.1.2');
 
 			if (!defined('WPA_DB_VERSION') )
-				define('WPA_DB_VERSION', '1.3');
+				define('WPA_DB_VERSION', '1.4');
 			
 			if (!defined('WPA_DB_DISABLE_SQL_VIEW') )
 				define('WPA_DB_DISABLE_SQL_VIEW', get_option( 'wp-athletics-disable-sql-view', 'no' ) == 'yes');

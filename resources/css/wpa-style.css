@@ -99,6 +99,16 @@
     height: 122px;
 }
 
+.wpa-profile .wpa-profile-upcoming-events p {
+	font-weight: bold;
+	font-size: 13px;
+	margin: 5px;
+}
+
+.wpa-profile .wpa-profile-upcoming-events {
+	float: right;
+}
+
 .wpa-my-profile .wpa-profile-field label {
 	width: 85px;
 	text-align: right;

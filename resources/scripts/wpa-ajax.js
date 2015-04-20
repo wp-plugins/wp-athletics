@@ -171,7 +171,7 @@ WPA.Ajax = {
 					else {
 						if(result.pending) {
 							jQuery("#add-result-dialog").dialog("close");
-							WPA.editResult(result.resultId, WPA.userId);
+							WPA.editPendingResult(result.resultId, WPA.userId);
 						}
 						else {
 							WPA.alertError(WPA.getProperty('error_event_already_entered'));
@@ -395,7 +395,7 @@ WPA.Ajax = {
 	/**
 	 * Retrieves result information for the update result screen
 	 */
-	loadResultInfo: function(id) {
+	loadResultInfo: function(id, onShowFn) {
 		WPA.toggleLoading(true);
 		jQuery.ajax({
 			type: "post",
@@ -408,7 +408,7 @@ WPA.Ajax = {
 			success: function(result){
 				WPA.toggleLoading(false);
 				if(result) {
-					WPA.setResultUpdateInfo(result);
+					WPA.setResultUpdateInfo(result, onShowFn);
 				}
 			}
 		});

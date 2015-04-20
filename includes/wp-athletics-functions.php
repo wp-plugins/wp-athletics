@@ -457,7 +457,8 @@ if( !class_exists( 'WPA_Base' ) ) {
 				'hideDob' => get_user_meta( $user_id, 'wp-athletics_hide_dob', true ),
 				'faveEvent' => get_user_meta( $user_id, 'wp-athletics_fave_event_category', true ),
 				'name' => $this->wpa_db->get_user_display_name( $user_id ),
-				'photo' => get_user_meta( $user_id, 'wp-athletics_profile_photo', true )
+				'photo' => get_user_meta( $user_id, 'wp-athletics_profile_photo', true ),
+				'upcomingEvents' => $this->wpa_db->get_upcoming_user_events( $user_id )
 			);
 			wp_send_json($result);
 			die();
@@ -1122,8 +1123,21 @@ if( !class_exists( 'WPA_Base' ) ) {
 										<span id="wpa-profile-fave-event"></span>
 									</div>
 								</div>
+
 								<br style="clear:both"/>
 							</div>
+							
+							<!-- UPCOMING RACES -->
+							<div class="wpa-profile-upcoming-events">
+								<p><?= $this->get_property('my_profile_upcoming_events') ?></p>
+								<div id="wpa-profile-upcoming-events-container">
+									<table class="wpa-widget" style="" id="wpa-profie-upcoming-events-table">
+										<tbody>
+										</tbody>
+									</table>
+								</div>
+							</div>
+							
 							<br style="clear:both"/>
 						</div>
 

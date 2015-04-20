@@ -68,7 +68,7 @@ WPA.MyResults = {
 				// pending result, add the time
 				jQuery('button.event-add-pending-result').button().click(function() {
 					var resultId = jQuery(this).attr('result-id');
-					WPA.editResult(resultId, WPA.userId);
+					WPA.editPendingResult(resultId, WPA.userId);
 				});
 				
 				jQuery('button.event-not-going').button().click(function() {

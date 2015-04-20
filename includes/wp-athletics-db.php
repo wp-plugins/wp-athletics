@@ -786,7 +786,7 @@ if(!class_exists('WP_Athletics_DB')) {
 			$returnVal = '';
 			if( $date != '' ) {
 				if( $date == 'future' ) {
-					$returnVal = ' date >= DATE(NOW()) ';
+					$returnVal = ' date > DATE(NOW()) ';
 				}
 				else if( $date == 'this_month' ) {
 					$returnVal = ' YEAR(' . $date_field . ') = YEAR(CURDATE()) AND MONTH(date) = MONTH(CURDATE()) ';
@@ -1931,8 +1931,22 @@ if(!class_exists('WP_Athletics_DB')) {
 
 			$sql = "SELECT date_format(e.date,'%d %b %y') as display_date, e.location, e.name, e.id as event_id, " .
 			"(SELECT COUNT(r.id) FROM " .  $this->RESULT_TABLE . " r WHERE pending = 1 AND event_id = e.id) AS count" .
-			" from " . $this->EVENT_TABLE . " e WHERE e.date >= DATE(NOW()) ORDER BY e.date DESC LIMIT " . $num;
+			" from " . $this->EVENT_TABLE . " e WHERE e.date > DATE(NOW()) ORDER BY e.date ASC LIMIT " . $num;
 
+			return $wpdb->get_results( $sql );
+		}
+		
+		/**
+		 * Retrieves a list of upcoming events for a particular user
+		 * @param unknown_type $num
+		 */
+		function get_upcoming_user_events( $user_id, $num = 4 ) {
+			global $wpdb;
+		
+			$sql = "SELECT date_format(e.date,'%d %b %y') as display_date, e.name, e.id as event_id 
+				from $this->RESULT_TABLE r JOIN $this->EVENT_TABLE e ON e.id = r.event_id
+				WHERE e.date > DATE(NOW()) AND r.pending = 1 AND r.user_id = $user_id ORDER BY e.date ASC LIMIT $num;";
+			
 			return $wpdb->get_results( $sql );
 		}
 

@@ -40,6 +40,7 @@ $common_lang = array(
 	'my_profile_image_upload_text' => 'Click to upload new profile photo',
 	'my_profile_select_profile_image' => 'Select as profile photo',
 	'my_profile_select_profile_image_title' => 'Select Profile Photo',
+	'my_profile_upcoming_events' => 'Upcoming Events',
 
 	// filters
 	'filter_events_option_all' => 'All Events',

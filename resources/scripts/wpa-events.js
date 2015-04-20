@@ -70,7 +70,7 @@ WPA.Events = {
 			// pending result, add the time
 			jQuery('button.event-add-pending-result').button().click(function() {
 				var eventId = jQuery(this).attr('result-id');
-				WPA.editResult(eventId, WPA.userId);
+				WPA.editPendingResult(eventId, WPA.userId);
 			});
 			
 			jQuery('#wpa-events-legend').show();

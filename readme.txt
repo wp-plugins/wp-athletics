@@ -4,7 +4,7 @@ Donate link: http://www.conormccauley.me/wordpress-athletics
 Tags: athletics, results, sports, track, running club, athlete, statistics, races, racing, events, athletic, jogging, club, charts, records, personal bests, pb, pr, personal records
 Requires at least: 3.5
 Tested up to: 4.1.1
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -190,4 +190,7 @@ A good amount of change in this release, hope it doesn't break anything :) Major
 - Activity link support all major players - Garmin,Strava,RunKeeper etc.
 
 = 1.1.1 = 
-Minor bug fixes. Force update of database on activate. 
+Minor bug fixes. Force update of database on activate.
+
+= 1.1.2 =
+More bug fixing and minor tweaks. Now displays upcoming events on a users profile. 
