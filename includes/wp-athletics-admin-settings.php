@@ -23,6 +23,7 @@ if(!class_exists('WP_Athletics_Admin')) {
 			add_action( 'wp_ajax_wpa_create_user', array( $this, 'create_user' ) );
 			add_action( 'wp_ajax_wpa_delete_user', array( $this, 'delete_user' ) );
 			add_action( 'wp_ajax_wpa_edit_user', array( $this, 'edit_user' ) );
+			add_action( 'wp_ajax_wpa_admin_update_db', array( $this, 'update_db' ) );
 		}
 
 		/**
@@ -62,6 +63,18 @@ if(!class_exists('WP_Athletics_Admin')) {
 			// perform the query
 			$result = $this->wpa_db->search_athletes( $_POST );
 		
+			// return as json
+			wp_send_json( $result );
+			die();
+		}
+		
+		/**
+		 * [AJAX] Updates the DB
+		 */
+		function update_db() {
+			// perform the query
+			$result = $this->wpa_db->create_db( true );
+			
 			// return as json
 			wp_send_json( $result );
 			die();

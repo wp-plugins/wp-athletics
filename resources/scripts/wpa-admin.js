@@ -30,6 +30,22 @@ WPA.Admin = {
 	},
 	
 	/**
+	 * Forces update of tables, view and indexes
+	 */
+	updateDatabase: function() {
+		jQuery.ajax({
+			type: "post",
+			url: WPA.Ajax.url,
+			data: {
+				action: 'wpa_admin_update_db'
+			},
+			success: function(result) {
+				alert('Finished');
+			}
+		});
+	},
+	
+	/**
 	 * globals for storing checked records
 	 */
 	selectedRecords: [],

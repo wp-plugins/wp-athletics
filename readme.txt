@@ -188,3 +188,6 @@ A good amount of change in this release, hope it doesn't break anything :) Major
 - UI updates and bug fixes
 - Upcoming events widget added
 - Activity link support all major players - Garmin,Strava,RunKeeper etc.
+
+= 1.1.1 = 
+Minor bug fixes. Force update of database on activate. 

@@ -239,9 +239,7 @@ if( !class_exists( 'WPA_Base' ) ) {
 		 */
 		function validate_event_entry() {
 			// perform the query
-			$result = array(
-				'valid' => $this->wpa_db->validate_event_entry( $_POST )
-			);
+			$result = $this->wpa_db->validate_event_entry( $_POST );
 
 			// return as json
 			wp_send_json( $result );
@@ -1031,7 +1029,7 @@ if( !class_exists( 'WPA_Base' ) ) {
 						<th></th>
 						<th></th>
 						<th></th>
-						<th><?php echo $this->get_property('column_athlete_name') ?></th>
+						<th><name><?php echo $this->get_property('column_athlete_name') ?></name></th>
 						<th><?php echo $this->get_property('column_time') ?></th>
 						<th><?php echo $this->get_property('column_pace') ?></th>
 						<th><?php echo $this->get_property('column_age_category') ?></th>

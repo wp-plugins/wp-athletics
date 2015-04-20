@@ -37,6 +37,10 @@ if ( $this->has_permission_to_manage() ) {
 					track: true
 				});
 
+				jQuery('#wpa-admin-force-db-button').button().click(function() {
+					WPA.Admin.updateDatabase();
+				});
+
 				jQuery('#wpa-admin-settings-tab').tabs();
 
 			}, true);
@@ -114,6 +118,10 @@ if ( $this->has_permission_to_manage() ) {
 						<label><?php echo $this->get_property('admin_settings_label_disable_sql_view') ?>:</label>
 						<input type="checkbox" id="setting-disable-sql-view"/>
 						<span class="wpa-help" title="<?php echo $this->get_property('admin_settings_help_disable_sql_view') ?>"></span>
+					</div>
+					<div class="wpa-admin-setting">
+						<label><?php echo $this->get_property('admin_settings_label_update_db') ?>:</label>
+						<button id="wpa-admin-force-db-button"><?= $this->get_property('go') ?></button>
 					</div>
 				</div>
 			</div>

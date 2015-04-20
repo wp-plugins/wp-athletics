@@ -438,6 +438,9 @@ var WPA = {
 					if(WPA.Events) {
 						WPA.Events.displayResults();
 					}
+					if(WPA.MyResults && WPA.MyResults.currentTab == 'events') {
+						WPA.MyResults.myEventsTable.fnDraw();
+					}
 				});
 			});
 			
@@ -478,6 +481,13 @@ var WPA = {
 			WPA.eventResultsTable.fnSetColumnVis( col, !isFuture );
 		});
 		
+		if(isFuture) {
+			jQuery('#event-results-table name').html(WPA.getProperty('column_members_attending'));
+		}
+		else {
+			jQuery('#event-results-table name').html(WPA.getProperty('column_athlete_name'));
+		}
+
 		jQuery('#wpa-event-im-going-button').hide();
 		jQuery('#wpa-event-im-not-going-button').hide();		
 		
@@ -901,7 +911,7 @@ var WPA = {
 			minLength: 2,
 			select: function( event, ui ) {
 				if(ui.item.category == 'event') {
-					WPA.displayEventResultsDialog(ui.item.value);
+					WPA.displayEventResultsDialog(ui.item.value, ui.item.is_future == '1');
 				}
 				else if(ui.item.category == 'athlete') {
 					WPA.displayUserProfileDialog(ui.item.value);

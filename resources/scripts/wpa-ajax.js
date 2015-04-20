@@ -159,7 +159,25 @@ WPA.Ajax = {
 					trueFn();
 				}
 				else {
-					WPA.alertError(WPA.getProperty('error_event_already_entered'));
+					if(result.future) {
+						jQuery("#add-result-dialog").dialog("close");
+						if(result.pending) {
+							WPA.alertError(WPA.getProperty('error_event_already_entered_pending'));
+						}
+						else {
+							WPA.displayEventResultsDialog(eventId, true);
+						}
+					}
+					else {
+						if(result.pending) {
+							jQuery("#add-result-dialog").dialog("close");
+							WPA.editResult(result.resultId, WPA.userId);
+						}
+						else {
+							WPA.alertError(WPA.getProperty('error_event_already_entered'));
+						}
+					}
+					
 					if(falseFn) {
 						falseFn();
 					}

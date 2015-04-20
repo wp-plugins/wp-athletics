@@ -41,14 +41,18 @@ if(!class_exists('WP_Athletics_DB')) {
 		/**
 		 * creates/updates the database tables
 		 */
-		public function create_db() {
+		public function create_db( $force = false ) {
 			global $wpa_settings;
 			$installed_ver = get_option( 'wp-athletics_db_version', 'not_installed');
 
 			wpa_log('Installed DB version is ' . $installed_ver);
 			wpa_log('Current DB version is ' . WPA_DB_VERSION);
+			
+			if($force) {
+				wpa_log('Forcing DB update. Version is ' . WPA_DB_VERSION);
+			}
 
-			if( $installed_ver != WPA_DB_VERSION ) {
+			if( $force || $installed_ver != WPA_DB_VERSION ) {
 
 				wpa_log('Creating ' . WPA_DB_VERSION . ' database tables');
 
@@ -61,12 +65,16 @@ if(!class_exists('WP_Athletics_DB')) {
 				sub_type_id varchar(2) NOT NULL,
 				lat varchar(50),
 				lng varchar(50),
-				cost varchar(10),
 				location varchar(100),
 				address varchar(255),
+				event_type varchar(10),
 				contact_name varchar(100),
 				contact_email varchar(100),
-				url varchar(55),
+				contact_number varchar(100),
+				cost varchar(10),
+				url varchar(100),
+				register_url varchar(100),
+				details varchar(200),
 				UNIQUE KEY id (id)
 				);
 
@@ -134,6 +142,7 @@ if(!class_exists('WP_Athletics_DB')) {
 					}
 				}
 			}
+			return true;
 		}
 
 		/**
@@ -459,7 +468,7 @@ if(!class_exists('WP_Athletics_DB')) {
 				"
 				SELECT e.id as event_id, e.name AS event_name, e.location AS event_location, e.sub_type_id AS event_sub_type_id,
 				date_format(e.date,'" . WPA_DATE_FORMAT . "') AS event_date, ec.name AS category, e.event_cat_id AS event_cat,
-				(CASE WHEN (e.date >= DATE(NOW())) THEN 1 ELSE 0 END) AS is_future,
+				(CASE WHEN (e.date > DATE(NOW())) THEN 1 ELSE 0 END) AS is_future,
 				(SELECT count(r.id) from $this->RESULT_TABLE r WHERE r.pending = 0 AND r.event_id = e.id) AS result_count
 				FROM $this->EVENT_TABLE e
 				LEFT JOIN $this->EVENT_CAT_TABLE ec ON e.event_cat_id = ec.id
@@ -574,7 +583,7 @@ if(!class_exists('WP_Athletics_DB')) {
 			wpa_log("
 				SELECT r.id, user_id, pending, u.display_name as athlete_name, time, age_category, gender, date_created as result_date, garmin_id, position, event_id,
 				event_name, event_location, event_sub_type_id, date_format(date,'" . WPA_DATE_FORMAT . "') as event_date, category, distance_meters, time_format, event_cat_id AS event_cat,
-				(CASE WHEN (date >= DATE(NOW())) THEN 1 ELSE 0 END) AS is_future FROM $this->RESULT_VIEW r LEFT JOIN $this->USER_TABLE u ON user_id = u.id
+				(CASE WHEN (date > DATE(NOW())) THEN 1 ELSE 0 END) AS is_future FROM $this->RESULT_VIEW r LEFT JOIN $this->USER_TABLE u ON user_id = u.id
 				$where $extra_where ORDER BY $sortCol $sortDir LIMIT $offset, $limit
 			");
 			
@@ -591,7 +600,7 @@ if(!class_exists('WP_Athletics_DB')) {
 					"
 					SELECT r.id, user_id, r.pending, u.display_name as athlete_name, time, age_category, gender, date_created as result_date, garmin_id, position, event_id,
 					event_name, event_location, event_sub_type_id, date_format(date,'" . WPA_DATE_FORMAT . "') as event_date, category, distance_meters, time_format, event_cat_id AS event_cat,
-					(CASE WHEN (date >= DATE(NOW())) THEN 1 ELSE 0 END) AS is_future FROM $this->RESULT_VIEW r LEFT JOIN $this->USER_TABLE u ON user_id = u.id
+					(CASE WHEN (date > DATE(NOW())) THEN 1 ELSE 0 END) AS is_future FROM $this->RESULT_VIEW r LEFT JOIN $this->USER_TABLE u ON user_id = u.id
 					$where $extra_where ORDER BY $sortCol $sortDir LIMIT $offset, $limit
 					"
 				);
@@ -613,7 +622,7 @@ if(!class_exists('WP_Athletics_DB')) {
 					"
 					SELECT r.id, r.user_id, r.pending, u.display_name as athlete_name, r.time, r.age_category, r.gender, r.date_created as result_date, r.garmin_id, r.position, e.id as event_id, e.name as event_name, e.location as event_location, e.sub_type_id AS event_sub_type_id,
 					date_format(e.date,'" . WPA_DATE_FORMAT . "') as event_date, ec.name as category, ec.distance_meters, ec.time_format, e.event_cat_id as event_cat,
-					(CASE WHEN (e.date >= DATE(NOW())) THEN 1 ELSE 0 END) AS is_future FROM $this->RESULT_TABLE r
+					(CASE WHEN (e.date > DATE(NOW())) THEN 1 ELSE 0 END) AS is_future FROM $this->RESULT_TABLE r
 					LEFT JOIN $this->EVENT_TABLE e ON r.event_id = e.id
 					LEFT JOIN $this->EVENT_CAT_TABLE ec ON e.event_cat_id = ec.id
 					LEFT JOIN $this->USER_TABLE u ON r.user_id = u.id
@@ -894,7 +903,7 @@ if(!class_exists('WP_Athletics_DB')) {
 		public function get_events( $term ) {
 			global $wpdb;
 
-			return $wpdb->get_results( "SELECT e.id AS value, CONCAT(e.name, ' (', ec.name, ', ', date_format(e.date,'%d/%m/%y'), ')') AS label
+			return $wpdb->get_results( "SELECT e.id AS value, (CASE WHEN (e.date > DATE(NOW())) THEN 1 ELSE 0 END) AS is_future, CONCAT(e.name, ' (', ec.name, ', ', date_format(e.date,'%d/%m/%y'), ')') AS label
 			FROM $this->EVENT_TABLE e
 			LEFT JOIN $this->EVENT_CAT_TABLE ec ON e.event_cat_id = ec.id
 			WHERE LOWER(e.name) LIKE '%$term%' ORDER BY e.date DESC LIMIT 15" );
@@ -923,7 +932,7 @@ if(!class_exists('WP_Athletics_DB')) {
 		 */
 		public function get_event( $id ) {
 			global $wpdb;
-			return $wpdb->get_row( "SELECT id, name, event_cat_id, sub_type_id, location, date_format(date,'" . WPA_DATE_FORMAT . "') as date FROM $this->EVENT_TABLE WHERE id = $id"  );
+			return $wpdb->get_row( "SELECT id, name, (CASE WHEN (date > DATE(NOW())) THEN 1 ELSE 0 END) AS is_future, event_cat_id, sub_type_id, location, date_format(date,'" . WPA_DATE_FORMAT . "') as date, cost, lat,lng, details, address, url, register_url, contact_name, contact_email, contact_number FROM $this->EVENT_TABLE WHERE id = $id"  );
 		}
 
 		/**
@@ -1427,13 +1436,29 @@ if(!class_exists('WP_Athletics_DB')) {
 			}
 
 			// get the result count for the datatable
-			$result_count = $wpdb->get_var(
-				"SELECT count(r.id) FROM $this->RESULT_TABLE r WHERE r.user_id = $user_id AND r.event_id = $event_id;"
+			$results = $wpdb->get_results(
+				"SELECT r.pending, r.id FROM $this->RESULT_TABLE r
+				WHERE r.user_id = $user_id AND r.event_id = $event_id;"
 			);
+			
+			// get the result count for the datatable
+			$event_result = $wpdb->get_row(
+				"SELECT (CASE WHEN (date > DATE(NOW())) THEN 1 ELSE 0 END) AS is_future
+				FROM $this->EVENT_TABLE e WHERE id = $event_id;"
+			);
+			
+			$result = null;
+			
+			if(!empty($results)) {
+				$result = $results[0];
+			}
 
-			wpa_log('number of results for ' . $event_id . ' is ' . $result_count);
-
-			return intval($result_count) == 0;
+			return array(
+				'valid' => ($result == null && $event_result->is_future == '0'),
+				'pending' => ($result && $result->pending == '1'),
+				'future' => ($event_result && $event_result->is_future == '1'),
+				'resultId' => ($result ? $result->id : '')
+			);
 		}
 		
 		/**
@@ -1801,10 +1826,10 @@ if(!class_exists('WP_Athletics_DB')) {
 			
 			$sql = "SELECT date_format(e.date,'%W, %d %M %Y') as display_date, e.cost, e.url, MONTH(date) as month, e.location, e.name, e.id as event_id, " .
 				"(SELECT COUNT(r.id) FROM " .  $this->RESULT_TABLE . " r WHERE event_id = e.id) AS count," .
-				"(CASE WHEN (e.date >= DATE(NOW())) THEN 1 ELSE 0 END) AS is_future, " .
+				"(CASE WHEN (e.date > DATE(NOW())) THEN 1 ELSE 0 END) AS is_future, " .
 				"(SELECT COUNT(r.id) FROM " .  $this->RESULT_TABLE . " r WHERE event_id = e.id AND r.pending = 0 AND user_id = " . $current_user->ID . ") AS has_result, " .
 				"(SELECT r.id FROM " .  $this->RESULT_TABLE . " r WHERE event_id = e.id AND r.pending = 1 AND user_id = " . $current_user->ID . ") AS pending_result_id " .
-				" from " . $this->EVENT_TABLE . " e WHERE YEAR(e.date) = $year ORDER BY e.date DESC";
+				" from " . $this->EVENT_TABLE . " e WHERE YEAR(e.date) = $year ORDER BY e.date ASC";
 			
 			wpa_log($sql);
 

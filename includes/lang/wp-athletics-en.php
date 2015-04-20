@@ -19,6 +19,7 @@ $common_lang = array(
 	'column_position' => 'Pos.',
 	'column_garmin' => 'Activity',
 	'column_athlete_name' => 'Name',
+	'column_members_attending' => 'Members Attending',
 	'column_athlete_dob' => 'DOB',
 	'column_age_category' => 'Class',
 	'column_rankings' => 'Rankings',
@@ -78,7 +79,7 @@ $common_lang = array(
 	// my results - tabs
 	'my_results_main_tab' => 'My Results',
 	'my_results_personal_bests_tab' => 'My Personal Bests',
-	'my_results_upcoming_events_tab' => 'Upcoming Events',
+	'my_results_upcoming_events_tab' => 'My Events',
 
 	// results - tabs
 	'results_main_tab' => 'Results',
@@ -135,7 +136,8 @@ $common_lang = array(
 	'error_add_result_no_gender_dob' => 'You have not entered your gender and date of birth. Please fill in these details on the "Manage Results" page before you add a result, this way we can accurately classify your result against others',
 	'error_dialog_title' => 'Error',
 	'error_no_age_category' => 'Could not determine an age category. Please check and try again or manually select an age category below',
-	'error_event_already_entered' => 'You have already recorded your result or registered participation for this event',
+	'error_event_already_entered' => 'You have already recorded your result for this event.',
+	'error_event_already_entered_pending' => 'You have already registered your future participation in this event. You can enter your result once the event has completed',
 	'error_not_logged_in' => 'You must be logged in to perform this action. If you do not have an account, please register',
 
 	// records page
@@ -149,6 +151,7 @@ $common_lang = array(
 	'cancel' => 'Cancel',
 	'save' => 'Save',
 	'edit' => 'Edit',
+	'go' => 'Go',
 
 	// misc
  	'gender_M' => 'Male',
@@ -299,6 +302,7 @@ $admin_lang = array(
 	'admin_settings_label_club_name' => 'Club Name',
 	'admin_settings_label_language' => 'Language',
 	'admin_settings_label_unit' => 'Default Unit',
+	'admin_settings_label_update_db' => 'Force DB Update',
 	'admin_settings_label_disable_sql_view' => 'Disable SQL View',
 	'admin_settings_label_records_mode' => 'Records Mode',
 	'admin_settings_submit_events_label' => 'Users can submit events',
