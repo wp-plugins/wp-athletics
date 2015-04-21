@@ -59,7 +59,7 @@ if(!class_exists('WP_Athletics')) {
 			}
 			
 			// update db on plugin update
-			add_action( 'admin', array( $this->wpa_db, 'create_db' ) );
+			add_action( 'upgrader_process_complete', array( $this->wpa_db, 'force_create_db' ) );
 
 			global $wpa_lang;
 			global $wpa_settings;
@@ -317,14 +317,8 @@ if(!class_exists('WP_Athletics')) {
 			if (!defined('WPA_DB_DISABLE_SQL_VIEW') )
 				define('WPA_DB_DISABLE_SQL_VIEW', get_option( 'wp-athletics-disable-sql-view', 'no' ) == 'yes');
 			
-			if(WPA_DB_DISABLE_SQL_VIEW) {
-				wpa_log('SQL IS DISABLED');
-			}
-			
 			if (!defined('WPA_ENABLE_ON_NON_WPA_PAGES') )
 				define('WPA_ENABLE_ON_NON_WPA_PAGES', get_option( 'wp-athletics-enable_on_non_wpa_pages', 'no' ) == 'yes');
-				
-			
 
 			// store plugin version number
 			add_option('wp-athletics_version', WPA_VERSION_NUM );

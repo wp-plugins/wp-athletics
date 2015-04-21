@@ -63,7 +63,7 @@ $common_lang = array(
 	// event results dialog
 	'event_results_dialog_title' => 'Event Results',
 	'future_event_dialog_title' => "Upcoming Event Details",
-	'event_dialog_future_event_info' => 'This event is in the future. The following athletes are attending',
+	'event_dialog_future_event_info' => 'This event is in the future.',
 		
 	// create user dialog
 	'create_user_dialog_title' => 'Add New Athlete',
@@ -111,6 +111,16 @@ $common_lang = array(
 	'add_my_result_text' => 'Add My Result',
 	'add_result_title_event_dialog' => 'Add My Result',
 	'edit_result_title' => 'Edit Event Result',
+		
+	// add/edit event
+	'add_event_contact_email' => 'Contact Email',
+	'add_event_contact_name' => 'Contact Name',
+	'add_event_contact_number' => 'Contact Phone',
+	'add_event_url' => 'Event Website',
+	'add_event_register_url' => 'Register Link',
+	'add_event_cost' => 'Cost',
+	'add_event_details' => 'Event Details',
+	'add_event_more_detail' => 'Show more detail',
 
 	// results - other
 	'my_results_add_result_button' => 'Add Event Result',

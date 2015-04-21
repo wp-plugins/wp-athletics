@@ -67,6 +67,11 @@ WPA.Events = {
 				});
 			});
 			
+			jQuery('button.events-edit-button').button().click(function() {
+				var id = jQuery(this).attr('event-id');
+				WPA.editEvent(id);
+			});
+			
 			// pending result, add the time
 			jQuery('button.event-add-pending-result').button().click(function() {
 				var eventId = jQuery(this).attr('result-id');
@@ -149,6 +154,7 @@ WPA.Events = {
 					(result.is_future == '1' ? WPA.getProperty('event_runners_going') : (parseInt(result.count) == 1 ? WPA.getProperty('event_result_count') : WPA.getProperty('event_results_count')))  +
 					'</event></span>' +
 					WPA.Events.generateGoingGoneHTML(result) + 
+					(result.created_by_id == WPA.userId ? ('<button class="events-edit-button" event-id="' + result.event_id + '">' + WPA.getProperty('edit_event_text') + '</button>') : '') +
 				'</div>' + 
 				'<br style="clear:both"/>' +
 			'</div>'

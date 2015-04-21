@@ -293,13 +293,27 @@
 	color: #000;
 }
 
-.add-result-no-bg input {
+.add-result-no-bg input, .add-result-no-bg textarea {
 	background: none repeat scroll 0 0 #FFFFFF !important;
 }
 
 .wpa-add-result-field input {
 	padding: 4px;
 	height: 17px;
+}
+
+.wpa-textarea {
+	height: 60px;
+}
+
+.wpa-textarea label {
+	position: relative;
+	top: -25px;
+}
+
+.wpa-textarea textarea {
+	height: 50px;
+	width: 230px;
 }
 
 .wpa-add-result-field .custom-combobox {
@@ -346,6 +360,38 @@
 #eventInfoDetail {
 	font-size: 14px;
 	color: #afafaf;
+}
+
+#eventDetails {
+	margin: 0px 0px 5px 0px;
+	border: 1px solid #E8D6A8;
+	background-color: #FFF7E7;
+	padding: 10px;
+	border-radius: 5px;		
+}
+
+#eventDetails .event-details {
+	margin-bottom: 10px;
+}
+
+#eventDetails .event-url {
+	float: right;
+	margin-left: 5px;
+	margin-top: 4px;
+}
+
+#eventDetails .event-info {
+	margin-top: 3px;
+}
+
+#eventDetails .event-info label {
+	font-weight: bold;
+	margin-right: 5px;
+}
+
+#eventDetails .event-url a {
+	font-size: 11px;
+	color: black;
 }
 
 #user-profile-dialog label {
@@ -930,6 +976,7 @@ table.wpa-widget td {
 
 #event-results-dialog {
 	min-width: 300px;
+	max-width: 600px;
 }
 
 #event-dialog-future-info {

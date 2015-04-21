@@ -155,6 +155,11 @@ if(!class_exists('WP_Athletics_Events')) {
 				border-bottom: 1px solid #eee;
 			}
 			
+			button.events-edit-button {
+				font-size: 11px;
+				margin-left: 5px;
+			}
+			
 			.wpa-event-right {
 				width: 250px;
 				float: right;

@@ -37,9 +37,16 @@ if(!class_exists('WP_Athletics_DB')) {
 		public function set_parent( $parent ) {
 			$this->parent = $parent;
 		}
+		
+		/**
+		 * Forces create/update of the database tables
+		 */
+		public function force_create_db() {
+			$this->create_db( true );
+		}
 
 		/**
-		 * creates/updates the database tables
+		 * Creates/updates the database tables
 		 */
 		public function create_db( $force = false ) {
 			global $wpa_settings;
@@ -59,6 +66,8 @@ if(!class_exists('WP_Athletics_DB')) {
 				$sql = "CREATE TABLE $this->EVENT_TABLE (
 				id mediumint(9) NOT NULL AUTO_INCREMENT,
 				date datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+				created_on timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+				created_by_id int(5) DEFAULT NULL,
 				start_time varchar(10),
 				name varchar(100) NOT NULL,
 				event_cat_id mediumint(9) NOT NULL,
@@ -73,8 +82,9 @@ if(!class_exists('WP_Athletics_DB')) {
 				contact_number varchar(100),
 				cost varchar(10),
 				url varchar(100),
+				event_type varchar(10) DEFAULT NULL,
 				register_url varchar(100),
-				details varchar(200),
+				details varchar(250),
 				UNIQUE KEY id (id)
 				);
 
@@ -923,7 +933,7 @@ if(!class_exists('WP_Athletics_DB')) {
 		 */
 		public function get_event( $id ) {
 			global $wpdb;
-			return $wpdb->get_row( "SELECT id, name, (CASE WHEN (date > DATE(NOW())) THEN 1 ELSE 0 END) AS is_future, event_cat_id, sub_type_id, location, date_format(date,'" . WPA_DATE_FORMAT . "') as date, cost, lat,lng, details, address, url, register_url, contact_name, contact_email, contact_number FROM $this->EVENT_TABLE WHERE id = $id"  );
+			return $wpdb->get_row( "SELECT id, name, (CASE WHEN (date > DATE(NOW())) THEN 1 ELSE 0 END) AS is_future, event_cat_id, sub_type_id, location, date_format(date,'" . WPA_DATE_FORMAT . "') as date, cost, lat,lng, details, address, url, register_url, contact_name, contact_email, contact_number, created_by_id FROM $this->EVENT_TABLE WHERE id = $id"  );
 		}
 
 		/**
@@ -947,7 +957,14 @@ if(!class_exists('WP_Athletics_DB')) {
 					'location' => $data['eventLocation'],
 					'date' => $data['eventDate'],
 					'event_cat_id' => $data['eventCategory'],
-					'sub_type_id' => $data['eventSubType']
+					'sub_type_id' => $data['eventSubType'],
+					'cost' => $data['eventCost'],
+					'contact_email' => $data['eventContactEmail'],
+					'contact_name' => $data['eventContactName'],
+					'contact_number' => $data['eventContactNumber'],
+					'details' => $data['eventDetail'],
+					'url' => $data['eventUrl'],
+					'register_url' => $data['eventRegisterUrl']
 				),
 				array( 'id' => $data['id'] ),
 				array(
@@ -955,6 +972,13 @@ if(!class_exists('WP_Athletics_DB')) {
 					'%s',
 					'%s',
 					'%d',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
 					'%s'
 				),
 				array( '%d' )
@@ -1163,17 +1187,30 @@ if(!class_exists('WP_Athletics_DB')) {
 		 */
 		function create_event( $data, $is_admin_update = false ) {
 			global $wpdb;
+			global $current_user;
+			
+			$date = new DateTime();
+
 			$success = $wpdb->query( $wpdb->prepare(
 				"
 				INSERT INTO $this->EVENT_TABLE
-				( date, sub_type_id, name, location, event_cat_id )
-				VALUES ( %s, %s, %s, %s, %d )
+				( date, sub_type_id, name, location, event_cat_id, cost, contact_email, contact_name, contact_number, details, url, register_url, created_on, created_by_id )
+				VALUES ( %s, %s, %s, %s, %d, %s, %s, %s, %s, %s, %s, %s, %s, %d )
 				",
 				$data['eventDate'],
 				$data['eventSubType'],
 				$data['eventName'],
 				$data['eventLocation'],
-				$data['eventCategory']
+				$data['eventCategory'],
+				$data['eventCost'],
+				$data['eventContactEmail'],
+				$data['eventContactName'],
+				$data['eventContactNumber'],
+				$data['eventDetail'],
+				$data['eventUrl'],
+				$data['eventRegisterUrl'],
+				$date->format('Y-m-d H:i:s'),
+				($current_user ? $current_user->ID : 0)
 			) );
 
 			if($success) {
@@ -1815,7 +1852,7 @@ if(!class_exists('WP_Athletics_DB')) {
 			
 			$year = $data['year'];
 			
-			$sql = "SELECT date_format(e.date,'%W, %d %M %Y') as display_date, e.cost, e.url, MONTH(date) as month, e.location, e.name, e.id as event_id, " .
+			$sql = "SELECT date_format(e.date,'%W, %d %M %Y') as display_date, e.created_by_id, e.cost, e.url, MONTH(date) as month, e.location, e.name, e.id as event_id, " .
 				"(SELECT COUNT(r.id) FROM " .  $this->RESULT_TABLE . " r WHERE event_id = e.id) AS count," .
 				"(CASE WHEN (e.date > DATE(NOW())) THEN 1 ELSE 0 END) AS is_future, " .
 				"(SELECT COUNT(r.id) FROM " .  $this->RESULT_TABLE . " r WHERE event_id = e.id AND r.pending = 0 AND user_id = " . $current_user->ID . ") AS has_result, " .

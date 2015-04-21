@@ -873,6 +873,40 @@ if( !class_exists( 'WPA_Base' ) ) {
 					<label class="required"><?php echo $this->get_property('add_result_event_date'); ?>:</label>
 					<input readonly="readonly" style="position:relative; top:-2px" class="ui-widget ui-widget-content ui-state-default ui-corner-all add-result-required" size="30" type="text" id="editResultDate"/>
 				</div>
+				<div id="wpa-add-event-show-detail" class="wpa-add-result-field add-result-no-bg">
+					<label></label>
+					<button id="wpa-add-event-show-detail-button"><?= $this->get_property('add_event_more_detail') ?></button>
+				</div>
+				<div style="display:none" id="wpa-add-event-more-detail">
+					<div class="wpa-add-result-field wpa-textarea add-result-no-bg">
+						<label><?php echo $this->get_property('add_event_details'); ?>:</label>
+						<textarea class="ui-widget ui-widget-content ui-state-default ui-corner-all" maxlength=250 id="editEventDetail"></textarea>
+					</div>
+					<div class="wpa-add-result-field add-result-no-bg">
+						<label><?php echo $this->get_property('add_event_contact_email'); ?>:</label>
+						<input class="ui-widget ui-widget-content ui-state-default ui-corner-all" size="25" maxlength=100 type="text" id="editEventContactEmail" />
+					</div>
+					<div class="wpa-add-result-field add-result-no-bg">
+						<label><?php echo $this->get_property('add_event_contact_name'); ?>:</label>
+						<input class="ui-widget ui-widget-content ui-state-default ui-corner-all" size="25" maxlength=100 type="text" id="editEventContactName" />
+					</div>
+					<div class="wpa-add-result-field add-result-no-bg">
+						<label><?php echo $this->get_property('add_event_contact_number'); ?>:</label>
+						<input class="ui-widget ui-widget-content ui-state-default ui-corner-all" size="25" maxlength=100 type="text" id="editEventContactNumber" />
+					</div>
+					<div class="wpa-add-result-field add-result-no-bg">
+						<label><?php echo $this->get_property('add_event_cost'); ?>:</label>
+						<input class="ui-widget ui-widget-content ui-state-default ui-corner-all" size="25" maxlength=100 type="text" id="editEventCost" />
+					</div>
+					<div class="wpa-add-result-field add-result-no-bg">
+						<label><?php echo $this->get_property('add_event_url'); ?>:</label>
+						<input class="ui-widget ui-widget-content ui-state-default ui-corner-all" size="25" maxlength=100 type="text" id="editEventUrl" />
+					</div>
+					<div class="wpa-add-result-field add-result-no-bg">
+						<label><?php echo $this->get_property('add_event_register_url'); ?>:</label>
+						<input class="ui-widget ui-widget-content ui-state-default ui-corner-all" size="25" maxlength=100 type="text" id="editEventRegisterUrl" />
+					</div>
+				</div>
 			</div>
 		<?php
 		}
@@ -1242,7 +1276,8 @@ if( !class_exists( 'WPA_Base' ) ) {
 
 				<!-- EVENT RESULTS DIALOG -->
 				<div style="display:none" id="event-results-dialog">
-				  <div class="wpa">
+				  <div style="margin-top: 5px;" class="wpa">
+
 				  	  <div>
 					  	  <!-- event info -->
 						  <div class="wpa-event-info">
@@ -1263,8 +1298,10 @@ if( !class_exists( 'WPA_Base' ) ) {
 						 <br style="clear:both;"/>
 					 </div>
 					 
-					 <p style="display:none" id="event-dialog-future-info"><?= $this->get_property('event_dialog_future_event_info') ?></p>
-
+					 <div id="eventDetails">
+					 	
+					 </div>
+					 
 					 <?php $this->create_event_results_table(); ?>
 				  </div>
 				</div>

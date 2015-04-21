@@ -510,13 +510,59 @@ var WPA = {
 		}
 		
 		WPA.Ajax.getEventInfo(eventId, function(result) {
+			jQuery('#eventDetails').hide().children().remove();
+			
 			jQuery('#eventInfoName').html(result.name + ', ' + result.location);
 			jQuery('#eventInfoDate').html(result.date);
 			jQuery('#eventInfoDetail').html(WPA.getEventSubTypeDescription(result.sub_type_id) + ' ' + WPA.getEventCategoryDescription(result.event_cat_id));
+			
+			if(result.details) {
+				jQuery('#eventDetails').show().append('<div class="event-details">' + result.details + '</div>');
+			}
+			
+			if(result.cost) {
+				WPA.addEventDetailElement(WPA.getProperty('add_event_cost'), result.cost);
+			}
+			
+			if(result.contact_name) {
+				WPA.addEventDetailElement(WPA.getProperty('add_event_contact_name'), result.contact_name);
+			}
+			
+			if(result.contact_email) {
+				WPA.addEventDetailElement(WPA.getProperty('add_event_contact_email'), result.contact_email);
+			}
+			
+			if(result.contact_number) {
+				WPA.addEventDetailElement(WPA.getProperty('add_event_contact_number'), result.contact_number);
+			}
+			
+			if(result.url || result.register_url) {
+				if(result.url) {
+					jQuery('#eventDetails').show().append(
+						'<div class="event-url"><a class="event-button" target="link" href="' + WPA.processUrl(result.url) + '">' +  WPA.getProperty('add_event_url')  + '<a></div>'
+					);
+				}
+				if(result.register_url) {
+					jQuery('#eventDetails').show().append(
+						'<div class="event-url"><a class="event-button" target="link" href="' + WPA.processUrl(result.register_url) + '">' +  WPA.getProperty('add_event_register_url')  + '<a></div>'
+					);
+				}
+				jQuery('#eventDetails').append('<br style="clear:both"/>');
+				jQuery('.event-button').button();
+			}
 		})
 		
 		// load the events
 		WPA.loadEventResults();
+	},
+	
+	/**
+	 * Appends event info to the event dialog
+	 */
+	addEventDetailElement: function(label, text) {
+		jQuery('#eventDetails').show().append(
+			'<div class="event-info"><label>' + label  + ':</label><span>' + text + '</span></div>'
+		);
 	},
 	
 	/**
@@ -2026,6 +2072,12 @@ var WPA = {
 		    	jQuery(this).removeClass('ui-state-error');
 		    }
 	    });
+		
+		jQuery('#wpa-add-event-show-detail-button').button().click(function() {
+			jQuery('#wpa-add-event-show-detail').hide();
+			jQuery('#wpa-add-event-more-detail').fadeIn();
+			jQuery('#edit-event-dialog').dialog('widget').position({my:"center", at:"center", of:window});
+		});
 
 		// the edit dialog
 		WPA.editEventDialog = jQuery('#edit-event-dialog').dialog({
@@ -2161,7 +2213,7 @@ var WPA = {
 	editEvent: function(id) {
 		WPA.editId = id;
 		WPA.eventCreateMode = false;
-
+		
 		// populate the event info and open dialog
 		WPA.Ajax.getEventInfo(id, function(result) {
 			// inputs
@@ -2170,6 +2222,16 @@ var WPA = {
 			jQuery('#editEventId').val(result.id);
 			jQuery('#editEventLocation').removeClass('ui-state-error').val(result.location).change();
 
+			jQuery('#editEventDetail').val(result.details);
+			jQuery('#editEventContactEmail').val(result.contact_email);
+			jQuery('#editEventContactName').val(result.contact_name);
+			jQuery('#editEventContactNumber').val(result.contact_number);
+			jQuery('#editEventUrl').val(result.url);
+			jQuery('#editEventRegisterUrl').val(result.register_url);
+			jQuery('#editEventCost').val(result.cost);
+			jQuery('#editEventLat').val(result.lat);
+			jQuery('#editEventLng').val(result.lng);
+			
 			// selects
 			jQuery('#editEventCategory').combobox('setValue', result.event_cat_id).combobox('removeCls', 'ui-state-error');
 			jQuery('#editEventSubType').combobox('setValue', result.sub_type_id).combobox('removeCls', 'ui-state-error');
@@ -2177,6 +2239,10 @@ var WPA = {
 			// open the dialog now
 			jQuery(WPA.editEventDialog).dialog('option', 'title', WPA.getProperty('edit_event_dialog_title'));
 			jQuery(WPA.editEventDialog).dialog('open');
+			
+			jQuery('#wpa-add-event-show-detail').show();
+			jQuery('#wpa-add-event-more-detail').hide();
+			
 		});
 	},
 
@@ -2189,7 +2255,17 @@ var WPA = {
 			eventName: jQuery('#editEventName').val(),
 			eventCategory: jQuery('#editEventCategory').val(),
 			eventSubType: jQuery('#editEventSubType').val(),
-			eventLocation: jQuery('#editEventLocation').val()
+			eventLocation: jQuery('#editEventLocation').val(),
+			
+			eventDetail: jQuery('#editEventDetail').val(),
+			eventContactEmail: jQuery('#editEventContactEmail').val(),
+			eventContactName: jQuery('#editEventContactName').val(),
+			eventContactNumber: jQuery('#editEventContactNumber').val(),
+			eventCost: jQuery('#editEventCost').val(),
+			eventUrl: jQuery('#editEventUrl').val(),
+			eventRegisterUrl: jQuery('#editEventRegisterUrl').val(),
+			eventLat: jQuery('#editEventLat').val(),
+			eventLng: jQuery('#editEventLng').val()	
 		}
 	},
 
@@ -2200,6 +2276,10 @@ var WPA = {
 		WPA.editId = '';
 		WPA.resetEditDialogFields();
 		WPA.eventCreateMode = true;
+		
+		jQuery('#wpa-add-event-show-detail').show();
+		jQuery('#wpa-add-event-more-detail').hide();
+		
 		jQuery(WPA.editEventDialog).dialog('option', 'title', WPA.getProperty('create_event_dialog_title'));
 		jQuery(WPA.editEventDialog).dialog('open');
 	},
@@ -2495,6 +2575,16 @@ var WPA = {
 		});
 	},
 	
+	/**
+	 * processes a URL string
+	 */
+	processUrl: function(url) {
+		if(url.indexOf('http://') == -1) {
+			url = "http://" + url;
+		}
+		return url;
+	},
+	
 	/** DATATABLE COLUMN RENDERERS **/
 	renderTimeColumn: function(data, type, full) {
 		if(full['pending'] == '1') return WPA.getProperty('time_pending_value_text');
@@ -2543,13 +2633,9 @@ var WPA = {
 			else {
 				icon = 'web';
 			}
-			
-			if(data.indexOf('http://') == -1) {
-				data = "http://" + data;
-			}
 		}
 		
-		return data ? '<a target="new" href="' + data + '" class="datatable-icon ' + icon + '" title="' + WPA.getProperty('activity_link_text') + '">&nbsp;</a>' : '';
+		return data ? '<a target="new" href="' + WPA.processUrl(data) + '" class="datatable-icon ' + icon + '" title="' + WPA.getProperty('activity_link_text') + '">&nbsp;</a>' : '';
 	},
 	
 	renderCategoryAndTerrainColumn: function(data, type, full) {
