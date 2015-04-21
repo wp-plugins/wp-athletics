@@ -4,7 +4,7 @@ Donate link: http://www.conormccauley.me/wordpress-athletics
 Tags: athletics, results, sports, track, running club, athlete, statistics, races, racing, events, athletic, jogging, club, charts, records, personal bests, pb, pr, personal records
 Requires at least: 3.5
 Tested up to: 4.1.1
-Stable tag: 1.1.3
+Stable tag: 1.1.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -196,4 +196,7 @@ Minor bug fixes. Force update of database on activate.
 More bug fixing and minor tweaks. Now displays upcoming events on a users profile.
 
 = 1.1.3 =
-I'm a busy man today. Disable WPA on non-WPA pages by default, causing a lot of problems. Ability to switch back on in settings.  
+I'm a busy man today. Disable WPA on non-WPA pages by default, causing a lot of problems. Ability to switch back on in settings.
+
+= 1.1.4 =
+You can now add extra detail to your events - description, contact info, website urls, cost etc.    
