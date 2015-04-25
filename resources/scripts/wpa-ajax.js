@@ -98,6 +98,7 @@ WPA.Ajax = {
 				WPA.Settings = result.settings;
 
 				WPA.userDOB = result.userDOB;
+				WPA.ageGradesDone = result.ageGradesDone;
 				WPA.userHideDOB = result.userHideDOB;
 				WPA.userGender = result.userGender;
 				WPA.isLoggedIn = result.isLoggedIn;
@@ -412,6 +413,51 @@ WPA.Ajax = {
 				}
 			}
 		});
+	},
+	
+	/**
+	 *  Operation to calculate and save the age grade value for each users result
+	 */
+	updateUserAgeGrades: function(callbackFn) {
+		if(WPA.userGender) {
+			jQuery.ajax({
+				type: 'post',
+				url: WPA.Ajax.url,
+				data: {
+					action: 'wpa_get_all_results_for_user',
+				},
+				success: function(results) {
+					if(results) {
+						var updateString = '';
+						jQuery.each(results, function(i, result) {
+							var timeMillis = result.time;
+							var distanceMeters = result.distance_meters;
+	
+							// calculate agr grade %
+							var age = WPA.calculateAthleteAgeGradeAgeForResult(result.event_date, result.age_category);
+							var ageGrade = WPA.AgeGrade.calculate(WPA.userGender, age, (parseInt(distanceMeters) / 1000), (parseInt(timeMillis) / 1000));
+							if(ageGrade > 0) {
+								updateString += result.id + '|' + ageGrade + ',';
+							}
+						});
+					}
+					
+					if(updateString != '') {
+						jQuery.ajax({
+							type: 'post',
+							url: WPA.Ajax.url,
+							data: {
+								action: 'wpa_update_age_grades',
+								data: updateString
+							},
+							success: function(results) {
+								callbackFn(results);
+							}
+						})	
+					}
+				}
+			});
+		};
 	},
 	
 	/**

@@ -216,6 +216,13 @@ if(!class_exists('WP_Athletics_Manage_Results')) {
 							    	WPA.Ajax.saveProfileData({
 										dob: WPA.userDOB
 									}, jQuery(event.currentTarget));
+
+							    	WPA.Ajax.updateUserAgeGrades(function(count) {
+								    	if(parseInt(count) > 0) {
+								    		WPA.alertProperty('my_results_dob_changed');
+								    		WPA.MyResults.reloadResults();
+								    	}
+							    	});
 							    }
 						    }).datepicker('setDate', WPA.userDOB);
 
@@ -316,6 +323,15 @@ if(!class_exists('WP_Athletics_Manage_Results')) {
 							        WPA.customUploader.open();
 						        }
 							});
+
+							// once off operation to calculate all age grades
+							if(!WPA.ageGradesDone) {
+								WPA.Ajax.updateUserAgeGrades(function(count) {
+									WPA.alert('We have now added age grading functionality to the system. ' +
+										WPA.getProperty('help_column_age_grade') + '<br/><br/><b>For each of your ' + count + ' historic results, the age grade % has just been calculated. ' +
+										'Refresh the page to view your age grades.');
+								});
+							}
 						});
 					});
 				</script>
@@ -466,6 +482,7 @@ if(!class_exists('WP_Athletics_Manage_Results')) {
 									<th><?php echo $this->get_property('column_category') ?></th>
 									<th><?php echo $this->get_property('column_age_category') ?></th>
 									<th><?php echo $this->get_property('column_time') ?></th>
+									<th><?php echo $this->get_property('column_age_grade') ?><span class="column-help" title="<?php echo $this->get_property('help_column_age_grade'); ?>"></span></th>
 									<th><?php echo $this->get_property('column_pace') ?></th>
 									<th><?php echo $this->get_property('column_position') ?></th>
 									<th></th>
@@ -489,6 +506,7 @@ if(!class_exists('WP_Athletics_Manage_Results')) {
 									<th><?php echo $this->get_property('column_event_type') ?></th>
 									<th><?php echo $this->get_property('column_age_category') ?></th>
 									<th><?php echo $this->get_property('column_event_date') ?></th>
+									<th><?php echo $this->get_property('column_age_grade') ?><span class="column-help" title="<?php echo $this->get_property('help_column_age_grade'); ?>"></span></th>
 									<th><?php echo $this->get_property('column_club_rank') ?><span class="column-help" title="<?php echo $this->get_property('help_column_rank'); ?>"></span></th>
 									<th></th>
 								</tr>

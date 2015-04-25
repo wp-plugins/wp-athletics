@@ -4,16 +4,13 @@ Donate link: http://www.conormccauley.me/wordpress-athletics
 Tags: athletics, results, sports, track, running club, athlete, statistics, races, racing, events, athletic, jogging, club, charts, records, personal bests, pb, pr, personal records
 Requires at least: 3.5
 Tested up to: 4.1.1
-Stable tag: 1.1.4
+Stable tag: 1.1.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Record, compare and analyse your athletic results. Plan events, track personal bests, compare age graded leaderboards and more.
 
 == Description ==
-
-<b>New in version 1.1.0 - Events! View past and plan future events</b>
-<i>The event page should automatically be created once you update the plugin</i>
 
 Wordpress Athletics is a powerful collection of features for your athletics club website aiming to allow your athletes to log and analyze their results, track their personal bests and view statistics and charts.
 Users can view and plan future events and there are 2 useful widgets to display recent results and upcoming events. The plugin, designed with simplicity in mind is ready to use out of the box. There are also a variety of UI themes included for your convenience.
@@ -27,6 +24,7 @@ Some of the major features for your registered users are:
 <li>Search for other athletes and events using the power search tool</li>
 <li>View individual or club-wide statistics including visual charts</li>
 <li>View overall club records</li>
+<li>Age grades results (based on 2015 WMA data)</li>
 <li>View recent results</li>
 <li>Event Manager, plan future races and see who else is going</li>
 </ul>
@@ -199,4 +197,8 @@ More bug fixing and minor tweaks. Now displays upcoming events on a users profil
 I'm a busy man today. Disable WPA on non-WPA pages by default, causing a lot of problems. Ability to switch back on in settings.
 
 = 1.1.4 =
-You can now add extra detail to your events - description, contact info, website urls, cost etc.    
+You can now add extra detail to your events - description, contact info, website urls, cost etc. 
+
+= 1.1.5 =
+Added age grading on all results. Age grade factors taken from 2015 WMA data. 
+Your users will have the age grade % automaticaly applied to their results the next time they visit their "Manage Results" page.

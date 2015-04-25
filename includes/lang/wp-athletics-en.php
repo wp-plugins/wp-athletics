@@ -26,6 +26,7 @@ $common_lang = array(
 	'column_club_rank' => 'Rank',
 	'column_result_count' => 'Result Count',
 	'column_event_shortcode' => 'Embed Code',
+	'column_age_grade' => 'Age Grade',
 
 	// my results - profile
 	'my_profile_display_name_label' => 'Athlete Name',
@@ -111,6 +112,8 @@ $common_lang = array(
 	'add_my_result_text' => 'Add My Result',
 	'add_result_title_event_dialog' => 'Add My Result',
 	'edit_result_title' => 'Edit Event Result',
+	'add_result_no_dob' => 'You have not set your date of birth. This means your age grade % will be based on the averge age of the selected age class. <br/><br/>
+		To ensure an accurate age grade %, set your date of birth.',
 		
 	// add/edit event
 	'add_event_contact_email' => 'Contact Email',
@@ -128,12 +131,20 @@ $common_lang = array(
 	'edit_result_text' => 'Edit this result',
 	'confirm_result_delete_title' => 'Confirm Delete Result',
 	'confirm_result_delete' => 'Are you sure you wish to delete this result? This cannot be undone',
+	'my_results_dob_changed' => 'Your date of birth has changed. All of your results have been updated to ensure the correct age grade % is applied.',
 
 	// help texts
 	'help_add_result_activity_url' => 'If you have the activity recorded on an external website (e.g Garmin, Strava, RunKeeper etc), copy and paste the full link here',
 	'help_add_result_event_name' => 'The event may already exist in our database, start typing the event name and select if it appears in the drop down menu. Otherwise a new event will be created, in this case please try to record the event details as accurately possible.',
 	'help_add_result_cancel_event' => 'Remove chosen event',
 	'help_column_rank' => 'Represents an all-time club ranking for this result based on gender, event category and age class',
+	'help_column_age_grade' => 'Age grading is a way of putting all race participants on a level playing field, regardless of age or gender. Age graded scores let you compare your race times to those of different runners, as well as to the standard for your age and gender.
+		<br/><br/>Each value is calculate using 2015 age-grading factors from the World Masters Association (WMA)<br/><br/>
+		<b>The percentiles can be interpreted as follows</b><br/><br/>
+		<br/><b>- Over 90%</b> World class</li>
+		<br/><b>- Over 80%</b> National class</li>
+		<br/><b>- Over 70%</b> Regional class</li>
+		<br/><b>- Over 60%</b> Local class</li><br/><br/>',
 
 	// datatables
 	'table_no_results' => 'There are no records to display',
@@ -146,6 +157,7 @@ $common_lang = array(
 	'error_problem_creating_event' => 'There was a problem creating the new event, please try again later',
 	'error_add_result_no_gender_dob' => 'You have not entered your gender and date of birth. Please fill in these details on the "Manage Results" page before you add a result, this way we can accurately classify your result against others',
 	'error_dialog_title' => 'Error',
+	'alert_dialog_title' => 'Alert',
 	'error_no_age_category' => 'Could not determine an age category. Please check and try again or manually select an age category below',
 	'error_event_already_entered' => 'You have already recorded your result for this event.',
 	'error_event_already_entered_pending' => 'You have already registered your future participation in this event. You can enter your result once the event has completed',
@@ -203,6 +215,7 @@ $common_lang = array(
 	'submit_event_button' => 'Submit an Event',
 	'yes' => 'Yes',
 	'no' => 'No',
+	'na' => 'N/A',
 	
 	// widgets
 	'results_widget_recent_results_link' => 'View all Recent Results',

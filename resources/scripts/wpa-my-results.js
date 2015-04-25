@@ -149,7 +149,8 @@ WPA.MyResults = {
 				"mRender" : WPA.renderEventLinkColumn
 			},{
 				"mData": "event_location",
-				"mRender": WPA.renderEventLocationColumn
+				"mRender": WPA.renderEventLocationColumn,
+				"bVisible": false
 			},{
 				"mData": "event_sub_type_id",
 				"mRender" : WPA.renderEventTypeColumn,
@@ -163,6 +164,10 @@ WPA.MyResults = {
 			},{
 				"mData": "time",
 				"mRender": WPA.renderTimeColumn
+			},{
+				"mData": "age_grade",
+				"mRender": WPA.renderAgeGradeColumn,
+				"bSortable": false
 			},{
 				"mData": "time",
 				"mRender": WPA.renderPaceMilesColumn,
@@ -217,7 +222,8 @@ WPA.MyResults = {
 				"mRender" : WPA.renderEventLinkColumn
 			},{
 				"mData": "event_location",
-				"mRender": WPA.renderEventLocationColumn
+				"mRender": WPA.renderEventLocationColumn,
+				"bVisible": false
 			},{
 				"mData": "event_sub_type_id",
 				"mRender" : WPA.renderEventTypeColumn
@@ -226,6 +232,10 @@ WPA.MyResults = {
 				"mRender" : WPA.renderAgeCategoryColumn
 			},{ 
 				"mData": "event_date"
+			},{
+				"mData": "age_grade",
+				"mRender": WPA.renderAgeGradeColumn,
+				"bSortable": false
 			},{
 				"mData": "club_rank",
 				"sWidth": "20px",

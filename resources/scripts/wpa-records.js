@@ -18,6 +18,7 @@ WPA.Records = {
 					'<th></th>' +
 					'<th>' + WPA.getProperty('column_category') + '</th>' +
 					'<th>' + WPA.getProperty('column_time') + '</th>' +
+					'<th>' + WPA.getProperty('column_age_grade') + '<span class="column-help" title="' + WPA.getProperty('help_column_age_grade') + '"></span></th>' +
 					'<th>' + WPA.getProperty('column_athlete_name') + '</th>' +
 					'<th>' + WPA.getProperty('column_event_name') + '</th>' +
 					'<th>' + WPA.getProperty('column_event_location') + '</th>' +
@@ -83,6 +84,10 @@ WPA.Records = {
 				"mRender": WPA.renderTimeColumn,
 				"sClass": "datatable-bold"
 			},{
+				"mData": "age_grade",
+				"bSortable": false,
+				"mRender": WPA.renderAgeGradeColumn,
+			},{
 				"mData": "athlete_name",
 				"mRender" : WPA.renderProfileLinkColumn
 			},{ 
@@ -90,7 +95,8 @@ WPA.Records = {
 				"mRender" : WPA.renderEventLinkColumn
 			},{
 				"mData": "event_location",
-				"mRender": WPA.renderEventLocationColumn
+				"mRender": WPA.renderEventLocationColumn,
+				"bVisible": false,
 			},{
 				"mData": "event_sub_type_id",
 				"mRender" : WPA.renderEventTypeColumn

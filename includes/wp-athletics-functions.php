@@ -46,6 +46,8 @@ if( !class_exists( 'WPA_Base' ) ) {
 			add_action( 'wp_ajax_wpa_get_age_categories', array ( $this, 'get_age_categories') );
 			add_action( 'wp_ajax_wpa_get_results', array ( $this, 'get_results') );
 			add_action( 'wp_ajax_wpa_get_all_results', array ( $this, 'get_all_results') );
+			add_action( 'wp_ajax_wpa_get_all_results_for_user', array ( $this, 'get_all_results_for_user') );
+			add_action( 'wp_ajax_wpa_update_age_grades', array ( $this, 'update_age_grades') );
 			add_action( 'wp_ajax_wpa_get_event_results', array ( $this, 'get_event_results') );
 			add_action( 'wp_ajax_wpa_get_user_profile', array ( $this, 'get_user_profile') );
 			add_action( 'wp_ajax_wpa_get_user_dob', array ( $this, 'get_user_dob') );
@@ -103,6 +105,23 @@ if( !class_exists( 'WPA_Base' ) ) {
 	
 			$result = array('filename'=>$filename);
 	
+			// return as json
+			wp_send_json($result);
+			die();
+		}
+		
+		/**
+		 * [AJAX] Operation to update all of a users age grades
+		 */
+		public function update_age_grades() {
+			global $current_user;
+			
+			// perform the query
+			$result = $this->wpa_db->update_age_grades( $_POST['data'] );
+			
+			// update option so this is only done once
+			update_user_meta( $current_user->ID, 'wp-athletics_age_grades_done', 'yes' );
+			
 			// return as json
 			wp_send_json($result);
 			die();
@@ -183,6 +202,7 @@ if( !class_exists( 'WPA_Base' ) ) {
 					'userDOB' => get_user_meta( $current_user->ID, 'wp-athletics_dob', true ),
 					'userHideDOB' => (get_user_meta( $current_user->ID, 'wp-athletics_hide_dob', true ) == 'yes'),
 					'userGender' => get_user_meta( $current_user->ID, 'wp-athletics_gender', true ),
+					'ageGradesDone' => get_user_meta( $current_user->ID, 'wp-athletics_age_grades_done', 'no') == 'yes',
 					'defaultUnit' => get_option( 'wp-athletics_default-unit', 'm' ),
 					'isLoggedIn' => is_user_logged_in(),
 					'pendingResults' => $current_user ? $this->wpa_db->get_pending_result_count() : 0,
@@ -501,6 +521,19 @@ if( !class_exists( 'WPA_Base' ) ) {
 		}
 
 		/**
+		 * [AJAX] Retrieves list of all results for a given users
+		 */
+		public function get_all_results_for_user() {
+		
+			// perform the query
+			$results = $this->wpa_db->get_all_results_for_user();
+		
+			// return as json
+			wp_send_json($results);
+			die();
+		}
+		
+		/**
 		 * [AJAX] Retrieves list of results for all users
 		 */
 		public function get_all_results() {
@@ -775,6 +808,7 @@ if( !class_exists( 'WPA_Base' ) ) {
 			// common scripts
 			wp_enqueue_script( 'wpa-custom' );
 			wp_enqueue_script( 'wpa-functions' );
+			wp_enqueue_script( 'wpa-age-grade' );
 			wp_enqueue_script( 'wpa-ajax' );
 			wp_enqueue_script( 'datatables' );
 
@@ -850,7 +884,7 @@ if( !class_exists( 'WPA_Base' ) ) {
 			<div id="edit-event-dialog" style="display:none">
 			<input type="hidden" id="editEventDate" value=""/>
 				<div class="wpa-add-result-field">
-					<label class="required"><?php echo $this->get_property('add_result_name'); ?>:</label>
+					<label class="required"><?php echo $this->get_property('add_result_event_name'); ?>:</label>
 					<input style="background: #fff" class="ui-widget ui-widget-content ui-state-default ui-corner-all add-result-required" size="40" maxlength=100 type="text" id="editEventName" />
 				</div>
 				<div class="wpa-add-result-field add-result-no-bg">
@@ -1068,6 +1102,7 @@ if( !class_exists( 'WPA_Base' ) ) {
 						<th></th>
 						<th><name><?php echo $this->get_property('column_athlete_name') ?></name></th>
 						<th><?php echo $this->get_property('column_time') ?></th>
+						<th><?php echo $this->get_property('column_age_grade') ?><span class="column-help" title="<?php echo $this->get_property('help_column_age_grade'); ?>"></span></th>
 						<th><?php echo $this->get_property('column_pace') ?></th>
 						<th><?php echo $this->get_property('column_age_category') ?></th>
 						<th><?php echo $this->get_property('column_position') ?></th>
@@ -1096,6 +1131,7 @@ if( !class_exists( 'WPA_Base' ) ) {
 						<th><?php echo $this->get_property('column_category') ?></th>
 						<th><?php echo $this->get_property('column_age_category') ?></th>
 						<th><?php echo $this->get_property('column_time') ?></th>
+						<th><?php echo $this->get_property('column_age_grade') ?><span class="column-help" title="<?php echo $this->get_property('help_column_age_grade'); ?>"></span></th>
 						<th><?php echo $this->get_property('column_pace') ?></th>
 						<th><?php echo $this->get_property('column_position') ?></th>
 						<th></th>
@@ -1234,6 +1270,7 @@ if( !class_exists( 'WPA_Base' ) ) {
 										<th><?php echo $this->get_property('column_category') ?></th>
 										<th><?php echo $this->get_property('column_age_category') ?></th>
 										<th><?php echo $this->get_property('column_time') ?></th>
+										<th><?php echo $this->get_property('column_age_grade') ?><span class="column-help" title="<?php echo $this->get_property('help_column_age_grade'); ?>"></span></th>
 										<th><?php echo $this->get_property('column_pace') ?></th>
 										<th><?php echo $this->get_property('column_position') ?></th>
 										<th></th>
@@ -1256,6 +1293,7 @@ if( !class_exists( 'WPA_Base' ) ) {
 										<th><?php echo $this->get_property('column_event_type') ?></th>
 										<th><?php echo $this->get_property('column_age_category') ?></th>
 										<th><?php echo $this->get_property('column_event_date') ?></th>
+										<th><?php echo $this->get_property('column_age_grade') ?><span class="column-help" title="<?php echo $this->get_property('help_column_age_grade'); ?>"></span></th>
 										<th><?php echo $this->get_property('column_club_rank') ?><span class="column-help" title="<?php echo $this->get_property('help_column_rank'); ?>"></span></th>
 										<th></th>
 									</tr>
@@ -1332,6 +1370,7 @@ if( !class_exists( 'WPA_Base' ) ) {
 								<th></th>
 								<th>#</th>
 								<th><?php echo $this->get_property('column_time') ?></th>
+								<th><?php echo $this->get_property('column_age_grade') ?><span class="column-help" title="<?php echo $this->get_property('help_column_age_grade'); ?>"></span></th>
 								<th><?php echo $this->get_property('column_pace') ?></th>
 								<th><?php echo $this->get_property('column_athlete_name') ?></th>
 								<th><?php echo $this->get_property('column_event_name') ?></th>
@@ -1357,6 +1396,11 @@ if( !class_exists( 'WPA_Base' ) ) {
 				<!--  ERROR DIALOG -->
 				<div style="display:none" id="wpa-error-dialog" title="<?php echo $this->get_property('error_dialog_title'); ?>">
 	  				<div id="wpa-error-dialog-text"></div>
+				</div>
+				
+				<!--  ALERT DIALOG -->
+				<div style="display:none" id="wpa-alert-dialog" title="<?php echo $this->get_property('alert_dialog_title'); ?>">
+	  				<div id="wpa-alert-dialog-text"></div>
 				</div>
 
 				<!-- LOADING DIALOG -->

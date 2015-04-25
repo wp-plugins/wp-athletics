@@ -44,13 +44,17 @@
 	background-image: url('../images/spinner.gif');
 }
 
+.future-event .wpa-my-event {
+	color: #1F38B8 !important;
+}
+
 .wpa-my-event {
 	background-repeat: no-repeat;
 	background-image: url('../images/yellow-star.gif');
 	padding-left: 20px;
 	height: 16px;
 	display: inline-block;
-	color: #178B0A !important;
+	color: #178B0A;
 	font-weight: bold;
 }
 
@@ -907,7 +911,7 @@ table.wpa-widget td {
 }
 
 .wpa-widget-date {
-	width: 55px;
+	width: 60px;
 }
 
 .wpa-widget-content {

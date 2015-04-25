@@ -300,7 +300,7 @@ var WPA = {
 					}
 				}
 				jQuery('.wpa-profile-upcoming-events').hide();
-				if(result.upcomingEvents) {
+				if(result.upcomingEvents.length) {
 					jQuery('.wpa-profile-upcoming-events').show();
 					jQuery('#wpa-profie-upcoming-events-table tbody tr').remove();
 					jQuery(result.upcomingEvents).each(function(i, event) {
@@ -312,8 +312,7 @@ var WPA = {
 						);
 					});
 				}
-				
-				
+
 				if(result.photo) {
 					jQuery('#wpaUserProfilePhoto').removeClass('wpa-profile-photo-default').css('background-image', 'url(' + result.photo + ')');
 				}
@@ -708,6 +707,10 @@ var WPA = {
 				"mRender": WPA.renderTimeColumn,
 				"bSortable": false
 			},{
+				"mData": "age_grade",
+				"mRender": WPA.renderAgeGradeColumn,
+				"bSortable": false
+			},{
 				"mData": "time",
 				"mRender": WPA.renderPaceMilesColumn,
 				"bSortable": false
@@ -785,6 +788,10 @@ var WPA = {
 				"mRender": WPA.renderTimeColumn,
 				"bSortable": false
 			},{
+				"mData": "age_grade",
+				"mRender": WPA.renderAgeGradeColumn,
+				"bSortable": false
+			},{
 				"mData": "time",
 				"mRender": WPA.renderPaceMilesColumn,
 				"bSortable": false
@@ -854,6 +861,10 @@ var WPA = {
 				"mData": "time",
 				"mRender": WPA.renderTimeColumn
 			},{
+				"mData": "age_grade",
+				"mRender": WPA.renderAgeGradeColumn,
+				"bSortable": false
+			},{
 				"mData": "time",
 				"mRender": WPA.renderPaceMilesColumn,
 				"bSortable": false
@@ -908,6 +919,10 @@ var WPA = {
 				"mRender" : WPA.renderAgeCategoryColumn
 			},{ 
 				"mData": "event_date"
+			},{
+				"mData": "age_grade",
+				"mRender": WPA.renderAgeGradeColumn,
+				"bSortable": false
 			},{
 				"mData": "club_rank",
 				"sWidth": "20px",
@@ -1244,6 +1259,10 @@ var WPA = {
 				"sClass": "datatable-bold",
 				"bSortable": false
 			},{
+				"mData": "age_grade",
+				"mRender": WPA.renderAgeGradeColumn,
+				"bSortable": false
+			},{
 				"mData": "time",
 				"mRender": WPA.renderPaceMilesColumn,
 				"bSortable": false
@@ -1490,6 +1509,28 @@ var WPA = {
 	},
 	
 	/**
+	 * Determines what age a user is assigned for the purposes of age grade calculations. 
+	 * 
+	 * If a users DOB is set, this is more accurate. If DOB is not set, the average age of their age category is used
+	 * 
+	 */
+	calculateAthleteAgeGradeAgeForResult: function(resultDate, ageCat) {
+		if(WPA.userDOB) {
+			dob = jQuery.datepicker.parseDate( WPA.getSetting('display_date_format'),  WPA.userDOB );
+			date = jQuery.datepicker.parseDate( WPA.getSetting('display_date_format'),  resultDate );
+			return this.howOld(date, dob);
+		}
+		else {
+			var ageCat = WPA.globals.ageCategories[ageCat];
+			if(ageCat) {
+				var sum = parseInt(ageCat.from) + parseInt(ageCat.to);
+				return Math.round(sum/2);
+			}
+		}
+		return -1;
+	},
+	
+	/**
 	 * Determines what category an athlete runs in based on a a date and their date of birth
 	 */
 	calculateAthleteAgeCategory: function(date, dob, doParse) {	
@@ -1625,6 +1666,31 @@ var WPA = {
 	alertError: function(text) {
 		jQuery("#wpa-error-dialog-text").html(text);
 		jQuery("#wpa-error-dialog").dialog({
+	      resizable: false,
+	      height:'auto',
+	      width: 450,
+	      modal: true,
+	      buttons: {
+	        "Ok": function() {
+	          jQuery( this ).dialog("close");
+	        }
+	      }
+	    });
+	},
+
+	/**
+	 * Opens dialog with a WPA property
+	 */
+	alertProperty: function(prop) {
+		WPA.alert(WPA.getProperty(prop));
+	},
+	
+	/**
+	 * Opens dialog with custom text
+	 */
+	alert: function(text) {
+		jQuery("#wpa-alert-dialog-text").html(text);
+		jQuery("#wpa-alert-dialog").dialog({
 	      resizable: false,
 	      height:'auto',
 	      width: 450,
@@ -1939,7 +2005,7 @@ var WPA = {
 			
 			// incase anyone ignore the instructions ;)
 			var garminLink = jQuery('#addResultGarminId').val();
-			
+
 			var timeMillis = WPA.timeToMilliseconds(
 				jQuery('#addResultTimeHours').val(),
 				jQuery('#addResultTimeMinutes').val(),
@@ -1948,6 +2014,13 @@ var WPA = {
 			);
 			var distanceMeters = WPA.getEventDistanceMeters(jQuery('#addResultEventCategory').val());
 			var paces = WPA.getResultPaces(timeMillis, distanceMeters);
+			
+			// calculate agr grade %
+			var ageGradeAge = WPA.calculateAthleteAgeGradeAgeForResult(jQuery('#addResultDate').val(), jQuery("#addResultAgeCat").val());
+			if(!WPA.userDOB) {
+				WPA.alertProperty('add_result_no_dob');
+			}	
+			var ageGrade = WPA.AgeGrade.calculate(WPA.userGender, ageGradeAge, (distanceMeters / 1000), (timeMillis / 1000));
 			
 			WPA.toggleLoading(true);
 			WPA.Ajax.updateResult({
@@ -1965,7 +2038,8 @@ var WPA = {
 				gender: WPA.userGender,
 				paceKm: paces.km,
 				paceMiles: paces.miles,
-				isPending: jQuery('#isPendingResult').val()
+				isPending: jQuery('#isPendingResult').val(),
+				ageGrade: ageGrade
 			}, function() {
 				WPA.toggleLoading(false);
 				
@@ -2694,7 +2768,7 @@ var WPA = {
 		if(data.length > max) {
 			data = data.substring(0,max) + '...';
 		}
-		return '<div class="wpa-link" title="' + full['event_name'] + '" onclick="WPA.displayEventResultsDialog(' + full['event_id'] + ', ' + future + ')">' + data + '</div>';
+		return '<div class="wpa-link" title="' + full['event_name'] + (full['event_location'] ?  (', ' + full['event_location']) : '') + '" onclick="WPA.displayEventResultsDialog(' + full['event_id'] + ', ' + future + ')">' + data + '</div>';
 	},
 	
 	renderEventLinkColumnNoStrip: function(data, type, full) {
@@ -2768,6 +2842,10 @@ var WPA = {
 	renderResultCountColumn: function(data, type, full) {
 		if(full['is_future'] == '1') return "-";
 		return data;
+	},
+	
+	renderAgeGradeColumn: function(data, type, full) {
+		return data && parseFloat(data) ? (data + '%') : WPA.getProperty('na');
 	},
 	
 	renderMyEventActionColumn: function(data, type, full) {
