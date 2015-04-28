@@ -26,6 +26,7 @@ if(!class_exists('WP_Athletics_DB')) {
 			$this->EVENT_CAT_TABLE = $wpdb->prefix . "wpa_event_cat";
 			$this->USER_TABLE = $wpdb->prefix . "users";
 			$this->LOG_TABLE = $wpdb->prefix . "wpa_log";
+			$this->RESULT_META_TABLE = $wbdb->prefix . "wpa_result_meta";
 			$this->RESULT_VIEW = "v_wpa_results";
 
 			add_action('wp_login', array ( $this, 'log_login' ), 10, 2 );
@@ -58,6 +59,18 @@ if(!class_exists('WP_Athletics_DB')) {
 			if($force) {
 				wpa_log('Forcing DB update. Version is ' . WPA_DB_VERSION);
 			}
+			
+			/**
+			 * 	CREATE TABLE $this->RESULT_META_TABLE (
+  				rmeta_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  				result_id bigint(20) unsigned NOT NULL DEFAULT '0',
+  				meta_key varchar(255) DEFAULT NULL,
+  				meta_value longtext,
+  				PRIMARY KEY (rmeta_id),
+  				KEY report_id (result_id),
+  				KEY meta_key (meta_key(191))
+				);
+			 */
 
 			if( $force || $installed_ver != WPA_DB_VERSION ) {
 
@@ -76,7 +89,6 @@ if(!class_exists('WP_Athletics_DB')) {
 				lng varchar(50),
 				location varchar(100),
 				address varchar(255),
-				event_type varchar(10),
 				contact_name varchar(100),
 				contact_email varchar(100),
 				contact_number varchar(100),
@@ -85,7 +97,8 @@ if(!class_exists('WP_Athletics_DB')) {
 				event_type varchar(10) DEFAULT NULL,
 				register_url varchar(250),
 				details text,
-				UNIQUE KEY id (id)
+				UNIQUE KEY id (id),
+				KEY 'wpa_event_idx' (name,event_cat_id,sub_type_id)
 				);
 
 				CREATE TABLE $this->EVENT_CAT_TABLE (
@@ -113,9 +126,9 @@ if(!class_exists('WP_Athletics_DB')) {
 				gender varchar(1),
 				pending smallint(1) DEFAULT '0',
 				age_grade decimal(10,2) DEFAULT NULL,
-				UNIQUE KEY id (id)
+				UNIQUE KEY id (id),
+				KEY wpa_result_idx (gender,age_category,event_id,user_id)
 				);
-				;
 
 				CREATE TABLE $this->LOG_TABLE (
 				id mediumint(9) NOT NULL AUTO_INCREMENT,
@@ -2040,7 +2053,7 @@ if(!class_exists('WP_Athletics_DB')) {
 			return $wpdb->get_var(
 				"SELECT count(r.id) FROM $this->RESULT_TABLE r 
 				JOIN $this->EVENT_TABLE e ON r.event_id = e.id 
-				WHERE r.pending = 1 AND e.date <= DATE(NOW());"
+				WHERE r.user_id = $current_user->ID AND r.pending = 1 AND e.date <= DATE(NOW());"
 			);
 		}
 		

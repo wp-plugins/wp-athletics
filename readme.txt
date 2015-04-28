@@ -4,7 +4,7 @@ Donate link: http://www.conormccauley.me/wordpress-athletics
 Tags: athletics, results, sports, track, running club, athlete, statistics, races, racing, events, athletic, jogging, club, charts, records, personal bests, pb, pr, personal records
 Requires at least: 3.5
 Tested up to: 4.1.1
-Stable tag: 1.1.5
+Stable tag: 1.1.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,7 +24,7 @@ Some of the major features for your registered users are:
 <li>Search for other athletes and events using the power search tool</li>
 <li>View individual or club-wide statistics including visual charts</li>
 <li>View overall club records</li>
-<li>Age grades results (based on 2015 WMA data)</li>
+<li>Age graded results (based on 2015 WMA data)</li>
 <li>View recent results</li>
 <li>Event Manager, plan future races and see who else is going</li>
 </ul>
@@ -202,3 +202,6 @@ You can now add extra detail to your events - description, contact info, website
 = 1.1.5 =
 Added age grading on all results. Age grade factors taken from 2015 WMA data. 
 Your users will have the age grade % automaticaly applied to their results the next time they visit their "Manage Results" page.
+
+= 1.1.6 =
+Bug fix causing database creation problems with new installs. Some other minor fixes also.
