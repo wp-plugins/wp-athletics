@@ -104,13 +104,18 @@
 }
 
 .wpa-profile .wpa-profile-upcoming-events p {
-	font-weight: bold;
 	font-size: 13px;
 	margin: 5px;
+	border-bottom: 1px solid #DBDBDB;
+	color: #7E7E7E;
 }
 
 .wpa-profile .wpa-profile-upcoming-events {
 	float: right;
+	background-color: #eee;
+	padding: 0px 5px 5px 5px;
+	border-radius: 5px;
+	margin-top: 5px;
 }
 
 .wpa-my-profile .wpa-profile-field label {
