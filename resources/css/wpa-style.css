@@ -264,7 +264,7 @@
 .wpa input {
 	height: 19px;
 	padding: 2px 2px 2px 4px;
-	display: inline-block !important;
+	display: inline-block;
 }
 
 .wpa-filters input {
@@ -1032,4 +1032,31 @@ table.wpa-widget td {
 
 .event-not-going {
 	background: #FFC4C4 !important;
+}
+
+.table-medal {
+	background-size: 13px 13px;
+	margin-left: 5px;
+	width: 13px;
+	height: 13px;
+	position: relative;
+	top: 2px;
+}
+
+.medal {
+	background-repeat: no-repeat;
+	cursor: pointer;
+	display: inline-block;
+}
+
+.medal.bronze {
+	background-image: url(../images/medals/bronze.png);
+}
+
+.medal.silver {
+	background-image: url(../images/medals/silver.png);
+}
+
+.medal.gold {
+	background-image: url(../images/medals/gold.png);
 }

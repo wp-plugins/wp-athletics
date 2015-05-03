@@ -16,6 +16,7 @@ $common_lang = array(
 	'column_category' => 'Distance',
 	'column_time' => 'Time',
 	'column_pace' => 'Pace',
+	'column_pace_miles' => 'Pace (mile)',
 	'column_position' => 'Pos.',
 	'column_garmin' => 'Activity',
 	'column_athlete_name' => 'Name',
@@ -175,6 +176,7 @@ $common_lang = array(
 	'save' => 'Save',
 	'edit' => 'Edit',
 	'go' => 'Go',
+	'view' => 'View',
 
 	// misc
  	'gender_M' => 'Male',
@@ -192,6 +194,7 @@ $common_lang = array(
 	'embedded_event_results_manage_link' => 'Manage My Results',
 	'embeded_event_results_link_select' => 'Jump to...',
 	'embedded_event_results_error_no_id' => '[WPA Error: ID for the event was not supplied]',
+	'shortcode_error_required' => 'WPA Error: Shortcode attribute required',
 	'time_invalid_text' => 'Invalid Time',
 	'time_no_value_text' => 'Unavavilable',
 	'time_pending_value_text' => 'Pending',
@@ -212,10 +215,16 @@ $common_lang = array(
 	'event_i_didnt_go_text' => "I didn't go",
 	'event_you_ran_this_pending_text' => 'You ran this, add your result',
 	'legend_future_events' => 'Future Events',
-	'submit_event_button' => 'Submit an Event',
+	'submit_event_button' => 'Submit Event',
+	'age_grade_bronze_text' => 'Regional class',
+	'age_grade_silver_text' => 'National class',
+	'age_grade_gold_text' => 'World class',
+	'shortcode_table_no_results' => 'No results to display',
 	'yes' => 'Yes',
 	'no' => 'No',
 	'na' => 'N/A',
+	'shortcode_simple' => 'Simple',
+	'shortcode_interactive' => 'Interactive',
 	
 	// widgets
 	'results_widget_recent_results_link' => 'View all Recent Results',
@@ -288,6 +297,7 @@ $common_lang = array(
 	'filter_events_all' => 'All Events',
 	'filter_events_my_events' => 'My Events',
 	'filter_events_future_events' => 'Future Events',
+	'filter_only_future_events' => 'Only future events',
 
 	// date & time
 	'month_1' => 'January',
@@ -390,7 +400,7 @@ $admin_lang = array(
 	'merge_selected_events_text' => 'Merge Selected Events',
 	'merge' => 'Merge',
 	'events_create_button' => 'Create New Event',
-	'embed_event_results_column_help' => 'Copy and paste this shortcode into a new post to display the event results',
+	'embed_event_results_column_help' => 'Copy and paste these shortcodes into a new post or page to display the event results',
 
 	// result manager
 	'delete_selected_results_text' => 'Delete Selected Results',
@@ -441,7 +451,38 @@ $admin_lang = array(
 	// log
 	'log_admin_column_date' => 'Date',
 	'log_admin_column_type' => 'Log Type',
-	'log_admin_column_log' => 'Log'
+	'log_admin_column_log' => 'Log',
+		
+	// shortcode generator,
+	'shortcode_select_options_text' => 'Customise',
+	'shortcode_select_type_text' => 'Select a Shortcode',
+	'shortcode_copy_text' => 'Copy',
+	'shortcode_rankings_option_text' => 'Display a custom rankings table',
+	'shortcode_user_results_option_text' => 'Display results for a single athlete',
+	'shortcode_event_results_option_text' => 'Display a table of event results',
+	'shortcode_records_option_text' => 'Display a table of all time records',
+	'shortcode_manage_option_text' => 'Manage current users results',
+	'shortcode_recent_results_option_text' => 'Display a feed of recent results',
+	'shortcode_events_option_text' => 'Display the events calendar',
+	'shortcode_select_option_interactive_default' => 'Interactive Shortcodes...',
+	'shortcode_select_option_simple_default' => 'Simple Shortcodes...',
+	'filter_split_by_year' => 'Year',
+	'filter_split_by_distance' => 'Event Category',
+	'shortcode_select_split' => 'Split results by',
+	'shortcode_select_event' => 'Select Event',
+	'shortcode_select_period' => 'Select Year',
+	'shortcode_select_terrain' => 'Select Terrain',
+	'shortcode_select_gender' => 'Select Gender',
+	'shortcode_select_category' => 'Select Age Category',
+	'shortcode_generate_button_text' => 'Generate Shortcode',
+	'shortcode_max_results' => 'Max Results',
+	'shortcode_no_options_text' => 'No options available for this shortcode',
+	'view_shortcodes_button' => 'View Shortcodes',
+	'view_event_shortcodes_dialog_title' => 'Event result shortcodes',
+	'shortcode_help_text' => 'These shortcodes can be copied and pasted into a post or a page and it will display some sort of customised data. 
+		There are two types of shortcode available here, <strong>simple</strong> and <strong>interactive</strong>.
+		Simple shortcodes display the text-only data in a basic table whereas interactive shortcodes are (as expected) interactive and you can 
+		click on athletes and events to find out more information.'
 );
 
 return array(

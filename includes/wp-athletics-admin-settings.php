@@ -39,6 +39,7 @@ if(!class_exists('WP_Athletics_Admin')) {
 				add_submenu_page( 'wp-athletics-settings', 'WP Athletics Event Categories', 'Event Categories', 'manage_wp_athletics', 'wp-athletics-event-categories', array( $this, 'wpa_event_category_settings' ) );
 				add_submenu_page( 'wp-athletics-settings', 'WP Athletics Age Categories', 'Age Categories', 'manage_wp_athletics', 'wp-athletics-age-categories', array( $this, 'wpa_age_category_settings') );
 				add_submenu_page( 'wp-athletics-settings', 'WP Athletics Print Rankings', 'Print Rankings', 'manage_wp_athletics', 'wp-athletics-print-rankings', array( $this, 'wpa_print_rankings') );
+				add_submenu_page( 'wp-athletics-settings', 'WP Athletics Shortcode Generator', 'Shortcode Generator', 'manage_wp_athletics', 'wp-athletics-shortcode-generator', array( $this, 'wpa_shortcode_generator') );
 				add_submenu_page( 'wp-athletics-settings', 'WP Athletics Log', 'Log', 'manage_wp_athletics', 'wp-athletics-log', array( $this, 'wpa_log') );
 			}
 		}
@@ -391,6 +392,13 @@ if(!class_exists('WP_Athletics_Admin')) {
 		 */
 		function wpa_manage_events() {
 			require 'admin/manage-events.php';
+		}
+		
+		/**
+		 * Generates a page for shortcode generation
+		 */
+		function wpa_shortcode_generator() {
+			require 'admin/shortcode-generator.php';
 		}
 		
 		/**

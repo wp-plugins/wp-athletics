@@ -725,7 +725,7 @@ var WPA = {
 			},{
 				"mData": "garmin_id",
 				"sWidth": "16px",
-				"mRender": WPA.renderGarminColumn,
+				"mRender": WPA.renderActivityLinkColumn,
 				"bSortable": false
 			}]
 		}));
@@ -802,7 +802,7 @@ var WPA = {
 			},{
 				"mData": "garmin_id",
 				"sWidth": "16px",
-				"mRender": WPA.renderGarminColumn,
+				"mRender": WPA.renderActivityLinkColumn,
 				"bSortable": false
 			}]
 		}));
@@ -876,7 +876,7 @@ var WPA = {
 			},{
 				"mData": "garmin_id",
 				"sWidth": "16px",
-				"mRender": WPA.renderGarminColumn,
+				"mRender": WPA.renderActivityLinkColumn,
 				"bSortable": false
 			}]
 		}));
@@ -932,7 +932,7 @@ var WPA = {
 			},{
 				"mData": "garmin_id",
 				"sWidth": "16px",
-				"mRender": WPA.renderGarminColumn,
+				"mRender": WPA.renderActivityLinkColumn,
 				"bSortable": false
 			}]
 		}));
@@ -1208,6 +1208,8 @@ var WPA = {
 		}
 		WPA.globals.rankingParams = params;
 		
+		params.skipClubRank = 'y';
+		
 		WPA.Ajax.getPersonalBests(function(result) {
 			WPA.rankingsTable.fnClearTable(false);
 			WPA.rankingsTable.fnAddData(result);
@@ -1291,7 +1293,7 @@ var WPA = {
 			},{
 				"mData": "garmin_id",
 				"sWidth": "16px",
-				"mRender": WPA.renderGarminColumn,
+				"mRender": WPA.renderActivityLinkColumn,
 				"bSortable": false
 			}]
 		}));
@@ -1514,8 +1516,8 @@ var WPA = {
 	 * If a users DOB is set, this is more accurate. If DOB is not set, the average age of their age category is used
 	 * 
 	 */
-	calculateAthleteAgeGradeAgeForResult: function(resultDate, ageCat) {
-		if(WPA.userDOB) {
+	calculateAthleteAgeGradeAgeForResult: function(resultDate, ageCat, dob) {
+		if(dob) {
 			dob = jQuery.datepicker.parseDate( WPA.getSetting('display_date_format'),  WPA.userDOB );
 			date = jQuery.datepicker.parseDate( WPA.getSetting('display_date_format'),  resultDate );
 			return this.howOld(date, dob);
@@ -1688,12 +1690,15 @@ var WPA = {
 	/**
 	 * Opens dialog with custom text
 	 */
-	alert: function(text) {
+	alert: function(text, title) {
+		if(!title) title = 'alert_dialog_title';
+		
 		jQuery("#wpa-alert-dialog-text").html(text);
 		jQuery("#wpa-alert-dialog").dialog({
 	      resizable: false,
 	      height:'auto',
 	      width: 450,
+	      title: WPA.getProperty(title),
 	      modal: true,
 	      buttons: {
 	        "Ok": function() {
@@ -2016,7 +2021,7 @@ var WPA = {
 			var paces = WPA.getResultPaces(timeMillis, distanceMeters);
 			
 			// calculate agr grade %
-			var ageGradeAge = WPA.calculateAthleteAgeGradeAgeForResult(jQuery('#addResultDate').val(), jQuery("#addResultAgeCat").val());
+			var ageGradeAge = WPA.calculateAthleteAgeGradeAgeForResult(jQuery('#addResultDate').val(), jQuery("#addResultAgeCat").val(), WPA.userDOB);
 			if(!WPA.userDOB) {
 				WPA.alertProperty('add_result_no_dob');
 			}	
@@ -2650,6 +2655,27 @@ var WPA = {
 	},
 	
 	/**
+	 * Inspects the activity link URL and determines what icon to use.
+	 */
+	determineActivityLinkIcon: function(url) {
+		url = url.toLowerCase();
+		
+		if(url.indexOf('garmin.com') > -1) {
+			return 'garmin';
+		}
+		else if(url.indexOf('strava.com') > -1) {
+			return 'strava';
+		}
+		else if(url.indexOf('runkeeper.com') > -1) {
+			return 'runkeeper';
+		}
+		else if(url.indexOf('mapmyrun.com') > -1) {
+			return 'mapmyrun';
+		}
+		return 'web';
+	},
+	
+	/**
 	 * processes a URL string
 	 */
 	processUrl: function(url) {
@@ -2657,6 +2683,35 @@ var WPA = {
 			url = "http://" + url;
 		}
 		return url;
+	},
+	
+	/**
+	 * Processes tim, pace and links etc in a simple shortcode table
+	 */
+	processSimpleShortcodeTable: function() {
+		jQuery('.wpa-simple-table tbody tr td.wpa-time').each(function() {
+			var millis = jQuery(this).attr('millis');
+			var format = jQuery(this).attr('time-format');
+			jQuery(this).html(WPA.displayEventTime(millis, format));
+		});
+
+		jQuery('.wpa-simple-table tbody tr td.wpa-pace').each(function() {
+			var millis = jQuery(this).attr('millis');
+			var meters = jQuery(this).attr('meters');
+			jQuery(this).html(WPA.timeToPace(millis, meters, 'm', false));
+		});
+
+		jQuery('.wpa-simple-table tr td.wpa-activity-link').each(function() {
+			var url = jQuery(this).attr('url');
+			if(url) {
+				if(parseInt(url) > 0) {
+					url = 'http://connect.garmin.com/activity/' + url;
+				}
+				
+				var icon = WPA.determineActivityLinkIcon(url);
+				jQuery(this).html('<a target="new" href="' + WPA.processUrl(url) + '" class="datatable-icon ' + icon + '">&nbsp;</a>');
+			}
+		});
 	},
 	
 	/** DATATABLE COLUMN RENDERERS **/
@@ -2685,28 +2740,17 @@ var WPA = {
 		}
 	},
 	
-	renderGarminColumn: function (data, type, full) {
+	renderActivityLinkColumn: function (data, type, full) {
 
 		var icon = '';
 		
+		// backwards compatible with old versions - when we used to only store the garmin ID
+		if(parseInt(data) > 0) {
+			data = 'http://connect.garmin.com/activity/' + data;
+		}
+		
 		if(data) {
-			data = data.toLowerCase();
-			
-			if(data.indexOf('garmin.com') > -1) {
-				icon = 'garmin';
-			}
-			else if(data.indexOf('strava.com') > -1) {
-				icon = 'strava';
-			}
-			else if(data.indexOf('runkeeper.com') > -1) {
-				icon = 'runkeeper';
-			}
-			else if(data.indexOf('mapmyrun.com') > -1) {
-				icon = 'mapmyrun';
-			}
-			else {
-				icon = 'web';
-			}
+			icon = WPA.determineActivityLinkIcon(data);
 		}
 		
 		return data ? '<a target="new" href="' + WPA.processUrl(data) + '" class="datatable-icon ' + icon + '" title="' + WPA.getProperty('activity_link_text') + '">&nbsp;</a>' : '';
@@ -2791,7 +2835,16 @@ var WPA = {
 	
 	renderEventShorcode: function(data, type, full) {
 		if(full['is_future'] == '1') return '-';
-		return '<input style="cursor:pointer" class="highlight-on-focus" type="text" value="[wpa-event id=' + data + ']"/>';
+		
+		var simpleShortcode = '[wpa-simple-results event=\'' + data + '\']';
+		var interactiveShortcode = '[wpa-event id=\'' + data + '\']';
+		
+		var text = '<strong>' + WPA.getProperty('shortcode_simple') + ': </strong>' + simpleShortcode + '<br/><br/>';
+		text += '<strong>' + WPA.getProperty('shortcode_interactive') + ': </strong>' + interactiveShortcode + '<br/><br/>';
+		
+		return '<button class="wpa-alert" content="' + text + '">' + WPA.getProperty('view_shortcodes_button') + '</button>';
+		
+		//return '<input style="cursor:pointer" class="highlight-on-focus" type="text" value="[wpa-event id=' + data + ']"/>';
 	},
 	
 	renderClubRankColumnNoLink: function(data, type, full) {
@@ -2845,7 +2898,22 @@ var WPA = {
 	},
 	
 	renderAgeGradeColumn: function(data, type, full) {
-		return data && parseFloat(data) ? (data + '%') : WPA.getProperty('na');
+		if(data && parseFloat(data)) {
+			var html = data + '%';
+			var value = parseFloat(data);
+			if(value>=70) {
+				var medal = "bronze";
+				if(value >= 80 && value < 90) {
+					medal = "silver";
+				}
+				else if(value >= 90) {
+					medal = "gold";
+				}
+				html += '<div rel="tooltip" title="' + (WPA.getProperty('age_grade_' + medal + '_text')) + '" class="table-medal medal ' + medal + '"></div>';
+			}
+			return html;
+		}
+		return  WPA.getProperty('na');
 	},
 	
 	renderMyEventActionColumn: function(data, type, full) {

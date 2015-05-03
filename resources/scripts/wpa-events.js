@@ -27,7 +27,7 @@ WPA.Events = {
 	printEvents: function(results) {
 		// clear old results (if any)
 		jQuery('.feed-content-empty').hide();
-		jQuery('.event-month').hide();
+		jQuery('.event-month').hide().removeClass('has-events');
 		jQuery('.wpa-event').remove();
 		
 		if(results.length) {
@@ -77,12 +77,9 @@ WPA.Events = {
 				var eventId = jQuery(this).attr('result-id');
 				WPA.editPendingResult(eventId, WPA.userId);
 			});
-			
-			jQuery('#wpa-events-legend').show();
 		}
 		else {
 			jQuery('.feed-content-empty').show();
-			jQuery('#wpa-events-legend').hide();
 		}
 	},
 	
@@ -144,7 +141,7 @@ WPA.Events = {
 	 */
 	generateEventHTML: function(result) {
 		jQuery('.month-' + result.month).append(
-			'<div class="wpa-event' + (result.is_future == '1' ? ' future-event' : '') + '">' + 
+			'<div class="wpa-event ' + (result.is_future == '1' ? 'future-event' : 'past-event') + '">' + 
 				'<div class="wpa-event-left">' +
 					'<span event-id="' + result.event_id + '" class="wpa-event-content wpa-event-title ' + (result.is_future == '1' ? 'future' : 'past') + '"><event>' + result.name + (result.location ? (', ' + result.location) : '') + '</event></span>' + 
 					'<br/><span class="wpa-result-date">' + result.display_date + '</span>' + 
@@ -158,7 +155,7 @@ WPA.Events = {
 				'</div>' + 
 				'<br style="clear:both"/>' +
 			'</div>'
-		).show();
+		).addClass('has-events').show();
 	}
 		
 }

@@ -43,7 +43,8 @@ WPA.Records = {
 			ageCategory: WPA.Records.currentCategory,
 			eventSubTypeId: WPA.filterType,
 			eventDate: WPA.filterPeriod,
-			gender: WPA.Records.gender
+			gender: WPA.Records.gender,
+			skipClubRank: 'y'
 		});
 	},
 	
@@ -109,7 +110,7 @@ WPA.Records = {
 			},{
 				"mData": "garmin_id",
 				"sWidth": "16px",
-				"mRender": WPA.renderGarminColumn,
+				"mRender": WPA.renderActivityLinkColumn,
 				"bSortable": false
 			}]
 		}));

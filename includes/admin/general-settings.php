@@ -142,6 +142,10 @@ if ( $this->has_permission_to_manage() ) {
 			</div>
 			<br style="clear:both;"/>
 		</div>
+		<p id="wpa-admin-whats-new">
+		New in version <strong>1.1.7</strong>, Shortcode Generator for straight forward embedding of results and rankings. <a href="<?php echo get_bloginfo('wpurl')?>/wp-admin/admin.php?page=wp-athletics-shortcode-generator">Check it out</a>. 
+		Please leave any feedback or suggestions on the <a href="http://wordpress.org/support/plugin/wp-athletics" target="new">forum</a>.
+		</p>
 		<h2>About</h2>
 		<p>
 			Thanks for downloading <b>WP Athletics</b>, a complete solution for tracking race results, viewing personal records and generating rankings for your athletics club.
@@ -166,13 +170,13 @@ if ( $this->has_permission_to_manage() ) {
 			</ul>
 			<b>Administrator features:</b>
 			<ul>
-				<li>Easily embed an interactive table of results for an event into a new post</li>
 				<li>Manually add results for unregistered members or past/deceased athletes</li>
-				<li>Manage the event categories, age categories, events and results</li>
+				<li>Manage the event categories, age categories, athletes, events and results</li>
 				<li>Print a custom rankings list for pinning up in your locker rooms (e.g 5k male rankings for 2013)</li>
+				<li>Loads of shortcodes to embed athletic results and rankings throughout your site</li>
 			</ul>
 		</div>
-		<div class="ui-state-highlight ui-corner-all" style="margin-top: 20px; padding: 0 .7em;">
+		<div class="ui-state-highlight ui-corner-all" style="margin-top: 20px; margin-right:20px; padding: 0 .7em;">
 			<p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
 			<strong>Important! </strong>Please ensure that all of the WP Athletics pages are modified to use a full width page template in order to display the data correctly</p>
 		</div>
@@ -181,11 +185,11 @@ if ( $this->has_permission_to_manage() ) {
 		The latest version (1.1.x) allows you to create events in the future. Users can log their future participation in the event, see who else is going and when the 
 		event has passed they can enter their results. A new "Events" page is automatically created which allows you to view past and future events. 
 		</p>
-		<h3>Embedding results in a post</h3>
+		<h3>Shortcodes</h3>
 		<p>
-		There is a useful shortcode available in the plugin allowing you to embed an interactive table of results into a a news post, this shortcode is used as follows:
+		<strong>NEW!</strong> There is a useful shortcode generator tool which will generate a customised shortcode allowing you to display simple or interactive data tables, this can be
+		user results, rankings or event results. See the <a href="<?php echo get_bloginfo('wpurl')?>/wp-admin/admin.php?page=wp-athletics-shortcode-generator">shortcode generator</a> here.
 		</p>
-		<b>[wpa-event id=xxx]</b> Where "xxx" is the event ID. See the <a href="<?php echo get_bloginfo('wpurl')?>/wp-admin/admin.php?page=wp-athletics-manage-events">event manager</a> to retrieve the ID for a specific event.
 		<h3>Event Categories</h3>
 		<p>
 		There are a number of typical athletic event categories (e.g 100m, 5 mile etc) already set up for you. If you wish to add any new event categories or
@@ -216,6 +220,7 @@ if ( $this->has_permission_to_manage() ) {
 				<li><strong>Darrin Ormston</strong> for ongoing testing and feature development</li>
 				<li><strong>Boris Ruth</strong> for the German translation</li>
 				<li><strong>Piet Jonkers</strong> for the Dutch translation</li>
+				<li><strong>Me</strong> for everything else ;)</li>
 			</ul>
 		</p>
 	</div>

@@ -38,7 +38,15 @@
 }
 
 #wpa-admin-settings-container {
-	width: 500px;
+	margin-right: 20px;
+}
+
+#wpa-admin-whats-new {
+	background: #E7FFB7;
+	border: 1px solid #21A804;
+	padding: 5px;
+	margin-right: 20px;
+	border-radius: 5px;
 }
 
 #wpa-admin-settings-tab .ui-tabs-panel {
@@ -264,4 +272,8 @@
 
 .wpa-filters .custom-combobox .custom-combobox-input {
 	height: 25px !important;
+}
+
+button.wpa-alert {
+	font-size: 11px;
 }

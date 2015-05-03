@@ -26,7 +26,6 @@ if(!class_exists('WP_Athletics_DB')) {
 			$this->EVENT_CAT_TABLE = $wpdb->prefix . "wpa_event_cat";
 			$this->USER_TABLE = $wpdb->prefix . "users";
 			$this->LOG_TABLE = $wpdb->prefix . "wpa_log";
-			$this->RESULT_META_TABLE = $wbdb->prefix . "wpa_result_meta";
 			$this->RESULT_VIEW = "v_wpa_results";
 
 			add_action('wp_login', array ( $this, 'log_login' ), 10, 2 );
@@ -59,18 +58,6 @@ if(!class_exists('WP_Athletics_DB')) {
 			if($force) {
 				wpa_log('Forcing DB update. Version is ' . WPA_DB_VERSION);
 			}
-			
-			/**
-			 * 	CREATE TABLE $this->RESULT_META_TABLE (
-  				rmeta_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  				result_id bigint(20) unsigned NOT NULL DEFAULT '0',
-  				meta_key varchar(255) DEFAULT NULL,
-  				meta_value longtext,
-  				PRIMARY KEY (rmeta_id),
-  				KEY report_id (result_id),
-  				KEY meta_key (meta_key(191))
-				);
-			 */
 
 			if( $force || $installed_ver != WPA_DB_VERSION ) {
 
@@ -98,7 +85,7 @@ if(!class_exists('WP_Athletics_DB')) {
 				register_url varchar(250),
 				details text,
 				UNIQUE KEY id (id),
-				KEY 'wpa_event_idx' (name,event_cat_id,sub_type_id)
+				KEY wpa_event_idx (name,event_cat_id,sub_type_id)
 				);
 
 				CREATE TABLE $this->EVENT_CAT_TABLE (
@@ -141,6 +128,8 @@ if(!class_exists('WP_Athletics_DB')) {
 				UNIQUE KEY id (id)
 				);
 				";
+				
+				wpa_log($sql);
 
 				require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 				dbDelta( $sql );
@@ -228,7 +217,7 @@ if(!class_exists('WP_Athletics_DB')) {
 			$results = $wpdb->get_results(
 					"
 					SELECT @rank:=@rank+1 AS rank, r.id, r.user_id, r.time, r.pending, r.age_grade, r.age_category, r.garmin_id, r.gender, r.position, ec.id as event_cat, ec.time_format, ec.distance_meters,
-					(SELECT display_name FROM wp_users WHERE id = r.user_id) as athlete_name
+					(SELECT display_name FROM wp_users WHERE id = r.user_id) as athlete_name, ec.name as distance, e.sub_type_id, e.name as event_name, date_format(date,'" . WPA_DATE_FORMAT . "') as event_date
 					FROM $this->RESULT_TABLE r
 					LEFT JOIN $this->EVENT_TABLE e ON r.event_id = e.id
 					LEFT JOIN $this->EVENT_CAT_TABLE ec ON e.event_cat_id = ec.id
@@ -542,17 +531,24 @@ if(!class_exists('WP_Athletics_DB')) {
 		/**
 		 * Gets all results for a user
 		 */
-		public function get_all_results_for_user() {
+		public function get_all_results_for_user( $user_id = null ) {
 			global $wpdb;
-			global $current_user;
+
+			if(!$user_id) {
+				global $current_user;
+				$user_id = $current_user->ID;
+			}
+
 			return $wpdb->get_results(
 				"
-				SELECT r.id, r.time, date_format(e.date,'" . WPA_DATE_FORMAT . "') as event_date,  r.age_category, ec.distance_meters
+				SELECT r.id, r.time, date_format(e.date,'" . WPA_DATE_FORMAT . "') as event_date, YEAR(e.date) as year, e.name as event_name, r.age_grade, 
+				r.age_category, r.position, r.garmin_id as url, ec.distance_meters, ec.name as distance, ec.time_format
 				FROM $this->RESULT_TABLE r
 				LEFT JOIN $this->EVENT_TABLE e ON r.event_id = e.id
 				LEFT JOIN $this->EVENT_CAT_TABLE ec ON e.event_cat_id = ec.id
 				LEFT JOIN $this->USER_TABLE u ON r.user_id = u.id
-				WHERE r.pending = 0 AND r.user_id = $current_user->ID
+				WHERE r.pending = 0 AND r.user_id = $user_id
+				ORDER BY e.date DESC
 				"
 			);
 		}
@@ -560,7 +556,7 @@ if(!class_exists('WP_Athletics_DB')) {
 		/**
 		 * Returns a list of results for the provided criteria
 		 */
-		public function get_results( $user_id, $request, $skip_rank = false ) {
+		public function get_results( $user_id, $request ) {
 			global $wpdb;
 
 			$extra_where = '';
@@ -753,6 +749,7 @@ if(!class_exists('WP_Athletics_DB')) {
 		public function get_personal_bests( $request ) {
 			global $wpdb;
 
+			$skip_club_rank = false;
 			$user_id = $request['userId'];
 			$age_category = $request['ageCategory'];
 			$gender = $request['gender'];
@@ -761,9 +758,11 @@ if(!class_exists('WP_Athletics_DB')) {
 			$date = $request['eventDate'];
 			$rankings_display = $request['rankingDisplay'];
 			$show_all_categories = $request['showAllCats'];
+			$limit_val = $request['limit'];
 
 			$where = 'WHERE r.pending = 0 ';
 			$rank = '';
+			$limit = '';
 			$show_all_records = 'AND ec.show_records = 1';
 			$order_by = 'event_cat_id,time';
 			$group_by_and_order = 'GROUP BY event_cat_id';
@@ -771,6 +770,14 @@ if(!class_exists('WP_Athletics_DB')) {
 
 			if( isset( $show_all_categories ) && $show_all_categories == 'true' ) {
 				$show_all_records = '';
+			}
+			
+			if(isset($request['skipClubRank'])) {
+				$skip_club_rank = true;
+			}
+			
+			if( isset( $limit_val) ) {
+				$limit = ' limit ' . $limit_val;
 			}
 
 			if( isset( $user_id ) && $user_id != '' ) {
@@ -816,7 +823,6 @@ if(!class_exists('WP_Athletics_DB')) {
 				}
 			}
 
-
 			$sql = "SELECT d.id, d.athlete_name, d.gender, d.age_grade, d.age_category, d.time, d.user_id, date_format(d.event_date,'" . WPA_DATE_FORMAT . "') as event_date, d.event_cat_id, d.event_name,
 			d.event_location, d.event_sub_type_id, d.event_id, ec.name as category, ec.distance_meters, ec.time_format, d.garmin_id from " . $this->EVENT_CAT_TABLE . " ec
 			JOIN (
@@ -824,9 +830,7 @@ if(!class_exists('WP_Athletics_DB')) {
 			e.sub_type_id AS event_sub_type_id, e.id as event_id, e.date AS event_date," . $select_display_name . " from " . $this->RESULT_TABLE . " r
 			LEFT JOIN " . $this->EVENT_TABLE . " e ON r.event_id = e.id
 			LEFT JOIN " . $this->EVENT_CAT_TABLE . " ec1 ON e.event_cat_id = ec1.id " . $where . " ORDER BY " . $order_by . ")
-			d ON d.event_cat_id = ec.id WHERE d.time > 0 $show_all_records " . $group_by_and_order;
-
-			wpa_log($sql);
+			d ON d.event_cat_id = ec.id WHERE d.time > 0 $show_all_records " . $group_by_and_order . $limit;
 
 			$results = $wpdb->get_results( $sql );
 
@@ -836,7 +840,9 @@ if(!class_exists('WP_Athletics_DB')) {
 			foreach ( $results as $result ) {
 				$rank++;
 				$result->rank = $rank;
-				$result->club_rank = $this->get_result_club_ranking( $result->id, $result->age_category, $result->gender, $result->event_cat_id );
+				if(!$skip_club_rank) {
+					$result->club_rank = $this->get_result_club_ranking( $result->id, $result->age_category, $result->gender, $result->event_cat_id );
+				}
 			}
 
 			return $results;
@@ -995,7 +1001,11 @@ if(!class_exists('WP_Athletics_DB')) {
 		 */
 		public function get_event( $id ) {
 			global $wpdb;
-			return $wpdb->get_row( "SELECT id, name, (CASE WHEN (date > DATE(NOW())) THEN 1 ELSE 0 END) AS is_future, event_cat_id, sub_type_id, location, date_format(date,'" . WPA_DATE_FORMAT . "') as date, cost, lat,lng, details, address, url, register_url, contact_name, contact_email, contact_number, created_by_id FROM $this->EVENT_TABLE WHERE id = $id"  );
+			return $wpdb->get_row( 
+				"SELECT e.id, e.name, (CASE WHEN (date > DATE(NOW())) THEN 1 ELSE 0 END) AS is_future, event_cat_id, sub_type_id, location, 
+				date_format(date,'" . WPA_DATE_FORMAT . "') as date, cost, lat,lng, details, address, url, register_url, contact_name, contact_email, 
+				contact_number, created_by_id, ec.distance_meters FROM $this->EVENT_TABLE e join $this->EVENT_CAT_TABLE ec on e.event_cat_id = ec.id WHERE e.id = $id" 
+			);
 		}
 
 		/**
@@ -1101,6 +1111,7 @@ if(!class_exists('WP_Athletics_DB')) {
 						'position' => $data['position'],
 						'age_category' => $data['ageCategory'],
 						'age_grade' => $data['ageGrade'],
+						'gender' => $data['gender'],
 						'pending' => '0'
 					),
 					array( 'id' => $data['resultId'] ),
@@ -1111,6 +1122,7 @@ if(!class_exists('WP_Athletics_DB')) {
 						'%d',
 						'%s',
 						'%f',
+						'%s',
 						'%d'
 					),
 					array( '%d' )
@@ -1974,7 +1986,7 @@ if(!class_exists('WP_Athletics_DB')) {
 				$where = $where . 'YEAR(e.date) = ' . $year;
 			}
 
-			$sql = "SELECT date_format(e.date,'" . WPA_DATE_FORMAT . "') as display_date, e.event_cat_id, l.content, l.user_id, l.event_id from " .
+			$sql = "SELECT date_format(e.date,'" . WPA_DATE_FORMAT . "') as display_date, MONTH(e.date) as month, e.event_cat_id, l.content, l.user_id, l.event_id from " .
 			$this->LOG_TABLE . " l LEFT JOIN $this->EVENT_TABLE e ON l.event_id = e.id WHERE " .
 			$where . " ORDER BY e.date desc";
 

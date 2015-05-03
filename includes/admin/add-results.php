@@ -162,7 +162,11 @@ if ( $this->has_permission_to_manage() ) {
 			var paces = WPA.getResultPaces(timeMillis, WPA.Admin.eventDistanceMeters);
 
 			WPA.toggleLoading(true);
-			
+
+			// calculate agr grade
+			var ageGradeAge = WPA.calculateAthleteAgeGradeAgeForResult(WPA.Admin.eventDate, WPA.Admin.athleteAgeCat, WPA.Admin.athleteDob);
+			var ageGrade = WPA.AgeGrade.calculate(WPA.Admin.athleteGender, ageGradeAge, (WPA.Admin.eventDistanceMeters / 1000), (timeMillis / 1000));
+
 			WPA.Ajax.updateResult({
 				isAdmin: true,
 				userId: WPA.Admin.selectedAthleteId,
@@ -173,7 +177,8 @@ if ( $this->has_permission_to_manage() ) {
 				paceKm: paces.km,
 				paceMiles: paces.miles,
 				position: jQuery('#addResultPosition').val(),
-				time: timeMillis
+				time: timeMillis,
+				ageGrade: ageGrade
 			}, function() {
 				WPA.toggleLoading(false);
 				WPA.Admin.addAthleteCancel();

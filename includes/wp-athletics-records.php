@@ -7,11 +7,18 @@
 if(!class_exists('WP_Athletics_Records')) {
 
 	class WP_Athletics_Records extends WPA_Base {
+		
+		const GENDER_BOTH = "B";
+		const GENDER_MALE = "M";
+		const GENDER_FEMALE = "F";
+		
+		public $gender;
 
 		/**
 		 * default constructor
 		 */
-		public function __construct( $db ) {
+		public function __construct( $db, $gender = null ) {
+			$this->gender = $gender ? $gender : $this->GENDER_BOTH;
 			parent::__construct( $db );
 		}
 
@@ -133,25 +140,15 @@ if(!class_exists('WP_Athletics_Records')) {
 		 * Generates a 'records' page when the shortcode [wpa-records] is used
 		 */
 		public function records( $atts = null ) {
-			global $records_gender;
 
 			$this->enqueue_scripts_and_styles();
 
-			// display the gender combo box? this will remain false unless a gender has been specified either via global or an attribute
-			$display_gender_option = false;
-
 			// check for a gender attribute
 			if(isset( $atts ) && isset( $atts['gender'] ) ) {
-				$genderStr = strtoupper( $atts['gender'] );
-				if( $genderStr == 'M' || $genderStr == 'F') {
-					$records_gender = $genderStr;
+				$gender_str = strtoupper( $atts['gender'] );
+				if( $gender_str == $this->GENDER_MALE || $genderStr == $this->GENDER_FEMALE) {
+					$this->gender = $gender_str;
 				}
-			}
-			// check is the records_gender global set
-			else if( false == isset( $records_gender ) ) {
-				// it's not set, display the gender combo and default to M
-				$records_gender = 'B';
-				$display_gender_option = true;
 			}
 
 			global $current_user;
@@ -163,7 +160,7 @@ if(!class_exists('WP_Athletics_Records')) {
 						// set up ajax and retrieve my results
 						WPA.Ajax.setup('<?php echo admin_url( 'admin-ajax.php' ); ?>', '<?php echo $nonce; ?>', '<?php echo WPA_PLUGIN_URL; ?>', '<?php echo $current_user ? $current_user->ID : -1 ?>', function() {
 
-							WPA.Records.gender = '<?php echo $records_gender; ?>';
+							WPA.Records.gender = '<?php echo $this->gender; ?>';
 
 							// create tab for all age categories
 							jQuery('#tabs ul').append('<li category="all"><a title="' + WPA.getProperty('all_age_classes') + '" href="#tab-all">' + WPA.getProperty('all_age_classes_label') + '</a></li>');
@@ -222,7 +219,7 @@ if(!class_exists('WP_Athletics_Records')) {
 						<div class="wpa-filters wpa-filter-records ui-corner-all" style="width:600px">
 
 							<?php
-							if ( $display_gender_option ) {
+							if ( $this->gender == $this->GENDER_BOTH ) {
 							?>
 							<select id="filterGender">
 								<option value="B"><?php echo $this->get_property('gender_B'); ?></option>

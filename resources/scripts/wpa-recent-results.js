@@ -9,6 +9,10 @@ WPA.RecentResults = {
 	 */
 	displayResults: function() {
 		
+		jQuery('.month').hide();
+		jQuery('.recent-result').remove();
+		jQuery('.feed-content-empty').hide();
+		
 		var params = {
 			year: WPA.RecentResults.filterYear,
 			month: WPA.RecentResults.filterMonth
@@ -20,7 +24,6 @@ WPA.RecentResults = {
 				WPA.RecentResults.printResults(result.results);
 			}
 		})
-		
 	},
 
 	/**
@@ -28,16 +31,11 @@ WPA.RecentResults = {
 	 */
 	printResults: function(results) {
 
-		
-		// clear old results (if any)
-		jQuery('.feed-content-empty').hide();
-		jQuery('#recent-results').children().remove();
-		
 		if(results.length) {
 			// now loops results and output each 
 			jQuery(results).each(function(index, result) {
 				var html = WPA.RecentResults.generateResultHTML(result);
-				jQuery('#recent-results').append(html);
+				jQuery('.month.month-' + result.month).show().append(html);
 			})
 			
 			// set profile photos

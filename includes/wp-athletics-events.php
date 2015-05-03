@@ -70,18 +70,33 @@ if(!class_exists('WP_Athletics_Events')) {
 			<script type='text/javascript'>
 				jQuery(document).ready(function() {
 
+					var thisYear;
+
 					// set up ajax and retrieve my results
 					WPA.Ajax.setup('<?php echo admin_url( 'admin-ajax.php' ); ?>', '<?php echo wp_create_nonce( $this->nonce ); ?>', '<?php echo WPA_PLUGIN_URL; ?>', '<?php echo $current_user->ID; ?>',  function() {
 
 						jQuery.datepicker.setDefaults( jQuery.datepicker.regional[ '<?php echo strtolower(get_option( 'wp-athletics_language', 'en') ); ?>' ] );
 
 						var date = new Date();
-						WPA.Events.filterYear = date.getFullYear();
+						thisYear = date.getFullYear();
+						WPA.Events.filterYear = thisYear;
 
 						jQuery("#filterYear").combobox({
 							select: function(event, ui) {
 								WPA.Events.filterYear = ui.item.value;
 								WPA.Events.displayResults();
+
+								if(parseInt(ui.item.value) == thisYear) {
+									jQuery('.future-checkbox, #wpa-events-legend').show();
+								}
+								else if(parseInt(ui.item.value) > thisYear) {
+									jQuery('#wpa-events-legend').show();
+									jQuery('.future-checkbox').hide();
+								}
+								else {
+									jQuery('.future-checkbox').hide();
+									jQuery('#wpa-events-legend').hide();
+								}
 							},
 							selectClass: 'filter-highlight',
 							defaultValue: WPA.Events.filterYear
@@ -99,6 +114,24 @@ if(!class_exists('WP_Athletics_Events')) {
 							icons: {
 					        	primary: 'ui-icon-circle-plus'
 					        }
+						});
+
+						// hide past events / show only future
+						jQuery('#future-events-checkbox').change(function() {
+							if(jQuery(this).is(':checked')) {
+								jQuery('.event-month.has-events').each(function(i, month) {
+									var allPast = true;
+									if(jQuery(month).find('.future-event').length != 0) {
+										allPast = false;
+									}
+									if(allPast) jQuery(month).fadeOut();
+									jQuery('.past-event').fadeOut();
+								});
+							}
+							else {
+								jQuery('.event-month.has-events').fadeIn();
+								jQuery('.past-event').fadeIn();
+							}
 						});
 						
 						jQuery('.submit-event').click(function(e) {
@@ -193,6 +226,11 @@ if(!class_exists('WP_Athletics_Events')) {
 				background: #FFDF98 !important;
 			}
 			
+			.wpa-filters label {
+				display: inline-block;
+				margin-left: 2px;
+			}
+			
 			</style>
 			
 			<?php $this->display_page_loading(); ?>
@@ -205,8 +243,8 @@ if(!class_exists('WP_Athletics_Events')) {
 					<div class="wpa-filters ui-corner-all">
 
 						<select id="filterYear">
-							<option value="<?php echo $this_year; ?>"><?php echo $this->get_property('filter_period_option_this_year'); ?></option>
-							<option value="<?php echo ((int)$this_year+1); ?>"><?php echo $this->get_property('filter_period_option_next_year'); ?></option>
+							<option selected="selected" show-future="1" value="<?php echo $this_year; ?>"><?php echo $this->get_property('filter_period_option_this_year'); ?></option>
+							<option show-future="1" value="<?php echo ((int)$this_year+1); ?>"><?php echo $this->get_property('filter_period_option_next_year'); ?></option>
 							<?php
 
 							for( $year = $this_year-1; $year >= $this_year-50; $year-- ) {
@@ -220,6 +258,8 @@ if(!class_exists('WP_Athletics_Events')) {
 						if( is_user_logged_in() && get_option( 'wp-athletics-allow-users-submit-events', 'yes' ) == 'yes' ) {
 						?>
 						<button class="submit-event" id="submit-event-button"><?= $this->get_property('submit_event_button') ?></button>
+						<input class="future-checkbox" type="checkbox" id="future-events-checkbox"/>
+						<label class="future-checkbox"for="future-events-checkbox"><?= $this->get_property('filter_only_future_events') ?></label>
 						<?php 
 						}
 						?>
@@ -258,7 +298,7 @@ if(!class_exists('WP_Athletics_Events')) {
 					}
 				?>
 				</div>
-				<div id="wpa-events-legend" style="display:none; margin-top: 10px">
+				<div id="wpa-events-legend" style="margin-top: 10px">
 					<span class="wpa-legend future-event"></span><span class="wpa-legend-key"><?= $this->get_property('legend_future_events')?></span>
 				</div>
 

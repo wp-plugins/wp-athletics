@@ -146,6 +146,11 @@ if ( $this->has_permission_to_manage() ) {
 				jQuery('input.highlight-on-focus').click(function() {
 					jQuery(this).select();
 				});
+
+				jQuery('.wpa-alert').button().click(function() {
+					var text = jQuery(this).attr('content');
+					WPA.alert(text, 'view_event_shortcodes_dialog_title');
+				});
 			},
 			"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 				// highlight the row if it is one of my results
@@ -170,6 +175,7 @@ if ( $this->has_permission_to_manage() ) {
 				"bSortable": false
 			},{
 				"mData": "event_id",
+				"sClass": "datatable-center",
 				"mRender" : WPA.renderEventShorcode,
 				"bSortable": false
 			},{

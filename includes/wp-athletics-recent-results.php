@@ -155,7 +155,7 @@ if(!class_exists('WP_Athletics_Recent_Results')) {
 					<br style="clear:both"/>
 				</div>
 				
-				<div class="feed-content-empty" id="recent-results-empty">
+				<div style="display:none" class="feed-content-empty" id="recent-results-empty">
 					<p><?= $this->get_property('recent_results_empty_text'); ?></p>
 					<a href="<?= get_permalink(get_option('wp-athletics_my_results_page_id')); ?>">
 					<?= $this->get_property('recent_results_empty_add_result'); ?>
@@ -164,7 +164,15 @@ if(!class_exists('WP_Athletics_Recent_Results')) {
 
 				<!-- RECENT RESULTS -->
 				<div id="recent-results">
-
+					<?php 
+						for($i = 12; $i > 0; $i--) {
+					?>
+						<div style="display:none" class="month month-<?= $i ?>">
+							<p><?= $this->get_property('month_' . $i)?></p>
+						</div>
+					<?php
+						}
+					?>
 				</div>
 
 				<!-- ADD/EDIT RESULTS DIALOG -->
@@ -173,6 +181,14 @@ if(!class_exists('WP_Athletics_Recent_Results')) {
 				<!-- COMMON DIALOGS -->
 				<?php $this->create_common_dialogs(); ?>
 			</div>
+			
+			<style>
+				.month p {
+					border-bottom: 1px solid #A5A5A5;
+					font-size: 22px;
+					margin: 0px;
+				}
+			</style>
 		<?php
 		}
 	}

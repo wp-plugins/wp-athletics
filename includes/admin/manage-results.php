@@ -172,7 +172,7 @@ if ( $this->has_permission_to_manage() ) {
 			},{
 				"mData": "garmin_id",
 				"sWidth": "16px",
-				"mRender": WPA.renderGarminColumn,
+				"mRender": WPA.renderActivityLinkColumn,
 				"bSortable": false
 			}]
 		}));

@@ -4,7 +4,7 @@ Donate link: http://www.conormccauley.me/wordpress-athletics
 Tags: athletics, results, sports, track, running club, athlete, statistics, races, racing, events, athletic, jogging, club, charts, records, personal bests, pb, pr, personal records
 Requires at least: 3.5
 Tested up to: 4.2.1
-Stable tag: 1.1.6
+Stable tag: 1.1.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -205,3 +205,6 @@ Your users will have the age grade % automaticaly applied to their results the n
 
 = 1.1.6 =
 Bug fix causing database creation problems with new installs. Some other minor fixes also.
+
+= 1.1.7 =
+New simple shortcodes and a shortcode generator tool added. Proper bug fix for database creation issues. Some UI and other bug fixes.
